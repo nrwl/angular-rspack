@@ -4,24 +4,22 @@
 
 </div>
 
-# @ng-rsbuild/plugin-angular
+# @nx/angular-rsbuild
 
 ## Rsbuild Support for Angular
 
 Plugin providing Rsbuild support for Angular applications, both SSR and CSR.
-
-**_Thank you to [Brandon Roberts](https://x.com/brandontroberts) and [Analog](https://analogjs.org/) for their work on building Angular applications with Vite which both inspired this plugin and provided a basis for the compilation implementation._**
 
 ### Setup for SSR Application
 
 **Prerequisites**: Angular SSR Application already created with `ng new --ssr`.
 
 1. Install Rsbuild: `npm install --save-dev @rsbuild/core`
-2. Install this plugin: `npm install --save-dev @ng-rsbuild/plugin-angular`
+2. Install this plugin: `npm install --save-dev @nx/angular-rsbuild`
 3. Create an `rsbuild.config.ts` file at the root of your project with the following:
 
 ```ts
-import { createConfig } from '@ng-rsbuild/plugin-angular';
+import { createConfig } from '@nx/angular-rsbuild';
 
 export default createConfig({
   browser: './src/main.ts',
@@ -33,7 +31,7 @@ export default createConfig({
 4. Update your `./src/server.ts` file to use the `createServer` util:
 
 ```ts
-import { createServer } from '@ng-rsbuild/plugin-angular/ssr';
+import { createServer } from '@nx/angular-rsbuild/ssr';
 import bootstrap from './main.server';
 
 const server = createServer(bootstrap);
@@ -69,11 +67,11 @@ server.listen();
 **Prerequisites**: Angular CSR Application already created with `ng new`.
 
 1. Install Rsbuild: `npm install --save-dev @rsbuild/core`
-2. Install this plugin: `npm install --save-dev @ng-rsbuild/plugin-angular`
+2. Install this plugin: `npm install --save-dev @nx/angular-rsbuild`
 3. Create an `rsbuild.config.ts` file at the root of your project with the following:
 
 ```ts
-import { createConfig } from '@ng-rsbuild/plugin-angular';
+import { createConfig } from '@nx/angular-rsbuild';
 
 export default createConfig({
   browser: './src/main.ts',

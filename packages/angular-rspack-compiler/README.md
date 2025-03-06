@@ -4,7 +4,7 @@
 
 </div>
 
-# @ng-rspack/compiler
+# @nx/angular-rspack-compiler
 
 ## Compilation Utilities for Angular with Rspack and Rsbuild
 
