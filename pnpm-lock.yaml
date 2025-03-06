@@ -467,6 +467,37 @@ importers:
         specifier: workspace:*
         version: link:../../testing/setup
 
+  packages/angular-rspack-compiler:
+    dependencies:
+      '@angular/build':
+        specifier: '>=18.0.0 <20.0.0'
+        version: 19.1.7(@angular/compiler-cli@19.1.6(@angular/compiler@19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0)))(typescript@5.6.3))(@angular/compiler@19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/platform-server@19.1.6(@angular/animations@19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/compiler@19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.1.6(@angular/animations@19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0))))(@angular/ssr@19.1.6(jiulpsphjxi2gglhkdvd6vtvui))(@types/node@18.16.9)(chokidar@4.0.3)(jiti@2.4.2)(less@4.2.1)(postcss@8.5.3)(sass-embedded@1.85.1)(stylus@0.64.0)(terser@5.37.0)(typescript@5.6.3)(yaml@2.7.0)
+      '@angular/compiler-cli':
+        specifier: '>=18.0.0 <20.0.0'
+        version: 19.1.6(@angular/compiler@19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0)))(typescript@5.6.3)
+      '@rsbuild/core':
+        specifier: '>=1.0.5 <2.0.0'
+        version: 1.2.12
+      '@swc/core':
+        specifier: '>=1.5.0 <1.11.0'
+        version: 1.5.29(@swc/helpers@0.5.15)
+      sass-embedded:
+        specifier: ^1.79.3
+        version: 1.85.1
+      ts-morph:
+        specifier: ^24.0.0
+        version: 24.0.0
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+      typescript:
+        specifier: 5.6.3
+        version: 5.6.3
+    devDependencies:
+      '@ng-rspack/testing-setup':
+        specifier: workspace:*
+        version: link:../../testing/setup
+
   packages/build:
     dependencies:
       '@angular/common':
@@ -514,6 +545,9 @@ importers:
       '@angular/compiler-cli':
         specifier: '>=18.0.0 <20.0.0'
         version: 19.1.6(@angular/compiler@19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0)))(typescript@5.6.3)
+      '@nx/angular-rspack-compiler':
+        specifier: workspace:*
+        version: link:../angular-rspack-compiler
       '@rsbuild/core':
         specifier: '>=1.0.5 <2.0.0'
         version: 1.2.12

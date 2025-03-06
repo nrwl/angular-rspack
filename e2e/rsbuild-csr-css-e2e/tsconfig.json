@@ -27,6 +27,9 @@
       "path": "../../testing/utils"
     },
     {
+      "path": "../../packages/angular-rspack-compiler"
+    },
+    {
       "path": "../../packages/compiler"
     },
     {
