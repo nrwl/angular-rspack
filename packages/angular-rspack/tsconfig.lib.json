@@ -7,8 +7,8 @@
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
     "types": ["node"],
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "esModuleInterop": true,
@@ -18,16 +18,13 @@
   "exclude": ["vitest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
   "references": [
     {
-      "path": "../angular-rspack/tsconfig.lib.json"
-    },
-    {
       "path": "../../testing/utils/tsconfig.lib.json"
     },
     {
-      "path": "../../testing/setup/tsconfig.lib.json"
+      "path": "../compiler/tsconfig.lib.json"
     },
     {
-      "path": "../compiler/tsconfig.lib.json"
+      "path": "../../testing/setup/tsconfig.lib.json"
     }
   ]
 }

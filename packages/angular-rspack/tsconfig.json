@@ -4,19 +4,19 @@
   "include": [],
   "references": [
     {
-      "path": "../angular-rspack"
-    },
-    {
       "path": "../../testing/utils"
-    },
-    {
-      "path": "../../testing/setup"
     },
     {
       "path": "../compiler"
     },
     {
+      "path": "../../testing/setup"
+    },
+    {
       "path": "./tsconfig.lib.json"
+    },
+    {
+      "path": "./tsconfig.spec.json"
     }
   ]
 }

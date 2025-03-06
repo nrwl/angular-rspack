@@ -11,7 +11,7 @@ import { environment } from '../environments/environment';
         width="50"
       />
       <p>Angular Rspack and Rsbuild Tools. Licensed under MIT.</p>
-      <a href="https://github.com/Coly010/ng-rspack-build">GitHub</a>
+      <a href="https://github.com/nrwl/angular-rspack">GitHub</a>
       <div class="rsbuild-callout">
         <p>
           Built for {{ env() }} by <a href="https://rsbuild.dev">Rsbuild</a>

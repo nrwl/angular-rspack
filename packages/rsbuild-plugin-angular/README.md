@@ -1,6 +1,6 @@
 <div style="text-align: center;">
 
-<img src="http://github.com/Coly010/ng-rspack-build/raw/main/rsbuild-plugin-angular.png" alt="Rsbuild Plugin Angular" />
+<img src="http://github.com/nrwl/angular-rspack/raw/main/rsbuild-plugin-angular.png" alt="Rsbuild Plugin Angular" />
 
 </div>
 

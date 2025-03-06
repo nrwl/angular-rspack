@@ -1,5 +1,5 @@
 {
-  "name": "@ng-rspack/build",
+  "name": "@nx/angular-rspack",
   "version": "19.0.0-alpha.29",
   "private": false,
   "publishConfig": {
@@ -14,7 +14,7 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/nrwl/angular-rspack.git",
-    "directory": "packages/build"
+    "directory": "packages/angular-rspack"
   },
   "keywords": [
     "Monorepo",
@@ -32,16 +32,16 @@
       "default": "./dist/lib/index.js"
     },
     "./loaders/angular-partial-transform-loader": {
-      "types": "./dist/lib/angular-partial-transform-loader.d.ts",
-      "default": "./dist/lib/angular-partial-transform-loader.js"
+      "types": "./dist/lib/plugins/loaders/angular-partial-transform.loader.d.ts",
+      "default": "./dist/lib/plugins/loaders/angular-partial-transform.loader.js"
     },
     "./loaders/angular-loader": {
-      "types": "./dist/lib//angular-loader.d.ts",
-      "default": "./dist/lib/plugins/loaders/angular-loader.js"
+      "types": "./dist/lib/plugins/loaders/angular-transform.loader.d.ts",
+      "default": "./dist/lib/plugins/loaders/angular-transform.loader.js"
     },
     "./ssr": {
-      "types": "./dist/lib/ssr.d.ts",
-      "default": "./dist/lib/ssr.js"
+      "types": "./dist/lib/ssr/server.d.ts",
+      "default": "./dist/lib/ssr/server.js"
     }
   },
   "dependencies": {
@@ -52,8 +52,10 @@
     "@ng-rspack/compiler": "workspace:*",
     "webpack-merge": "^6.0.1",
     "ws": "^8.18.0",
-    "express": "4.21.1",
-    "@nx/angular-rspack": "workspace:*"
+    "express": "4.21.1"
+  },
+  "devDependencies": {
+    "@ng-rspack/testing-setup": "workspace:*"
   },
   "peerDependencies": {
     "@rspack/core": ">=1.0.5 <2.0.0",
@@ -61,8 +63,8 @@
     "@angular/ssr": ">=19.0.0 <20.0.0"
   },
   "nx": {
-    "name": "build",
-    "sourceRoot": "packages/build/src",
+    "name": "angular-rspack",
+    "sourceRoot": "packages/angular-rspack/src",
     "projectType": "library",
     "targets": {
       "code-pushup": {}

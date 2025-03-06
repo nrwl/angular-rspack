@@ -8,11 +8,11 @@
   "author": "Colum Ferry",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Coly010/ng-rspack-build/issues"
+    "url": "https://github.com/nrwl/angular-rspack/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Coly010/ng-rspack-build.git",
+    "url": "https://github.com/nrwl/angular-rspack.git",
     "directory": "packages/compiler"
   },
   "keywords": [
