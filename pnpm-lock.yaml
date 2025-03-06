@@ -427,6 +427,43 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/build
 
+  packages/angular-rsbuild:
+    dependencies:
+      '@angular/common':
+        specifier: '>=19.0.0 <20.0.0'
+        version: 19.1.6(@angular/core@19.1.6(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
+      '@angular/ssr':
+        specifier: '>=19.0.0 <20.0.0'
+        version: 19.1.6(jiulpsphjxi2gglhkdvd6vtvui)
+      '@ng-rspack/compiler':
+        specifier: workspace:*
+        version: link:../compiler
+      '@rsbuild/core':
+        specifier: '>=1.0.5 <2.0.0'
+        version: 1.2.12
+      '@rsbuild/plugin-less':
+        specifier: ^1.1.1
+        version: 1.1.1(@rsbuild/core@1.2.12)
+      '@rsbuild/plugin-sass':
+        specifier: ^1.1.2
+        version: 1.2.2(@rsbuild/core@1.2.12)
+      express:
+        specifier: 4.21.1
+        version: 4.21.1
+      sass-embedded:
+        specifier: ^1.79.3
+        version: 1.85.1
+      tslib:
+        specifier: ^2.3.0
+        version: 2.8.1
+    devDependencies:
+      '@ng-rspack/testing-setup':
+        specifier: workspace:*
+        version: link:../../testing/setup
+      '@types/express':
+        specifier: ^4.17.21
+        version: 4.17.21
+
   packages/angular-rspack:
     dependencies:
       '@angular/common':
@@ -582,6 +619,9 @@ importers:
       '@ng-rspack/compiler':
         specifier: workspace:*
         version: link:../compiler
+      '@nx/angular-rsbuild':
+        specifier: workspace:*
+        version: link:../angular-rsbuild
       '@rsbuild/core':
         specifier: '>=1.0.5 <2.0.0'
         version: 1.2.12

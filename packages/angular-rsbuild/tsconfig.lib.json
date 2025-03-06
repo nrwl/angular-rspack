@@ -7,8 +7,8 @@
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
     "types": ["node"],
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "module": "commonjs",
+    "moduleResolution": "node",
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "esModuleInterop": true,
@@ -17,9 +17,6 @@
   },
   "include": ["src/**/*.ts", "src/lib/patch/patch-angular-build.ts"],
   "references": [
-    {
-      "path": "../angular-rsbuild/tsconfig.lib.json"
-    },
     {
       "path": "../../testing/utils/tsconfig.lib.json"
     },

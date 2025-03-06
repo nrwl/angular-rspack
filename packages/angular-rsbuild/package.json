@@ -1,5 +1,5 @@
 {
-  "name": "@ng-rsbuild/plugin-angular",
+  "name": "@nx/angular-rsbuild",
   "keywords": [
     "angular",
     "rsbuild",
@@ -12,8 +12,7 @@
     "@rsbuild/plugin-sass": "^1.1.2",
     "@rsbuild/plugin-less": "^1.1.1",
     "express": "4.21.1",
-    "tslib": "^2.3.0",
-    "@nx/angular-rsbuild": "workspace:*"
+    "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
@@ -25,16 +24,16 @@
     "@rsbuild/core": ">=1.0.5 <2.0.0"
   },
   "type": "commonjs",
-  "main": "./dist/lib/index.js",
-  "typings": "./dist/lib/index.d.ts",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/lib/index.d.ts",
-      "default": "./dist/lib/index.js"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./ssr": {
-      "types": "./dist/lib/ssr.d.ts",
-      "default": "./dist/lib/ssr.js"
+      "types": "./dist/lib/ssr/server.d.ts",
+      "default": "./dist/lib/ssr/server.js"
     }
   },
   "private": false,
@@ -42,9 +41,9 @@
     "access": "public"
   },
   "nx": {
-    "sourceRoot": "packages/rsbuild-plugin-angular/src",
+    "sourceRoot": "packages/angular-rsbuild/src",
     "projectType": "library",
-    "name": "rsbuild-plugin-angular",
+    "name": "angular-rsbuild",
     "targets": {
       "integration-test": {
         "dependsOn": [

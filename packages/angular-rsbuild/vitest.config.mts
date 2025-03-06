@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import { EXCLUDED_FILES_TEST } from '@ng-rspack/testing-setup';
 
 export default defineConfig({
-  cacheDir: '../../node_modules/.vite/rsbuild-plugin-angular/integration',
+  cacheDir: '../../node_modules/.vite/angular-rsbuild/unit',
   root: __dirname,
   plugins: [],
   resolve: {
@@ -15,13 +15,13 @@ export default defineConfig({
     watch: false,
     globals: true,
     environment: 'node',
-    include: ['src/**/*.integration.test.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    passWithNoTests: true,
+    include: ['src/**/*.unit.test.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    setupFiles: ['../../testing/vitest-setup/src/lib/fs-memfs.setup-file.ts'],
     reporters: ['default'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
-      reportsDirectory: '../../coverage/rsbuild-plugin-angular/integration',
+      reportsDirectory: '../../coverage/angular-rsbuild/unit',
       exclude: [...EXCLUDED_FILES_TEST],
     },
   },
