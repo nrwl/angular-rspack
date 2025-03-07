@@ -1,32 +1,36 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { buildAndAnalyzeWithParallelCompilation } from './build-and-analyze'; // Adjust path accordingly
+import { buildAndAnalyzeWithParallelCompilation } from './build-and-analyze';
 import { ParallelCompilation } from '@angular/build/src/tools/angular/compilation/parallel-compilation';
 import { JavaScriptTransformer } from '@angular/build/src/tools/esbuild/javascript-transformer';
 
 describe('buildAndAnalyzeWithParallelCompilation', () => {
+  let parallelCompilation: ParallelCompilation;
+  let javascriptTransformer: JavaScriptTransformer;
+  let typescriptFileCache: Map<string, string | Uint8Array>;
   const mockEmitAffectedFiles = vi.fn();
-
   const mockTransformData = vi.fn();
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockTransformData.mockImplementation((_file, content) =>
-      Promise.resolve(`transformed(${content})`)
+
+    mockTransformData.mockImplementation((_file, _) =>
+      Promise.resolve('MOCK_TRANSFORMED')
     );
-    mockEmitAffectedFiles.mockResolvedValue([
-      { filename: 'C:/path/to/file.ts', contents: 'console.log("Hello");' },
-      { filename: '/home/user/project/file2.ts', contents: 'const a = 42;' },
-    ]);
+
+    parallelCompilation = {
+      emitAffectedFiles: mockEmitAffectedFiles,
+    } as unknown as ParallelCompilation;
+    javascriptTransformer = {
+      transformData: mockTransformData,
+    } as unknown as JavaScriptTransformer;
+    typescriptFileCache = new Map<string, string | Uint8Array>();
   });
 
   it('should call emitAffectedFiles and iterate over result of emitted files', async () => {
-    const parallelCompilation = {
-      emitAffectedFiles: mockEmitAffectedFiles,
-    } as unknown as ParallelCompilation;
-    const javascriptTransformer = {
-      transformData: mockTransformData,
-    } as unknown as JavaScriptTransformer;
-    const typescriptFileCache = new Map<string, string | Uint8Array>();
+    mockEmitAffectedFiles.mockResolvedValue([
+      { filename: 'file1.ts', contents: '' },
+      { filename: 'file2.ts', contents: '' },
+    ]);
 
     await expect(
       buildAndAnalyzeWithParallelCompilation(
@@ -36,16 +40,13 @@ describe('buildAndAnalyzeWithParallelCompilation', () => {
       )
     ).resolves.not.toThrow();
     expect(mockEmitAffectedFiles).toHaveBeenCalledTimes(1);
+    expect(mockTransformData).toHaveBeenCalledTimes(2);
   });
 
-  it('should call transformData for each file emitted by emitAffectedFiles', async () => {
-    const parallelCompilation = {
-      emitAffectedFiles: mockEmitAffectedFiles,
-    } as unknown as ParallelCompilation;
-    const javascriptTransformer = {
-      transformData: mockTransformData,
-    } as unknown as JavaScriptTransformer;
-    const typescriptFileCache = new Map<string, string | Uint8Array>();
+  it('should normalize file names before emitting', async () => {
+    mockEmitAffectedFiles.mockResolvedValue([
+      { filename: 'C:/file.ts', contents: '' },
+    ]);
 
     await expect(
       buildAndAnalyzeWithParallelCompilation(
@@ -54,32 +55,20 @@ describe('buildAndAnalyzeWithParallelCompilation', () => {
         javascriptTransformer
       )
     ).resolves.not.toThrow();
-    expect(mockTransformData).toHaveBeenCalledTimes(2);
+
     expect(mockTransformData).toHaveBeenNthCalledWith(
       1,
-      '/path/to/file.ts',
-      'console.log("Hello");',
-      true,
-      false
-    );
-    expect(mockTransformData).toHaveBeenNthCalledWith(
-      2,
-      '/home/user/project/file2.ts',
-      'const a = 42;',
+      '/file.ts',
+      '',
       true,
       false
     );
   });
 
   it('should add emitted files to cache', async () => {
-    const parallelCompilation = {
-      emitAffectedFiles: mockEmitAffectedFiles,
-    } as unknown as ParallelCompilation;
-    const javascriptTransformer = {
-      transformData: mockTransformData,
-    } as unknown as JavaScriptTransformer;
-    const typescriptFileCache = new Map<string, string | Uint8Array>();
-
+    mockEmitAffectedFiles.mockResolvedValue([
+      { filename: 'file.ts', contents: '' },
+    ]);
     await expect(
       buildAndAnalyzeWithParallelCompilation(
         parallelCompilation,
@@ -88,20 +77,15 @@ describe('buildAndAnalyzeWithParallelCompilation', () => {
       )
     ).resolves.not.toThrow();
 
-    expect(typescriptFileCache.size).toBe(2);
-    expect(typescriptFileCache.has('/path/to/file.ts')).toBe(true);
-    expect(typescriptFileCache.has('/home/user/project/file2.ts')).toBe(true);
+    expect(typescriptFileCache.size).toBe(1);
+    expect(typescriptFileCache.has('file.ts')).toBe(true);
+    expect(typescriptFileCache.get('file.ts')).toEqual(expect.any(String));
   });
 
-  it('should transform and cache emitted TypeScript files', async () => {
-    const parallelCompilation = {
-      emitAffectedFiles: mockEmitAffectedFiles,
-    } as unknown as ParallelCompilation;
-    const javascriptTransformer = {
-      transformData: mockTransformData,
-    } as unknown as JavaScriptTransformer;
-    const typescriptFileCache = new Map<string, string | Uint8Array>();
-
+  it('should transform the file content', async () => {
+    mockEmitAffectedFiles.mockResolvedValue([
+      { filename: 'file.ts', contents: '' },
+    ]);
     await expect(
       buildAndAnalyzeWithParallelCompilation(
         parallelCompilation,
@@ -110,18 +94,7 @@ describe('buildAndAnalyzeWithParallelCompilation', () => {
       )
     ).resolves.not.toThrow();
 
-    expect(mockEmitAffectedFiles).toHaveBeenCalledTimes(1);
-    expect(mockTransformData).toHaveBeenCalledTimes(2);
-    expect(typescriptFileCache.size).toBe(2);
-
-    expect(typescriptFileCache.has('/path/to/file.ts')).toBe(true);
-    expect(typescriptFileCache.has('/home/user/project/file2.ts')).toBe(true);
-
-    expect(typescriptFileCache.get('/path/to/file.ts')).toBe(
-      'transformed(console.log("Hello");)'
-    );
-    expect(typescriptFileCache.get('/home/user/project/file2.ts')).toBe(
-      'transformed(const a = 42;)'
-    );
+    expect(mockTransformData).toHaveBeenCalledTimes(1);
+    expect(typescriptFileCache.get('file.ts')).toBe('MOCK_TRANSFORMED');
   });
 });
