@@ -1,3 +1,1 @@
-export * from './compilation';
-export * from './models';
-export * from './utils';
+export * from '@nx/angular-rspack-compiler';

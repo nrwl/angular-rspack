@@ -59,6 +59,9 @@
       "options": {
         "config": "vitest.integration.config.mts"
       }
+    },
+    "unit-test": {
+      "cache": true
     }
   },
   "release": {

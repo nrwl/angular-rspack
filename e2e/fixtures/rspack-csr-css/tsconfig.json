@@ -13,10 +13,16 @@
   "include": [],
   "references": [
     {
-      "path": "../../../testing/setup"
+      "path": "../../../packages/angular-rspack"
     },
     {
       "path": "../../../testing/utils"
+    },
+    {
+      "path": "../../../packages/angular-rspack-compiler"
+    },
+    {
+      "path": "../../../testing/setup"
     },
     {
       "path": "../../../packages/compiler"

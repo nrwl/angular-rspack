@@ -1,6 +1,10 @@
 <div style="text-align: center;">
 
-<img src="http://github.com/Coly010/ng-rspack-build/raw/main/rsbuild-plugin-angular.png" alt="Rsbuild Plugin Angular" />
+<div style="background-color: orange; padding: 1rem; border-radius: 0.5rem; font-weight: bold; margin-top: 1rem;">
+This package has been moved to @nx/angular-rsbuild.
+</div>
+
+<img src="http://github.com/nrwl/angular-rspack/raw/main/rsbuild-plugin-angular.png" alt="Rsbuild Plugin Angular" />
 
 </div>
 

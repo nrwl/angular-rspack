@@ -4,16 +4,10 @@
   "files": [],
   "references": [
     {
-      "path": "./packages/nx-plugin"
-    },
-    {
       "path": "./packages/build"
     },
     {
       "path": "./packages/rsbuild-plugin-angular"
-    },
-    {
-      "path": "./packages/rsbuild-plugin-nx"
     },
     {
       "path": "./packages/compiler"
@@ -44,6 +38,15 @@
     },
     {
       "path": "./testing/utils"
+    },
+    {
+      "path": "./packages/angular-rspack"
+    },
+    {
+      "path": "./packages/angular-rspack-compiler"
+    },
+    {
+      "path": "./packages/angular-rsbuild"
     }
   ]
 }

@@ -9,11 +9,11 @@
   "author": "Colum Ferry",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Coly010/ng-rspack-build/issues"
+    "url": "https://github.com/nrwl/angular-rspack/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Coly010/ng-rspack-build.git",
+    "url": "https://github.com/nrwl/angular-rspack.git",
     "directory": "packages/build"
   },
   "keywords": [
@@ -32,16 +32,16 @@
       "default": "./dist/lib/index.js"
     },
     "./loaders/angular-partial-transform-loader": {
-      "types": "./dist/lib/plugins/loaders/angular-partial-transform.loader.d.ts",
-      "default": "./dist/lib/plugins/loaders/angular-partial-transform.loader.js"
+      "types": "./dist/lib/angular-partial-transform-loader.d.ts",
+      "default": "./dist/lib/angular-partial-transform-loader.js"
     },
     "./loaders/angular-loader": {
-      "types": "./dist/lib/plugins/loaders/angular-transform.loader.d.ts",
-      "default": "./dist/lib/plugins/loaders/angular-transform.loader.js"
+      "types": "./dist/lib//angular-loader.d.ts",
+      "default": "./dist/lib/plugins/loaders/angular-loader.js"
     },
     "./ssr": {
-      "types": "./dist/lib/ssr/server.d.ts",
-      "default": "./dist/lib/ssr/server.js"
+      "types": "./dist/lib/ssr.d.ts",
+      "default": "./dist/lib/ssr.js"
     }
   },
   "dependencies": {
@@ -52,10 +52,8 @@
     "@ng-rspack/compiler": "workspace:*",
     "webpack-merge": "^6.0.1",
     "ws": "^8.18.0",
-    "express": "4.21.1"
-  },
-  "devDependencies": {
-    "@ng-rspack/testing-setup": "workspace:*"
+    "express": "4.21.1",
+    "@nx/angular-rspack": "workspace:*"
   },
   "peerDependencies": {
     "@rspack/core": ">=1.0.5 <2.0.0",
