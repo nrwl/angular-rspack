@@ -1,6 +1,7 @@
 export const EXCLUDED_FILES_TEST = [
   'mocks/**',
   '**/types.ts',
+  '**/index.ts',
   '**/*.d.ts',
   '__snapshots__/**',
   '**/__tests__/**',
