@@ -99,7 +99,7 @@ describe('buildAndAnalyzeWithParallelCompilation execution', () => {
               } }, styles: ["MOCK_TRANSFORMED_STYLESHEET"] });
       }
       exports.ComponentExport = ComponentExport;
-      (() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassDebugInfo(ComponentExport, { className: "ComponentExport", filePath: "mocks/fixtures/integration/tsconfig-variations/component-export.ts", lineNumber: 7 }); })();
+      (() => { (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassDebugInfo(ComponentExport, { className: "ComponentExport", filePath: "mocks/fixtures/integration/tsconfig-variations/component-export.ts", lineNumber: 13 }); })();
       "
     `);
   });
