@@ -6,7 +6,7 @@ import type { LoaderContext } from '@rspack/core';
 class StyleUrlsResolverMock {
   constructor(private cb: (content: string) => string) {}
 
-  resolve(content: string, id: string): string[] {
+  resolve(content: string, _: string): string[] {
     return [this.cb(content)];
   }
 }
@@ -14,7 +14,7 @@ class StyleUrlsResolverMock {
 class TemplateUrlsResolverMock {
   constructor(private cb: (content: string) => string) {}
 
-  resolve(content: string, id: string): string[] {
+  resolve(content: string, _: string): string[] {
     return [this.cb(content)];
   }
 }
