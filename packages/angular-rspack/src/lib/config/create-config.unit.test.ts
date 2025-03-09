@@ -1,6 +1,7 @@
 import { createConfig, withConfigurations } from './create-config';
 import { beforeEach, expect } from 'vitest';
 import { AngularRspackPluginOptions } from '../models';
+import { NgRspackPlugin } from '../plugins/ng-rspack';
 
 describe('createConfig', () => {
   const configBase: AngularRspackPluginOptions = {
@@ -41,10 +42,51 @@ describe('createConfig', () => {
       ]);
     }
   );
+});
 
-  describe('withConfigurations', () => {
-    const runWithConfigurations = () => {
-      return withConfigurations(
+describe('withConfigurations', () => {
+  const configBase: AngularRspackPluginOptions = {
+    root: '',
+    browser: './src/main.ts',
+    index: './src/index.html',
+    tsconfigPath: './tsconfig.base.json',
+    inlineStylesExtension: 'css',
+    polyfills: [],
+    styles: [],
+    assets: [],
+    fileReplacements: [],
+    scripts: [],
+    jit: false,
+    hasServer: false,
+    skipTypeChecking: false,
+  };
+
+  it('should create config from options', () => {
+    expect(withConfigurations({ options: configBase })).toStrictEqual([
+      expect.objectContaining({
+        mode: 'development',
+        plugins: [
+          {
+            pluginOptions: {
+              ...configBase,
+              useTsProjectReferences: false,
+              polyfills: ['zone.js'],
+            },
+          },
+        ],
+      }),
+    ]);
+  });
+
+  it.each([
+    ['development', 'dev', true],
+    ['production', 'prod', false],
+  ])(
+    'should create config for mode "development" if env variable NGRS_CONFIG is "%s"',
+    (configuration, fileNameSegment, skipTypeChecking) => {
+      vi.stubEnv('NGRS_CONFIG', configuration);
+
+      const c = withConfigurations(
         { options: configBase },
         {
           development: {
@@ -61,50 +103,19 @@ describe('createConfig', () => {
           },
         }
       );
-    };
-
-    it('should create config from options', () => {
-      expect(withConfigurations({ options: configBase })).toStrictEqual([
+      expect(c).toStrictEqual([
         expect.objectContaining({
-          mode: 'development',
-          plugins: [
-            {
-              pluginOptions: {
-                ...configBase,
-                useTsProjectReferences: false,
-                polyfills: ['zone.js'],
-              },
-            },
-          ],
+          plugins: [expect.any(NgRspackPlugin)],
         }),
       ]);
-    });
 
-    it.each([
-      ['development', 'dev', true],
-      ['production', 'prod', false],
-    ])(
-      'should create config for mode "development" if env variable NGRS_CONFIG is "%s"',
-      (configuration, fileNameSegment, skipTypeChecking) => {
-        vi.stubEnv('NGRS_CONFIG', configuration);
-
-        const config = runWithConfigurations();
-
-        const plugins = config[0].plugins;
-        const NgRspackPlugin = plugins?.find(
-          (plugin) => plugin?.constructor.name === 'NgRspackPlugin'
-        );
-        expect(NgRspackPlugin).toBeDefined();
-        expect(
-          // @ts-expect-error - TS cannot index correctly because of multiple potential types
-          NgRspackPlugin['pluginOptions'] as AngularRspackPluginOptions
-        ).toEqual(
-          expect.objectContaining({
-            browser: `./src/${fileNameSegment}.main.ts`,
-            skipTypeChecking,
-          })
-        );
-      }
-    );
-  });
+      const ngRspackPlugin = c[0].plugins?.[0] as NgRspackPlugin;
+      expect(ngRspackPlugin.pluginOptions).toStrictEqual(
+        expect.objectContaining({
+          browser: `./src/${fileNameSegment}.main.ts`,
+          skipTypeChecking,
+        })
+      );
+    }
+  );
 });
