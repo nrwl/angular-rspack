@@ -20,7 +20,10 @@ export function resolveFileReplacements(
   }));
 }
 
-export type HasServerOptions = Pick<AngularRspackPluginOptions, 'server' | 'ssrEntry' | 'root'>;
+export type HasServerOptions = Pick<
+  AngularRspackPluginOptions,
+  'server' | 'ssrEntry' | 'root'
+>;
 export function getHasServer({
   server,
   ssrEntry,
