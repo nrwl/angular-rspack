@@ -503,6 +503,9 @@ importers:
       '@ng-rspack/testing-setup':
         specifier: workspace:*
         version: link:../../testing/setup
+      '@ng-rspack/testing-vitest-setup':
+        specifier: workspace:*
+        version: link:../../testing/vitest-setup
 
   packages/angular-rspack-compiler:
     dependencies:
