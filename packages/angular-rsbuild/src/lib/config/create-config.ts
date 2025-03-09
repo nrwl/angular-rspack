@@ -121,7 +121,7 @@ export function _createConfig(
           },
           define: {
             ...(isProd ? { ngDevMode: 'false' } : undefined),
-            ngJitMode: pluginOptions.jit, // @TODO: use normalizedOptions
+            ngJitMode: normalizedOptions.aot ? undefined : 'true', // @TODO: use normalizedOptions
           },
         },
         output: {
@@ -150,7 +150,7 @@ export function _createConfig(
                 define: {
                   ngServerMode: true,
                   ...(isProd ? { ngDevMode: 'false' } : undefined),
-                  ngJitMode: pluginOptions.jit, // @TODO: use normalizedOptions
+                  ngJitMode: normalizedOptions.aot ? undefined : 'true', // @TODO: use normalizedOptions
                 },
               },
               output: {

@@ -3,7 +3,7 @@ import {
   StyleUrlsResolver,
   TemplateUrlsResolver,
   TS_ALL_EXT_REGEX,
-} from '@ng-rspack/compiler';
+} from '@nx/angular-rspack-compiler';
 import { PluginAngularOptions } from '../models/plugin-options';
 import { normalizeOptions } from '../models/normalize-options';
 import { dirname, normalize, resolve } from 'path';
@@ -30,7 +30,7 @@ export const pluginAngular = (
     const templateUrlsResolver = new TemplateUrlsResolver();
     const config = api.getRsbuildConfig();
 
-    if (pluginOptions.jit) {
+    if (!pluginOptions.aot) {
       api.modifyRsbuildConfig((config) => {
         config.plugins ??= [];
         config.plugins.push(pluginAngularJit());
