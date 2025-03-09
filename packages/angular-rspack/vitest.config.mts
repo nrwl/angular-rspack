@@ -9,6 +9,7 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['src/**/*.unit.test.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    setupFiles: ['../../testing/vitest-setup/src/lib/fs-memfs.setup-file.ts'],
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov'],
