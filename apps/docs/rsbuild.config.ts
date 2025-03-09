@@ -4,7 +4,7 @@ const options = {
   browser: './src/main.ts',
   server: './src/main.server.ts',
   ssrEntry: './src/server.ts',
-  inlineStylesExtension: 'scss' as any,
+  inlineStyleLanguage: 'scss' as any,
   styles: ['./src/styles.scss', './src/hljs.theme.scss'],
   skipTypeChecking: true,
 };
