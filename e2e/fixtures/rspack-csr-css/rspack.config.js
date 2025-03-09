@@ -1,5 +1,6 @@
 module.exports = () => {
   if (global.NX_GRAPH_CREATION === undefined) {
+    const { join } = require('path');
     const { createConfig } = require('@nx/angular-rspack');
     return createConfig({
       options: {
@@ -11,7 +12,7 @@ module.exports = () => {
         polyfills: ['zone.js'],
         main: './src/main.ts',
         outputPath: './dist/browser',
-        tsConfig: './tsconfig.app.json',
+        tsConfig: join(__dirname, './tsconfig.app.json'),
         skipTypeChecking: false,
       },
     });
