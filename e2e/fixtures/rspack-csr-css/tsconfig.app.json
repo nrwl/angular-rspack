@@ -23,19 +23,13 @@
   ],
   "references": [
     {
-      "path": "../../../packages/compiler/tsconfig.lib.json"
+      "path": "../../../testing/utils/tsconfig.lib.json"
     },
     {
       "path": "../../../packages/angular-rspack-compiler/tsconfig.lib.json"
     },
     {
-      "path": "../../../testing/vitest-setup/tsconfig.lib.json"
-    },
-    {
       "path": "../../../testing/setup/tsconfig.lib.json"
-    },
-    {
-      "path": "../../../testing/utils/tsconfig.lib.json"
     },
     {
       "path": "../../../packages/angular-rspack/tsconfig.lib.json"

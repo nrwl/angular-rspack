@@ -4,16 +4,10 @@
   "include": [],
   "references": [
     {
-      "path": "../compiler"
-    },
-    {
-      "path": "../angular-rspack-compiler"
-    },
-    {
       "path": "../../testing/utils"
     },
     {
-      "path": "../../testing/vitest-setup"
+      "path": "../angular-rspack-compiler"
     },
     {
       "path": "../../testing/setup"
