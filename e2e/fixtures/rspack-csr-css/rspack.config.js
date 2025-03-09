@@ -14,6 +14,9 @@ module.exports = () => {
         outputPath: './dist/browser',
         tsConfig: join(__dirname, './tsconfig.app.json'),
         skipTypeChecking: false,
+        devServer: {
+          port: 8080,
+        },
       },
     });
   }

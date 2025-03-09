@@ -117,4 +117,32 @@ describe('createConfig', () => {
       })
     );
   });
+
+  it('should allow changing the devServer port', () => {
+    defineConfigSpy.mockImplementation((config) => config);
+    normalizeOptionsSpy.mockImplementation(
+      (options) => options as PluginAngularOptions
+    );
+
+    expect(() =>
+      createConfig({
+        options: {
+          root: 'plugin-options',
+          polyfills: [],
+          styles: [],
+          assets: [],
+          devServer: {
+            port: 8080,
+          },
+        },
+      })
+    ).not.toThrow();
+    expect(defineConfigSpy).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        root: 'plugin-options',
+        server: expect.objectContaining({ port: 8080 }),
+      })
+    );
+  });
 });

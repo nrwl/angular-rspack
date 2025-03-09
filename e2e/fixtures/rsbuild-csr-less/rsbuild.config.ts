@@ -6,6 +6,9 @@ export default () => {
         browser: './src/main.ts',
         styles: ['./src/styles.less'],
         inlineStylesExtension: 'less',
+        devServer: {
+          port: 8080,
+        },
       },
     });
   }

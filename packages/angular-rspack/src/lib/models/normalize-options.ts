@@ -62,6 +62,7 @@ export function normalizeOptions(
     fileReplacements = [],
     server,
     ssrEntry,
+    devServer,
     ...restOptions
   } = options;
 
@@ -72,14 +73,22 @@ export function normalizeOptions(
     tsConfig: options.tsConfig ?? join(root, 'tsconfig.app.json'),
     fileReplacements: resolveFileReplacements(fileReplacements, root),
     ...normalizeOptionsServerOptions({ server, ssrEntry, root }),
+    devServer: devServer
+      ? {
+          ...devServer,
+          port: devServer.port ?? 4200,
+        }
+      : {
+          port: 4200,
+        },
   };
 }
 
 export function normalizeOptionsServerOptions({
-  server,
-  ssrEntry,
-  root,
-}: Pick<AngularRspackPluginOptions, 'root' | 'server' | 'ssrEntry'>) {
+                                                server,
+                                                ssrEntry,
+                                                root,
+                                              }: Pick<AngularRspackPluginOptions, 'root' | 'server' | 'ssrEntry'>) {
   if (!getHasServer({ server, ssrEntry, root })) {
     return { hasServer: false };
   }
