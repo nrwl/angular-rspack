@@ -24,6 +24,7 @@ export type HasServerOptions = Pick<
   AngularRspackPluginOptions,
   'server' | 'ssrEntry' | 'root'
 >;
+
 export function getHasServer({
   server,
   ssrEntry,
@@ -37,6 +38,22 @@ export function getHasServer({
   );
 }
 
+export const DEFAULT_NORMALIZED_OPTIONS: Omit<
+  AngularRspackPluginOptions,
+  'root' | 'tsConfig' | 'fileReplacements' | 'ssrEntry' | 'server' | 'hasServer'
+> = {
+  index: './src/index.html',
+  browser: './src/main.ts',
+  polyfills: [],
+  assets: ['./public'],
+  styles: ['./src/styles.css'],
+  scripts: [],
+  aot: true,
+  inlineStyleLanguage: 'css',
+  skipTypeChecking: false,
+  useTsProjectReferences: false,
+} as const;
+
 export function normalizeOptions(
   options: Partial<AngularRspackPluginOptions> = {}
 ): AngularRspackPluginOptions {
@@ -45,24 +62,31 @@ export function normalizeOptions(
     fileReplacements = [],
     server,
     ssrEntry,
+    ...restOptions
   } = options;
 
   return {
+    ...DEFAULT_NORMALIZED_OPTIONS,
+    ...restOptions,
     root,
-    index: options.index ?? './src/index.html',
-    browser: options.browser ?? './src/main.ts',
-    ...(server ? { server } : {}),
-    ...(ssrEntry ? { ssrEntry } : {}),
-    polyfills: options.polyfills ?? [],
-    assets: options.assets ?? ['./public'],
-    styles: options.styles ?? ['./src/styles.css'],
-    scripts: options.scripts ?? [],
-    fileReplacements: resolveFileReplacements(fileReplacements, root),
-    aot: options.aot ?? true,
-    inlineStyleLanguage: options.inlineStyleLanguage ?? 'css',
     tsConfig: options.tsConfig ?? join(root, 'tsconfig.app.json'),
-    hasServer: getHasServer({ server, ssrEntry, root }),
-    skipTypeChecking: options.skipTypeChecking ?? false,
-    useTsProjectReferences: options.useTsProjectReferences ?? false,
+    fileReplacements: resolveFileReplacements(fileReplacements, root),
+    ...normalizeOptionsServerOptions({ server, ssrEntry, root }),
+  };
+}
+
+export function normalizeOptionsServerOptions({
+  server,
+  ssrEntry,
+  root,
+}: Pick<AngularRspackPluginOptions, 'root' | 'server' | 'ssrEntry'>) {
+  if (!getHasServer({ server, ssrEntry, root })) {
+    return { hasServer: false };
+  }
+
+  return {
+    hasServer: true,
+    server,
+    ssrEntry,
   };
 }
