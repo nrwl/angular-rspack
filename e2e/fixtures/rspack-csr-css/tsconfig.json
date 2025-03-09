@@ -13,22 +13,19 @@
   "include": [],
   "references": [
     {
-      "path": "../../../packages/angular-rspack"
-    },
-    {
       "path": "../../../testing/utils"
     },
     {
       "path": "../../../packages/angular-rspack-compiler"
     },
     {
-      "path": "../../../testing/setup"
-    },
-    {
       "path": "../../../packages/compiler"
     },
     {
-      "path": "../../../packages/build"
+      "path": "../../../testing/setup"
+    },
+    {
+      "path": "../../../packages/angular-rspack"
     },
     {
       "path": "./tsconfig.editor.json"
