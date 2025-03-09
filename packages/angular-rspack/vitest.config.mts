@@ -3,6 +3,11 @@ import { EXCLUDED_FILES_TEST } from '@ng-rspack/testing-setup';
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/ng-rspack-build/unit',
+  resolve: {
+    alias: {
+      '@ng-rspack/testing-vitest-setup': '../../testing/vitest-setup/src',
+    },
+  },
   root: __dirname,
   test: {
     watch: false,

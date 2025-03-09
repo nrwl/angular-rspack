@@ -6,8 +6,16 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
-    "types": ["node", "vite/client"]
+    "types": ["node", "vite/client"],
+    "paths": {
+      "@ng-rspack/testing-utils": ["../utils/src/index.ts"]
+    }
   },
+  "references": [
+    {
+      "path": "../utils/tsconfig.lib.json"
+    }
+  ],
   "include": ["src/**/*.ts"],
   "exclude": [
     "vite.config.ts",
@@ -22,10 +30,5 @@
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx"
-  ],
-  "references": [
-    {
-      "path": "../utils/tsconfig.lib.json"
-    }
   ]
 }

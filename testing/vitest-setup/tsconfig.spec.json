@@ -5,8 +5,9 @@
     "types": ["vitest/globals", "vitest/importMeta", "vite/client", "node"]
   },
   "include": ["vite.config.ts", "src/**/*.ts", "src/**/*.unit.test.ts"],
-  "references": [{
-    "path": "../utils/tsconfig.json"
-  }
+  "references": [
+    {
+      "path": "../utils/tsconfig.json"
+    }
   ]
 }

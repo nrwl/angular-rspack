@@ -6,7 +6,8 @@
     "memfs": "^4.17.0"
   },
   "devDependencies": {
-    "vite-plugin-dts": "^4.5.0"
+    "vite-plugin-dts": "^4.5.0",
+    "@ng-rspack/testing-utils": "workspace:*"
   },
   "main": "./dist/index.js",
   "typings": "./dist/index.d.ts",
