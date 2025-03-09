@@ -38,7 +38,7 @@ describe('setupCompilation', () => {
 
   const pluginAngularOptions: SetupCompilationOptions = {
     tsconfigPath: 'tsconfig.angular.json',
-    jit: false,
+    aot: true,
     inlineStylesExtension: 'css',
     useTsProjectReferences: false,
     fileReplacements: [],
@@ -167,7 +167,7 @@ describe('setupCompilation', () => {
       async () =>
         await setupCompilation(rsBuildConfig, {
           ...pluginAngularOptions,
-          jit: true,
+          aot: false,
         })
     ).not.toThrow();
     expect(augmentHostWithResourcesSpy).not.toHaveBeenCalled();
