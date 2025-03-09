@@ -22,7 +22,7 @@ describe('createConfig', () => {
     const config = createConfig({
       options: {
         root,
-        inlineStylesExtension: 'scss',
+        inlineStyleLanguage: 'scss',
         tsConfig: './tsconfig.app.json',
         aot: true,
       },
@@ -50,7 +50,7 @@ describe('createConfig', () => {
         root,
         server: './src/main.server.ts',
         ssrEntry: './src/server.ts',
-        inlineStylesExtension: 'scss',
+        inlineStyleLanguage: 'scss',
         tsConfig: './tsconfig.app.json',
       },
     });

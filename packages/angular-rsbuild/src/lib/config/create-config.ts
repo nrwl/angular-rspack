@@ -30,8 +30,8 @@ export function _createConfig(
   const stylePlugins: RsbuildPlugin[] = [];
 
   if (
-    normalizedOptions.inlineStylesExtension === 'scss' ||
-    normalizedOptions.inlineStylesExtension === 'sass'
+    normalizedOptions.inlineStyleLanguage === 'scss' ||
+    normalizedOptions.inlineStyleLanguage === 'sass'
   ) {
     if (
       normalizedOptions.stylePreprocessorOptions?.includePaths ||
@@ -51,7 +51,7 @@ export function _createConfig(
     } else {
       stylePlugins.push(pluginSass());
     }
-  } else if (normalizedOptions.inlineStylesExtension === 'less') {
+  } else if (normalizedOptions.inlineStyleLanguage === 'less') {
     if (normalizedOptions.stylePreprocessorOptions?.includePaths) {
       stylePlugins.push(
         pluginLess({
