@@ -1,4 +1,11 @@
-import { afterAll, afterEach, beforeAll, beforeEach, MockInstance, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  MockInstance,
+  vi,
+} from 'vitest';
 import { MEMFS_VOLUME } from '@ng-rspack/testing-utils';
 
 /**
