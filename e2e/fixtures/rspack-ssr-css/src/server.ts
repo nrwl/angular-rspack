@@ -1,5 +1,5 @@
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { createServer } from '@ng-rspack/build/ssr';
+import { createServer } from '@nx/angular-rspack/ssr';
 import bootstrap from './main.server';
 
 const server = createServer(bootstrap);

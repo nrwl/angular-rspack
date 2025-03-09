@@ -1,10 +1,12 @@
 module.exports = () => {
   if (global.NX_GRAPH_CREATION === undefined) {
-    const { createConfig } = require('@ng-rspack/build');
+    const { createConfig } = require('@nx/angular-rspack');
     return createConfig({
-      browser: './src/main.ts',
-      server: './src/main.server.ts',
-      ssrEntry: './src/server.ts',
+      options: {
+        browser: './src/main.ts',
+        server: './src/main.server.ts',
+        ssrEntry: './src/server.ts',
+      },
     });
   }
   return {};

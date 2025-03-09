@@ -12,7 +12,7 @@ import { pluginHoistedJsTransformer } from '../plugin/plugin-hoisted-js-transfor
 import { pluginSass } from '@rsbuild/plugin-sass';
 import { pluginLess } from '@rsbuild/plugin-less';
 
-export function createConfig(
+export function _createConfig(
   pluginOptions: Partial<PluginAngularOptions>,
   rsbuildConfigOverrides?: Partial<RsbuildConfig>
 ): RsbuildConfig {
@@ -168,7 +168,7 @@ export function createConfig(
   return mergeRsbuildConfig(rsbuildPluginAngularConfig, userDefinedConfig);
 }
 
-export function withConfigurations(
+export function createConfig(
   defaultOptions: {
     options: Partial<PluginAngularOptions>;
     rsbuildConfigOverrides?: Partial<RsbuildConfig>;
@@ -206,5 +206,5 @@ export function withConfigurations(
     );
   }
 
-  return createConfig(mergedBuildOptionsOptions, mergedRsbuildConfigOverrides);
+  return _createConfig(mergedBuildOptionsOptions, mergedRsbuildConfigOverrides);
 }

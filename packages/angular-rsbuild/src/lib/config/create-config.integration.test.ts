@@ -20,9 +20,11 @@ describe('createConfig', () => {
 
   it('should create a CSR config', () => {
     const config = createConfig({
-      root,
-      inlineStylesExtension: 'scss',
-      tsconfigPath: './tsconfig.app.json',
+      options: {
+        root,
+        inlineStylesExtension: 'scss',
+        tsconfigPath: './tsconfig.app.json',
+      },
     });
     expect(
       `import type { RsbuildConfig } from '@rsbuild/core';\nconst config: RsbuildConfig = ${JSON.stringify(
@@ -43,11 +45,13 @@ describe('createConfig', () => {
 
   it('should create a SSR config', () => {
     const config = createConfig({
-      root,
-      server: './src/main.server.ts',
-      ssrEntry: './src/server.ts',
-      inlineStylesExtension: 'scss',
-      tsconfigPath: './tsconfig.app.json',
+      options: {
+        root,
+        server: './src/main.server.ts',
+        ssrEntry: './src/server.ts',
+        inlineStylesExtension: 'scss',
+        tsconfigPath: './tsconfig.app.json',
+      },
     });
 
     expect(

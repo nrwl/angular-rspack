@@ -28,7 +28,7 @@ describe('createConfig', () => {
     (nodeEnv) => {
       vi.stubEnv('NODE_ENV', nodeEnv);
 
-      expect(() => createConfig({})).not.toThrow();
+      expect(() => createConfig({ options: {} })).not.toThrow();
 
       expect(defineConfigSpy).toHaveBeenCalledWith(
         expect.objectContaining({ mode: 'development' })
@@ -39,7 +39,7 @@ describe('createConfig', () => {
   it('should create config for mode "production" if env variable NODE_ENV is "production"', () => {
     vi.stubEnv('NODE_ENV', 'production');
 
-    expect(() => createConfig({})).not.toThrow();
+    expect(() => createConfig({ options: {} })).not.toThrow();
 
     expect(defineConfigSpy).toHaveBeenCalledWith(
       expect.objectContaining({ mode: 'production' })
@@ -53,7 +53,7 @@ describe('createConfig', () => {
       hasServer: true,
     });
 
-    expect(() => createConfig({})).not.toThrow();
+    expect(() => createConfig({ options: {} })).not.toThrow();
 
     expect(defineConfigSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -73,7 +73,7 @@ describe('createConfig', () => {
   it('should create config without dev property configured if not running dev server', () => {
     argvSpy.mockReturnValue([]);
 
-    expect(() => createConfig({})).not.toThrow();
+    expect(() => createConfig({ options: {} })).not.toThrow();
 
     expect(defineConfigSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -89,19 +89,19 @@ describe('createConfig', () => {
     );
 
     expect(() =>
-      createConfig(
-        {
+      createConfig({
+        options: {
           root: 'plugin-options',
           polyfills: [],
           styles: [],
           assets: [],
         },
-        {
+        rsbuildConfigOverrides: {
           source: {
             tsconfigPath: 'tsconfig.random.json',
           },
-        }
-      )
+        },
+      })
     ).not.toThrow();
     expect(defineConfigSpy).toHaveBeenCalledTimes(2);
     expect(defineConfigSpy).toHaveBeenNthCalledWith(
