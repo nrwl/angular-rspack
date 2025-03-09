@@ -24,9 +24,6 @@
   ],
   "references": [
     {
-      "path": "../../packages/angular-rsbuild"
-    },
-    {
       "path": "../../testing/utils"
     },
     {
@@ -39,7 +36,7 @@
       "path": "../../testing/setup"
     },
     {
-      "path": "../../packages/rsbuild-plugin-angular"
+      "path": "../../packages/angular-rsbuild"
     },
     {
       "path": "./tsconfig.test.json"

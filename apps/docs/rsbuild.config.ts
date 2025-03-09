@@ -11,8 +11,8 @@ const options = {
 
 export default () => {
   if (global.NX_GRAPH_CREATION === undefined) {
-    const { withConfigurations } = require('@ng-rsbuild/plugin-angular');
-    return withConfigurations(
+    const { createConfig } = require('@nx/angular-rsbuild');
+    return createConfig(
       {
         options,
       },
