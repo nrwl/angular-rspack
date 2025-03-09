@@ -23,7 +23,7 @@ describe('createConfig', () => {
       options: {
         root,
         inlineStylesExtension: 'scss',
-        tsconfigPath: './tsconfig.app.json',
+        tsConfig: './tsconfig.app.json',
         aot: true,
       },
     });
@@ -51,7 +51,7 @@ describe('createConfig', () => {
         server: './src/main.server.ts',
         ssrEntry: './src/server.ts',
         inlineStylesExtension: 'scss',
-        tsconfigPath: './tsconfig.app.json',
+        tsConfig: './tsconfig.app.json',
       },
     });
 

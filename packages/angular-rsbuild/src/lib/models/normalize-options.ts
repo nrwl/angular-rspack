@@ -47,7 +47,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   scripts: [],
   aot: true,
   inlineStylesExtension: 'css',
-  tsconfigPath: join(process.cwd(), 'tsconfig.app.json'),
+  tsConfig: join(process.cwd(), 'tsconfig.app.json'),
   useTsProjectReferences: false,
   skipTypeChecking: false,
 };

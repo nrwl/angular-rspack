@@ -79,7 +79,7 @@ export function _createConfig(
   const rsbuildPluginAngularConfig = defineConfig({
     root: normalizedOptions.root,
     source: {
-      tsconfigPath: normalizedOptions.tsconfigPath,
+      tsconfigPath: normalizedOptions.tsConfig,
     },
     plugins: [pluginHoistedJsTransformer(normalizedOptions), ...stylePlugins],
     mode: isProd ? 'production' : 'development',
