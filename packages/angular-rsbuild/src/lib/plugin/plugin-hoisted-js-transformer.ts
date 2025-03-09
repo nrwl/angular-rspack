@@ -7,7 +7,7 @@ import {
   maxWorkers,
   setupCompilationWithParallelCompilation,
   PartialMessage,
-} from '@ng-rspack/compiler';
+} from '@nx/angular-rspack-compiler';
 import { PluginAngularOptions } from '../models/plugin-options';
 import { normalizeOptions } from '../models/normalize-options';
 
@@ -31,7 +31,7 @@ export const pluginHoistedJsTransformer = (
         sourcemap: false,
         thirdPartySourcemaps: false,
         advancedOptimizations: false,
-        jit: pluginOptions.jit,
+        jit: !pluginOptions.aot,
       },
       maxWorkers()
     );

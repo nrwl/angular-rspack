@@ -9,13 +9,13 @@ import {
   NG_RSPACK_SYMBOL_NAME,
   NgRspackCompilation,
 } from '../models';
-import { maxWorkers } from '@ng-rspack/compiler';
 import {
+  maxWorkers,
   buildAndAnalyzeWithParallelCompilation,
   JavaScriptTransformer,
   setupCompilationWithParallelCompilation,
   DiagnosticModes,
-} from '@ng-rspack/compiler';
+} from '@nx/angular-rspack-compiler';
 import { dirname, normalize, resolve } from 'path';
 import fs_1 from 'fs';
 

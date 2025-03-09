@@ -1,4 +1,4 @@
-import { FileReplacement } from '@ng-rspack/compiler';
+import { FileReplacement } from '@nx/angular-rspack-compiler';
 import { AngularRspackPluginOptions } from './angular-rspack-plugin-options';
 import { join, resolve } from 'node:path';
 import { existsSync } from 'node:fs';

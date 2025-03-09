@@ -24,6 +24,7 @@ describe('createConfig', () => {
         root,
         inlineStylesExtension: 'scss',
         tsconfigPath: './tsconfig.app.json',
+        aot: true,
       },
     });
     expect(

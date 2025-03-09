@@ -2,7 +2,7 @@ import type {
   FileReplacement,
   InlineStyleExtension,
   StylePreprocessorOptions,
-} from '@ng-rspack/compiler';
+} from '@nx/angular-rspack-compiler';
 
 export interface AngularRspackPluginOptions {
   root: string;
