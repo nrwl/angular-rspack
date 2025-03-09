@@ -15,7 +15,7 @@ describe('_createConfig', () => {
     assets: [],
     fileReplacements: [],
     scripts: [],
-    jit: false,
+    aot: true,
     hasServer: false,
     skipTypeChecking: false,
   };

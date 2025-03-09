@@ -435,9 +435,9 @@ importers:
       '@angular/ssr':
         specifier: '>=19.0.0 <20.0.0'
         version: 19.1.6(jiulpsphjxi2gglhkdvd6vtvui)
-      '@ng-rspack/compiler':
+      '@nx/angular-rspack-compiler':
         specifier: workspace:*
-        version: link:../compiler
+        version: link:../angular-rspack-compiler
       '@rsbuild/core':
         specifier: '>=1.0.5 <2.0.0'
         version: 1.2.12
@@ -472,9 +472,9 @@ importers:
       '@angular/ssr':
         specifier: '>=19.0.0 <20.0.0'
         version: 19.1.6(jiulpsphjxi2gglhkdvd6vtvui)
-      '@ng-rspack/compiler':
+      '@nx/angular-rspack-compiler':
         specifier: workspace:*
-        version: link:../compiler
+        version: link:../angular-rspack-compiler
       '@rspack/core':
         specifier: '>=1.0.5 <2.0.0'
         version: 1.2.6(@swc/helpers@0.5.15)
