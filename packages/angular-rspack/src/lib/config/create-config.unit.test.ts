@@ -1,4 +1,4 @@
-import { createConfig, withConfigurations } from './create-config';
+import { _createConfig, createConfig } from './create-config';
 import { beforeEach, expect } from 'vitest';
 import { AngularRspackPluginOptions } from '../models';
 import { NgRspackPlugin } from '../plugins/ng-rspack';
@@ -27,7 +27,7 @@ describe('createConfig', () => {
 
   it('should create config for mode "production" if env variable NODE_ENV is "production"', () => {
     vi.stubEnv('NODE_ENV', 'production');
-    expect(createConfig(configBase)).toStrictEqual([
+    expect(_createConfig(configBase)).toStrictEqual([
       expect.objectContaining({ mode: 'production' }),
     ]);
   });
@@ -37,7 +37,7 @@ describe('createConfig', () => {
     (nodeEnv) => {
       vi.stubEnv('NODE_ENV', nodeEnv);
 
-      expect(createConfig(configBase)).toStrictEqual([
+      expect(_createConfig(configBase)).toStrictEqual([
         expect.objectContaining({ mode: 'development' }),
       ]);
     }
@@ -45,7 +45,7 @@ describe('createConfig', () => {
 
   describe('withConfigurations', () => {
     it('should create config from options', () => {
-      expect(withConfigurations({ options: configBase })).toStrictEqual([
+      expect(createConfig({ options: configBase })).toStrictEqual([
         expect.objectContaining({
           mode: 'development',
           plugins: [
@@ -69,7 +69,7 @@ describe('createConfig', () => {
       (configuration, fileNameSegment, skipTypeChecking) => {
         vi.stubEnv('NGRS_CONFIG', configuration);
 
-        const c = withConfigurations(
+        const config = createConfig(
           { options: configBase },
           {
             development: {
@@ -86,13 +86,13 @@ describe('createConfig', () => {
             },
           }
         );
-        expect(c).toStrictEqual([
+        expect(config).toStrictEqual([
           expect.objectContaining({
             plugins: [expect.any(NgRspackPlugin)],
           }),
         ]);
 
-        const ngRspackPlugin = c[0].plugins?.[0] as NgRspackPlugin;
+        const ngRspackPlugin = config[0].plugins?.[0] as NgRspackPlugin;
         expect(ngRspackPlugin.pluginOptions).toStrictEqual(
           expect.objectContaining({
             browser: `./src/${fileNameSegment}.main.ts`,

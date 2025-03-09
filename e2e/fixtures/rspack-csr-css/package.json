@@ -4,6 +4,6 @@
   "private": true,
   "scripts": {},
   "dependencies": {
-    "@ng-rspack/build": "workspace:*"
+    "@nx/angular-rspack": "workspace:*"
   }
 }
