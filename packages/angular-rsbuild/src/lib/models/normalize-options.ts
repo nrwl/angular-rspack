@@ -50,6 +50,9 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   tsConfig: join(process.cwd(), 'tsconfig.app.json'),
   useTsProjectReferences: false,
   skipTypeChecking: false,
+  devServer: {
+    port: 4200,
+  },
 };
 
 export function normalizeOptions(
