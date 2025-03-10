@@ -14,6 +14,14 @@ export interface OptimizationOptions {
   fonts?: boolean;
 }
 
+export type OutputHashing = 'none' | 'all' | 'media' | 'bundles';
+export type HashFormat = {
+  chunk: string;
+  extract: string;
+  file: string;
+  script: string;
+};
+
 export interface PluginAngularOptions {
   root: string;
   index: string;
@@ -29,6 +37,7 @@ export interface PluginAngularOptions {
   inlineStyleLanguage: InlineStyleLanguage;
   tsConfig: string;
   optimization?: boolean | OptimizationOptions;
+  outputHashing?: OutputHashing;
   hasServer: boolean;
   skipTypeChecking: boolean;
   useTsProjectReferences?: boolean;

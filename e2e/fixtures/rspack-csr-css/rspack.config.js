@@ -12,6 +12,7 @@ module.exports = () => {
         polyfills: ['zone.js'],
         main: './src/main.ts',
         outputPath: './dist/browser',
+        outputHashing: 'none',
         tsConfig: join(__dirname, './tsconfig.app.json'),
         skipTypeChecking: false,
         devServer: {

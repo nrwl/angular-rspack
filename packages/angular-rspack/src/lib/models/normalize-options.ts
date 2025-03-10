@@ -72,6 +72,7 @@ export function normalizeOptions(
     scripts: options.scripts ?? [],
     fileReplacements: resolveFileReplacements(fileReplacements, root),
     aot: options.aot ?? true,
+    outputHashing: options.outputHashing ?? 'all',
     inlineStyleLanguage: options.inlineStyleLanguage ?? 'css',
     tsConfig: options.tsConfig ?? join(root, 'tsconfig.app.json'),
     hasServer: getHasServer({ server, ssrEntry, root }),

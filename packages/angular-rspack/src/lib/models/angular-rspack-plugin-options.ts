@@ -14,6 +14,14 @@ export interface OptimizationOptions {
   fonts?: boolean;
 }
 
+export type OutputHashing = 'none' | 'all' | 'media' | 'bundles';
+export type HashFormat = {
+  chunk: string;
+  extract: string;
+  file: string;
+  script: string;
+};
+
 export interface AngularRspackPluginOptions {
   root: string;
   index: string;
@@ -32,6 +40,7 @@ export interface AngularRspackPluginOptions {
   skipTypeChecking: boolean;
   useTsProjectReferences?: boolean;
   optimization?: boolean | OptimizationOptions;
+  outputHashing?: OutputHashing;
   stylePreprocessorOptions?: StylePreprocessorOptions;
   devServer?: DevServerOptions;
 }

@@ -61,6 +61,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   inlineStyleLanguage: 'css',
   tsConfig: join(process.cwd(), 'tsconfig.app.json'),
   optimization: true,
+  outputHashing: 'all',
   useTsProjectReferences: false,
   skipTypeChecking: false,
   devServer: {
