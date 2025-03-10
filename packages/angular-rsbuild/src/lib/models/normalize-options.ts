@@ -1,5 +1,9 @@
 import { FileReplacement } from '@nx/angular-rspack-compiler';
-import { PluginAngularOptions, type DevServerOptions } from './plugin-options';
+import type {
+  PluginAngularOptions,
+  DevServerOptions,
+  NormalizedPluginAngularOptions,
+} from './plugin-options';
 import { join, resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 
@@ -93,7 +97,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
 
 export function normalizeOptions(
   options: Partial<PluginAngularOptions> = {}
-): PluginAngularOptions {
+): NormalizedPluginAngularOptions {
   const {
     root = DEFAULT_PLUGIN_ANGULAR_OPTIONS.root,
     fileReplacements = [],
@@ -117,6 +121,8 @@ export function normalizeOptions(
 
   validateOptimization(optimization);
   const normalizedOptimization = optimization !== false; // @TODO: Add support for optimization options
+  const aot = options.aot ?? true;
+  const advancedOptimizations = aot && normalizedOptimization;
 
   return {
     ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
@@ -125,6 +131,9 @@ export function normalizeOptions(
     ...(server != null ? { server } : {}),
     ...(ssr != null ? { ssr: normalizedSsr } : {}),
     optimization: normalizedOptimization,
+    advancedOptimizations,
+    aot,
+    outputHashing: options.outputHashing ?? 'all',
     fileReplacements: resolveFileReplacements(fileReplacements, root),
     hasServer: getHasServer({ server, ssr: normalizedSsr, root }),
     devServer: normalizeDevServer(devServer),
@@ -133,7 +142,7 @@ export function normalizeOptions(
 
 function normalizeDevServer(
   devServer: DevServerOptions | undefined
-): DevServerOptions | undefined {
+): DevServerOptions & { port: number } {
   const defaultPort = 4200;
 
   if (!devServer) {

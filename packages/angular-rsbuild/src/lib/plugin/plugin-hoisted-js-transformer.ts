@@ -8,11 +8,11 @@ import {
   setupCompilationWithParallelCompilation,
   PartialMessage,
 } from '@nx/angular-rspack-compiler';
-import { PluginAngularOptions } from '../models/plugin-options';
+import type { NormalizedPluginAngularOptions } from '../models/plugin-options';
 import { normalizeOptions } from '../models/normalize-options';
 
 export const pluginHoistedJsTransformer = (
-  options: PluginAngularOptions
+  options: NormalizedPluginAngularOptions
 ): RsbuildPlugin => ({
   name: 'plugin-hoisted-js-transformer',
   post: ['plugin-angular'],
@@ -30,6 +30,7 @@ export const pluginHoistedJsTransformer = (
       {
         sourcemap: false,
         thirdPartySourcemaps: false,
+        // @TODO: it should be `pluginOptions.advancedOptimizations` but it currently fails the build
         advancedOptimizations: false,
         jit: !pluginOptions.aot,
       },
