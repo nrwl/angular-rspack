@@ -5,7 +5,7 @@ export default () => {
       options: {
         browser: './src/main.ts',
         server: './src/main.server.ts',
-        ssrEntry: './src/server.ts',
+        ssr: { entry: './src/server.ts' },
         inlineStylesExtension: 'css',
       },
     });

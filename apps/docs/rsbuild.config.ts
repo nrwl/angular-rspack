@@ -3,7 +3,9 @@ import { pluginSass } from '@rsbuild/plugin-sass';
 const options = {
   browser: './src/main.ts',
   server: './src/main.server.ts',
-  ssrEntry: './src/server.ts',
+  ssr: {
+    entry: './src/server.ts',
+  },
   inlineStyleLanguage: 'scss' as any,
   styles: ['./src/styles.scss', './src/hljs.theme.scss'],
   skipTypeChecking: true,

@@ -19,7 +19,12 @@ export interface PluginAngularOptions {
   index: string;
   browser: string;
   server?: string;
-  ssrEntry?: string;
+  ssr?:
+    | boolean
+    | {
+        entry: string;
+        experimentalPlatform?: 'node' | 'neutral';
+      };
   polyfills: string[];
   assets: string[];
   styles: string[];
