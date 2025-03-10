@@ -33,7 +33,7 @@
       - any-glob-to-any-file: 'contributing/**'
       - any-glob-to-any-file: 'docs/**'
       - any-glob-to-any-file: '**/*.md'
-      - all-globs-to-all-files: '!**/__snapshots__/**/*.md'
+      - all-globs-to-all-files: '!**/__snapshots__/**'
 
 # 🔥 Performance (Benchmarks Only)
 🔥 performance:
