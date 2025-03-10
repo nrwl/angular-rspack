@@ -4,6 +4,10 @@ import type {
   StylePreprocessorOptions,
 } from '@nx/angular-rspack-compiler';
 
+export interface DevServerOptions {
+  port: number;
+}
+
 export interface PluginAngularOptions {
   root: string;
   index: string;
@@ -22,4 +26,5 @@ export interface PluginAngularOptions {
   skipTypeChecking: boolean;
   useTsProjectReferences?: boolean;
   stylePreprocessorOptions?: StylePreprocessorOptions;
+  devServer?: DevServerOptions;
 }

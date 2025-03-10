@@ -88,7 +88,7 @@ export function _createConfig(
         ? {
             writeToDisk: (file) => !file.includes('.hot-update.'),
             client: {
-              port: 4200,
+              port: normalizedOptions.devServer?.port ?? 4200,
               host: 'localhost',
             },
             hmr: false,
@@ -98,7 +98,7 @@ export function _createConfig(
     },
     server: {
       host: 'localhost',
-      port: 4200,
+      port: normalizedOptions.devServer?.port ?? 4200,
       htmlFallback: false,
       historyApiFallback: {
         index: '/index.html',
