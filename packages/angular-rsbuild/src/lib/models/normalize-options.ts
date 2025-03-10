@@ -1,5 +1,5 @@
 import { FileReplacement } from '@nx/angular-rspack-compiler';
-import { PluginAngularOptions } from './plugin-options';
+import { PluginAngularOptions, type DevServerOptions } from './plugin-options';
 import { join, resolve } from 'node:path';
 import { existsSync } from 'node:fs';
 
@@ -100,6 +100,7 @@ export function normalizeOptions(
     server,
     ssr,
     optimization,
+    devServer,
     ...restOptions
   } = options;
 
@@ -126,5 +127,21 @@ export function normalizeOptions(
     optimization: normalizedOptimization,
     fileReplacements: resolveFileReplacements(fileReplacements, root),
     hasServer: getHasServer({ server, ssr: normalizedSsr, root }),
+    devServer: normalizeDevServer(devServer),
+  };
+}
+
+function normalizeDevServer(
+  devServer: DevServerOptions | undefined
+): DevServerOptions | undefined {
+  const defaultPort = 4200;
+
+  if (!devServer) {
+    return { port: defaultPort };
+  }
+
+  return {
+    ...devServer,
+    port: devServer.port ?? defaultPort,
   };
 }

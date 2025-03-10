@@ -8,10 +8,11 @@
   "version": "19.0.0-alpha.29",
   "dependencies": {
     "@nx/angular-rspack-compiler": "workspace:*",
-    "sass-embedded": "^1.79.3",
-    "@rsbuild/plugin-sass": "^1.1.2",
     "@rsbuild/plugin-less": "^1.1.1",
+    "@rsbuild/plugin-sass": "^1.1.2",
     "express": "4.21.1",
+    "jsonc-parser": "^3.3.1",
+    "sass-embedded": "^1.79.3",
     "tslib": "^2.3.0"
   },
   "devDependencies": {

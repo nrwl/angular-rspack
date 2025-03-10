@@ -17,6 +17,7 @@ module.exports = () => {
         skipTypeChecking: false,
         devServer: {
           port: 8080,
+          proxyConfig: './proxy.conf.json',
         },
       },
     });

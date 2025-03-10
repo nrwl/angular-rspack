@@ -5,5 +5,15 @@
   "scripts": {},
   "dependencies": {
     "@nx/angular-rspack": "workspace:*"
+  },
+  "nx": {
+    "targets": {
+      "serve-api": {
+        "command": "node ./src/api.mjs",
+        "options": {
+          "cwd": "e2e/fixtures/rspack-csr-css"
+        }
+      }
+    }
   }
 }
