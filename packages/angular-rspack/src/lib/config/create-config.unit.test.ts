@@ -1,6 +1,7 @@
 import { _createConfig, createConfig } from './create-config';
 import { beforeEach, expect } from 'vitest';
 import { AngularRspackPluginOptions } from '../models';
+import { NgRspackPlugin } from '../plugins/ng-rspack';
 
 describe('createConfig', () => {
   const configBase: AngularRspackPluginOptions = {
@@ -42,27 +43,7 @@ describe('createConfig', () => {
     }
   );
 
-  describe('createConfig', () => {
-    const runCreateConfig = () => {
-      return createConfig(
-        { options: configBase },
-        {
-          development: {
-            options: {
-              browser: './src/dev.main.ts',
-              skipTypeChecking: true,
-            },
-          },
-          production: {
-            options: {
-              browser: './src/prod.main.ts',
-              skipTypeChecking: false,
-            },
-          },
-        }
-      );
-    };
-
+  describe('withConfigurations', () => {
     it('should create config from options', () => {
       expect(createConfig({ options: configBase })).toStrictEqual([
         expect.objectContaining({
@@ -113,17 +94,31 @@ describe('createConfig', () => {
       (configuration, fileNameSegment, skipTypeChecking) => {
         vi.stubEnv('NGRS_CONFIG', configuration);
 
-        const config = runCreateConfig();
-
-        const plugins = config[0].plugins;
-        const NgRspackPlugin = plugins?.find(
-          (plugin) => plugin?.constructor.name === 'NgRspackPlugin'
+        const config = createConfig(
+          { options: configBase },
+          {
+            development: {
+              options: {
+                browser: './src/dev.main.ts',
+                skipTypeChecking: true,
+              },
+            },
+            production: {
+              options: {
+                browser: './src/prod.main.ts',
+                skipTypeChecking: false,
+              },
+            },
+          }
         );
-        expect(NgRspackPlugin).toBeDefined();
-        expect(
-          // @ts-expect-error - TS cannot index correctly because of multiple potential types
-          NgRspackPlugin['pluginOptions'] as AngularRspackPluginOptions
-        ).toEqual(
+        expect(config).toStrictEqual([
+          expect.objectContaining({
+            plugins: [expect.any(NgRspackPlugin)],
+          }),
+        ]);
+
+        const ngRspackPlugin = config[0].plugins?.[0] as NgRspackPlugin;
+        expect(ngRspackPlugin.pluginOptions).toStrictEqual(
           expect.objectContaining({
             browser: `./src/${fileNameSegment}.main.ts`,
             skipTypeChecking,
