@@ -1,7 +1,8 @@
 import { FileReplacement } from '@nx/angular-rspack-compiler';
-import type {
+import {
   PluginAngularOptions,
-  DevServerOptions,
+  type DevServerOptions,
+  OutputPath,
   NormalizedPluginAngularOptions,
 } from './plugin-options';
 import { join, resolve } from 'node:path';
@@ -86,6 +87,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   inlineStyleLanguage: 'css',
   tsConfig: join(process.cwd(), 'tsconfig.app.json'),
   optimization: true,
+  outputPath: normalizeOutputPath(process.cwd(), undefined),
   outputHashing: 'all',
   useTsProjectReferences: false,
   skipTypeChecking: false,
@@ -129,6 +131,7 @@ export function normalizeOptions(
     ...(server != null ? { server } : {}),
     ...(ssr != null ? { ssr: normalizedSsr } : {}),
     optimization: normalizedOptimization,
+    outputPath: normalizeOutputPath(root, options.outputPath),
     advancedOptimizations,
     aot,
     outputHashing: options.outputHashing ?? 'all',
@@ -150,5 +153,45 @@ function normalizeDevServer(
   return {
     ...devServer,
     port: devServer.port ?? defaultPort,
+  };
+}
+
+/**
+ * This is slightly different to the Rspack solution as Rsbuild will use only relative paths
+ * from the base directory provided as the outputPath.
+ */
+export function normalizeOutputPath(
+  root: string,
+  outputPath: string | OutputPath | undefined
+): OutputPath {
+  const defaultBase = join(root, 'dist');
+  const defaultBrowser = join(defaultBase, 'browser');
+  if (!outputPath) {
+    return {
+      base: defaultBase,
+      browser: defaultBrowser,
+      server: join(defaultBase, 'server'),
+      media: 'media',
+    };
+  }
+
+  if (typeof outputPath === 'string') {
+    if (!outputPath.startsWith(root)) {
+      outputPath = join(root, outputPath);
+    }
+    return {
+      base: outputPath,
+      browser: join(outputPath, 'browser'),
+      server: join(outputPath, 'server'),
+      media: 'media',
+    };
+  }
+  const providedBase = outputPath.base ?? defaultBase;
+  const providedBrowser = outputPath.browser ?? join(providedBase, 'browser');
+  return {
+    base: providedBase,
+    browser: providedBrowser,
+    server: outputPath.server ?? join(outputPath.base ?? defaultBase, 'server'),
+    media: outputPath.media ?? 'media',
   };
 }

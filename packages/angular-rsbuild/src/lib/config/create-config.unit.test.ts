@@ -102,6 +102,12 @@ describe('createConfig', () => {
           polyfills: [],
           styles: [],
           assets: [],
+          outputPath: {
+            base: 'dist',
+            browser: 'dist/browser',
+            server: 'dist/server',
+            media: 'dist/browser/media',
+          },
         },
         rsbuildConfigOverrides: {
           source: {
@@ -133,6 +139,12 @@ describe('createConfig', () => {
           polyfills: [],
           styles: [],
           assets: [],
+          outputPath: {
+            base: 'dist',
+            browser: 'dist/browser',
+            server: 'dist/server',
+            media: 'dist/browser/media',
+          },
           devServer: {
             port: 8080,
           },
