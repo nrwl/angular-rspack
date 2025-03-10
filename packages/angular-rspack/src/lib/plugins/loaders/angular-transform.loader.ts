@@ -20,7 +20,7 @@ export default function loader(
   const {
     styleUrlsResolver = _styleUrlsResolver,
     templateUrlsResolver = _templateUrlsResolver,
-  } = opt ?? {};
+  } = opt || {};
   const callback = this.async();
   if (
     (this._compilation as NgRspackCompilation)[NG_RSPACK_SYMBOL_NAME] ===
