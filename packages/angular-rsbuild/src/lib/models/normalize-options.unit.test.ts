@@ -54,13 +54,13 @@ describe('getHasServer', () => {
       },
       MEMFS_VOLUME
     );
+    vi.stubGlobal('process', { cwd: () => MEMFS_VOLUME });
   });
 
   it('should return true if both server and ssr.entry files exist', () => {
     const result = getHasServer({
       server: 'server.js',
       ssr: { entry: 'ssr-entry.js' },
-      root: MEMFS_VOLUME,
     });
 
     expect(result).toBe(true);
@@ -69,7 +69,6 @@ describe('getHasServer', () => {
   it('should return false if server file is not provides', () => {
     const result = getHasServer({
       ssr: { entry: 'ssr-entry.js' },
-      root: '/project-root',
     });
 
     expect(result).toBe(false);
@@ -78,16 +77,13 @@ describe('getHasServer', () => {
   it('should return false if ssr.entry file is not provides', () => {
     const result = getHasServer({
       server: 'server.js',
-      root: '/project-root',
     });
 
     expect(result).toBe(false);
   });
 
   it('should return false if neither file are not provides', () => {
-    const result = getHasServer({
-      root: '/project-root',
-    });
+    const result = getHasServer({});
 
     expect(result).toBe(false);
   });
@@ -96,7 +92,6 @@ describe('getHasServer', () => {
     const result = getHasServer({
       server: 'non-existing-server.js',
       ssr: { entry: 'ssr-entry.js' },
-      root: '/project-root',
     });
 
     expect(result).toBe(false);
@@ -106,7 +101,6 @@ describe('getHasServer', () => {
     const result = getHasServer({
       server: 'server.js',
       ssr: { entry: 'non-existing-ssr-entry.js' },
-      root: '/project-root',
     });
 
     expect(result).toBe(false);
@@ -116,7 +110,6 @@ describe('getHasServer', () => {
     const result = getHasServer({
       server: 'non-existing-server.js',
       ssr: { entry: 'non-existing-ssr-entry.js' },
-      root: '/project-root',
     });
 
     expect(result).toBe(false);
@@ -144,13 +137,13 @@ describe('normalizeOptions', () => {
     });
   });
 
-  it('should apply provides options', () => {
-    const result = normalizeOptions({ root: 'project-root' });
+  it('should set optimization to false when provided in options', () => {
+    const result = normalizeOptions({ optimization: false });
 
     expect(result).toStrictEqual({
       ...defaultOptions,
-      advancedOptimizations: true,
-      root: 'project-root',
+      optimization: false,
+      advancedOptimizations: false,
     });
   });
 
@@ -173,7 +166,6 @@ describe('normalizeOptions', () => {
       normalizeOptions({
         server: 'server.js',
         ssr: { entry: 'ssr-entry.js' },
-        root: MEMFS_VOLUME,
       }).hasServer
     ).toStrictEqual(true);
   });
@@ -185,7 +177,6 @@ describe('normalizeOptions', () => {
 
     const resolvedFileReplacements = normalizeOptions({
       fileReplacements,
-      root: MEMFS_VOLUME,
     }).fileReplacements;
 
     expect(resolvedFileReplacements).toStrictEqual([

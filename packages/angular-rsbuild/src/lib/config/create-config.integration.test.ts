@@ -5,7 +5,6 @@ import * as normalizeModule from '../models/normalize-options.ts';
 import { DEFAULT_PLUGIN_ANGULAR_OPTIONS } from '../models/normalize-options.ts';
 
 describe('createConfig', () => {
-  const root = process.cwd();
   const argvSpy = vi.spyOn(process, 'argv', 'get');
   const normalizeOptionsSpy = vi.spyOn(normalizeModule, 'normalizeOptions');
 
@@ -21,7 +20,6 @@ describe('createConfig', () => {
   it('should create a CSR config', async () => {
     const config = await createConfig({
       options: {
-        root,
         inlineStyleLanguage: 'scss',
         tsConfig: './tsconfig.app.json',
         aot: true,
@@ -47,9 +45,8 @@ describe('createConfig', () => {
   it('should create a SSR config', async () => {
     const config = await createConfig({
       options: {
-        root,
         server: './src/main.server.ts',
-        ssrEntry: './src/server.ts',
+        ssr: { entry: './src/server.ts' },
         inlineStyleLanguage: 'scss',
         tsConfig: './tsconfig.app.json',
       },

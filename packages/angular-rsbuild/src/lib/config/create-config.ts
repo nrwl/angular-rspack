@@ -79,8 +79,9 @@ export async function _createConfig(
     }
   }
 
+  const root = process.cwd();
   const rsbuildPluginAngularConfig = defineConfig({
-    root: normalizedOptions.root,
+    root,
     source: {
       tsconfigPath: normalizedOptions.tsConfig,
     },
@@ -117,18 +118,12 @@ export async function _createConfig(
         normalizedOptions.devServer?.sslKey &&
         normalizedOptions.devServer?.sslCert
           ? {
-              key: resolve(
-                normalizedOptions.root,
-                normalizedOptions.devServer.sslKey
-              ),
-              cert: resolve(
-                normalizedOptions.root,
-                normalizedOptions.devServer.sslCert
-              ),
+              key: resolve(root, normalizedOptions.devServer.sslKey),
+              cert: resolve(root, normalizedOptions.devServer.sslCert),
             }
           : undefined,
       proxy: await getProxyConfig(
-        normalizedOptions.root,
+        root,
         normalizedOptions.devServer?.proxyConfig
       ),
     },

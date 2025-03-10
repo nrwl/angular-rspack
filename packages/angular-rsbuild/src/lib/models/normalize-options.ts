@@ -27,8 +27,8 @@ export function resolveFileReplacements(
 export function getHasServer({
   server,
   ssr,
-  root,
-}: Pick<PluginAngularOptions, 'server' | 'ssr' | 'root'>): boolean {
+}: Pick<PluginAngularOptions, 'server' | 'ssr'>): boolean {
+  const root = process.cwd();
   return !!(
     server &&
     ssr &&
@@ -72,7 +72,6 @@ export function validateOptimization(
 }
 
 export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
-  root: process.cwd(),
   index: './src/index.html',
   browser: './src/main.ts',
   server: undefined,
@@ -98,8 +97,8 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
 export function normalizeOptions(
   options: Partial<PluginAngularOptions> = {}
 ): NormalizedPluginAngularOptions {
+  const root = process.cwd();
   const {
-    root = DEFAULT_PLUGIN_ANGULAR_OPTIONS.root,
     fileReplacements = [],
     server,
     ssr,
@@ -127,7 +126,6 @@ export function normalizeOptions(
   return {
     ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
     ...restOptions,
-    ...(root != null ? { root } : {}),
     ...(server != null ? { server } : {}),
     ...(ssr != null ? { ssr: normalizedSsr } : {}),
     optimization: normalizedOptimization,
@@ -135,7 +133,7 @@ export function normalizeOptions(
     aot,
     outputHashing: options.outputHashing ?? 'all',
     fileReplacements: resolveFileReplacements(fileReplacements, root),
-    hasServer: getHasServer({ server, ssr: normalizedSsr, root }),
+    hasServer: getHasServer({ server, ssr: normalizedSsr }),
     devServer: normalizeDevServer(devServer),
   };
 }

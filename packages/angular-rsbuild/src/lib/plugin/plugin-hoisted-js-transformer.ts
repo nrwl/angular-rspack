@@ -18,6 +18,7 @@ export const pluginHoistedJsTransformer = (
   post: ['plugin-angular'],
   setup(api) {
     const pluginOptions = normalizeOptions(options);
+    const root = api.context.rootPath ?? process.cwd();
     const config = api.getRsbuildConfig();
     const typescriptFileCache = new Map<string, string | Uint8Array>();
     let watchMode = false;
@@ -48,7 +49,7 @@ export const pluginHoistedJsTransformer = (
     api.onBeforeEnvironmentCompile(async () => {
       const parallelCompilation = await setupCompilationWithParallelCompilation(
         config,
-        pluginOptions
+        { ...pluginOptions, root }
       );
       await buildAndAnalyzeWithParallelCompilation(
         parallelCompilation,
