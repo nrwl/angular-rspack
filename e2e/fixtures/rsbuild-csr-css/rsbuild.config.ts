@@ -5,6 +5,7 @@ export default () => {
       options: {
         browser: './src/main.ts',
         inlineStylesExtension: 'css',
+        outputPath: './build',
       },
     });
   }

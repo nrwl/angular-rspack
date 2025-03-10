@@ -5,7 +5,7 @@ import {
   RsbuildPlugin,
 } from '@rsbuild/core';
 import { dirname, resolve } from 'path';
-import { PluginAngularOptions } from '../models/plugin-options';
+import { OutputPath, PluginAngularOptions } from '../models/plugin-options';
 import { normalizeOptions } from '../models/normalize-options';
 import { pluginAngular } from '../plugin/plugin-angular';
 import { pluginHoistedJsTransformer } from '../plugin/plugin-hoisted-js-transformer';
@@ -13,6 +13,7 @@ import { pluginSass } from '@rsbuild/plugin-sass';
 import { pluginLess } from '@rsbuild/plugin-less';
 import { getOutputHashFormat } from './helpers';
 import { getProxyConfig } from './dev-server-config-utils';
+import { join } from 'node:path';
 
 export async function _createConfig(
   pluginOptions: Partial<PluginAngularOptions>,
@@ -153,7 +154,10 @@ export async function _createConfig(
             css: `[name]${hashFormat.file}.css`,
           },
           distPath: {
-            root: 'dist/browser',
+            root: normalizedOptions.outputPath.browser,
+            js: '',
+            media: normalizedOptions.outputPath.media,
+            assets: normalizedOptions.outputPath.media,
           },
           copy: normalizedOptions.assets.map((srcPath) => ({
             from: srcPath,
@@ -182,7 +186,7 @@ export async function _createConfig(
               output: {
                 target: 'node',
                 polyfill: 'entry',
-                distPath: { root: 'dist/server' },
+                distPath: { root: normalizedOptions.outputPath.server },
               },
             },
           }

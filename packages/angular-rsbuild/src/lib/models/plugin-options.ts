@@ -26,6 +26,13 @@ export type HashFormat = {
   script: string;
 };
 
+export interface OutputPath {
+  base: string;
+  browser: string;
+  server: string;
+  media: string;
+}
+
 export interface PluginAngularOptions {
   index: string;
   browser: string;
@@ -40,6 +47,7 @@ export interface PluginAngularOptions {
   assets: string[];
   styles: string[];
   scripts: string[];
+  outputPath: string | OutputPath;
   fileReplacements: FileReplacement[];
   aot: boolean;
   inlineStyleLanguage: InlineStyleLanguage;
@@ -58,4 +66,5 @@ export interface NormalizedPluginAngularOptions extends PluginAngularOptions {
   devServer: DevServerOptions & { port: number };
   optimization: boolean | OptimizationOptions;
   outputHashing: OutputHashing;
+  outputPath: OutputPath;
 }

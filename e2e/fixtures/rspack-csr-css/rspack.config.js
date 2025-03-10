@@ -10,7 +10,10 @@ module.exports = () => {
         styles: ['./src/styles.css'],
         polyfills: ['zone.js'],
         main: './src/main.ts',
-        outputPath: './dist/browser',
+        outputPath: {
+          base: './build',
+          browser: './build/static',
+        },
         outputHashing: 'none',
         tsConfig: join(__dirname, './tsconfig.app.json'),
         skipTypeChecking: false,

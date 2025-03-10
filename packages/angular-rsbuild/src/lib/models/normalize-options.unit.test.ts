@@ -3,11 +3,13 @@ import {
   DEFAULT_PLUGIN_ANGULAR_OPTIONS,
   getHasServer,
   normalizeOptions,
+  normalizeOutputPath,
   resolveFileReplacements,
 } from './normalize-options.ts';
 import { vol } from 'memfs';
 
 import { MEMFS_VOLUME } from '@ng-rspack/testing-utils';
+import { PluginAngularOptions } from './plugin-options';
 
 describe('resolveFileReplacements', () => {
   it('should work with empty results', () => {
@@ -117,7 +119,15 @@ describe('getHasServer', () => {
 });
 
 describe('normalizeOptions', () => {
-  const defaultOptions = DEFAULT_PLUGIN_ANGULAR_OPTIONS;
+  let defaultOptions: PluginAngularOptions;
+
+  beforeEach(() => {
+    // Need to reset the default options with the stubbed value for process.cwd()
+    defaultOptions = {
+      ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
+      outputPath: normalizeOutputPath(process.cwd(), undefined),
+    };
+  });
 
   it('should apply default values when no options are provided', () => {
     const result = normalizeOptions();
