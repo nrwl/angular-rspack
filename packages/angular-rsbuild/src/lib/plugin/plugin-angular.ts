@@ -4,7 +4,7 @@ import {
   TemplateUrlsResolver,
   TS_ALL_EXT_REGEX,
 } from '@nx/angular-rspack-compiler';
-import { PluginAngularOptions } from '../models/plugin-options';
+import type { NormalizedPluginAngularOptions } from '../models/plugin-options';
 import { normalizeOptions } from '../models/normalize-options';
 import { dirname, normalize, resolve } from 'path';
 import { pluginAngularJit } from './plugin-angular-jit';
@@ -12,7 +12,7 @@ import { ChildProcess, fork } from 'node:child_process';
 import { readFileSync } from 'fs';
 
 export const pluginAngular = (
-  options: Partial<PluginAngularOptions> = {}
+  options: Partial<NormalizedPluginAngularOptions> = {}
 ): RsbuildPlugin => ({
   name: 'plugin-angular',
   pre: ['plugin-hoisted-js-transformer'],

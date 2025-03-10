@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, expect } from 'vitest';
 import * as normalizeModule from '../models/normalize-options.ts';
 import { DEFAULT_PLUGIN_ANGULAR_OPTIONS } from '../models/normalize-options.ts';
 import * as rsbuildCoreModule from '@rsbuild/core';
-import { PluginAngularOptions } from '../models/plugin-options.ts';
+import type { NormalizedPluginAngularOptions } from '../models/plugin-options.ts';
 
 vi.mock('@rsbuild/core');
 
@@ -11,10 +11,17 @@ describe('createConfig', () => {
   const argvSpy = vi.spyOn(process, 'argv', 'get');
   const normalizeOptionsSpy = vi.spyOn(normalizeModule, 'normalizeOptions');
   const defineConfigSpy = vi.spyOn(rsbuildCoreModule, 'defineConfig');
+  const defaultNormalizedOptions: NormalizedPluginAngularOptions = {
+    ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
+    advancedOptimizations: true,
+    devServer: { port: 4200 },
+    optimization: true,
+    outputHashing: 'all',
+  };
 
   beforeAll(() => {
     argvSpy.mockReturnValue([]);
-    normalizeOptionsSpy.mockReturnValue(DEFAULT_PLUGIN_ANGULAR_OPTIONS);
+    normalizeOptionsSpy.mockReturnValue(defaultNormalizedOptions);
     defineConfigSpy.mockReturnValue({});
   });
 
@@ -49,7 +56,7 @@ describe('createConfig', () => {
   it('should have dev property defined if the process started with "dev" argument and a server is configured', async () => {
     argvSpy.mockReturnValue(['irrelevant', 'irrelevant', 'dev']);
     normalizeOptionsSpy.mockReturnValue({
-      ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
+      ...defaultNormalizedOptions,
       ssr: { entry: 'main.ts' },
       hasServer: true,
     });
@@ -86,7 +93,7 @@ describe('createConfig', () => {
   it('should used definedConfig for both passed objects', async () => {
     defineConfigSpy.mockImplementation((config) => config);
     normalizeOptionsSpy.mockImplementation(
-      (options) => options as PluginAngularOptions
+      (options) => options as NormalizedPluginAngularOptions
     );
 
     await expect(
@@ -122,7 +129,7 @@ describe('createConfig', () => {
   it('should allow changing the devServer port', async () => {
     defineConfigSpy.mockImplementation((config) => config);
     normalizeOptionsSpy.mockImplementation(
-      (options) => options as PluginAngularOptions
+      (options) => options as NormalizedPluginAngularOptions
     );
 
     await expect(

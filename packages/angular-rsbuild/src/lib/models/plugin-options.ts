@@ -53,3 +53,10 @@ export interface PluginAngularOptions {
   stylePreprocessorOptions?: StylePreprocessorOptions;
   devServer?: DevServerOptions;
 }
+
+export interface NormalizedPluginAngularOptions extends PluginAngularOptions {
+  advancedOptimizations: boolean;
+  devServer: DevServerOptions & { port: number };
+  optimization: boolean | OptimizationOptions;
+  outputHashing: OutputHashing;
+}

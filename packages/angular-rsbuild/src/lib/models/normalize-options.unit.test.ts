@@ -129,13 +129,19 @@ describe('normalizeOptions', () => {
   it('should apply default values when no options are provided', () => {
     const result = normalizeOptions();
 
-    expect(result).toStrictEqual(defaultOptions);
+    expect(result).toStrictEqual({
+      ...defaultOptions,
+      advancedOptimizations: true,
+    });
   });
 
   it('should apply default values when empty options are provided', () => {
     const result = normalizeOptions({});
 
-    expect(result).toStrictEqual(defaultOptions);
+    expect(result).toStrictEqual({
+      ...defaultOptions,
+      advancedOptimizations: true,
+    });
   });
 
   it('should apply provides options', () => {
@@ -143,6 +149,7 @@ describe('normalizeOptions', () => {
 
     expect(result).toStrictEqual({
       ...defaultOptions,
+      advancedOptimizations: true,
       root: 'project-root',
     });
   });
