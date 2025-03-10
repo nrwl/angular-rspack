@@ -82,7 +82,13 @@ export function _createConfig(
       tsconfigPath: normalizedOptions.tsConfig,
     },
     plugins: [pluginHoistedJsTransformer(normalizedOptions), ...stylePlugins],
-    mode: isProd ? 'production' : 'development',
+    mode:
+      // mode is set to production to enable optimizations
+      normalizedOptions.optimization === false
+        ? 'development'
+        : isProd
+        ? 'production'
+        : 'development',
     dev: {
       ...(isRunningDevServer && normalizedOptions.hasServer
         ? {

@@ -33,6 +33,18 @@ export function getHasServer({
   );
 }
 
+export function validateOptimization(
+  optimization: PluginAngularOptions['optimization']
+) {
+  if (typeof optimization === 'boolean' || optimization === undefined) {
+    return;
+  }
+  if (typeof optimization === 'object')
+    console.warn(
+      'The "optimization" option currently only supports a boolean value. Please check the documentation.'
+    );
+}
+
 export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   root: process.cwd(),
   index: './src/index.html',
@@ -48,6 +60,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   aot: true,
   inlineStyleLanguage: 'css',
   tsConfig: join(process.cwd(), 'tsconfig.app.json'),
+  optimization: true,
   useTsProjectReferences: false,
   skipTypeChecking: false,
   devServer: {
@@ -63,8 +76,12 @@ export function normalizeOptions(
     fileReplacements = [],
     server,
     ssrEntry,
+    optimization,
     ...restOptions
   } = options;
+
+  validateOptimization(optimization);
+  const normalizedOptimization = optimization !== false; // @TODO: Add support for optimization options
 
   return {
     ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
@@ -72,6 +89,7 @@ export function normalizeOptions(
     ...(root != null ? { root } : {}),
     ...(server != null ? { server } : {}),
     ...(ssrEntry != null ? { ssrEntry } : {}),
+    optimization: normalizedOptimization,
     fileReplacements: resolveFileReplacements(fileReplacements, root),
     hasServer: getHasServer({ server, ssrEntry, root }),
   };

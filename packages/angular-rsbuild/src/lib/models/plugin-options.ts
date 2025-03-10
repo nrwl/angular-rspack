@@ -8,6 +8,12 @@ export interface DevServerOptions {
   port: number;
 }
 
+export interface OptimizationOptions {
+  scripts?: boolean;
+  styles?: boolean;
+  fonts?: boolean;
+}
+
 export interface PluginAngularOptions {
   root: string;
   index: string;
@@ -22,6 +28,7 @@ export interface PluginAngularOptions {
   aot: boolean;
   inlineStyleLanguage: InlineStyleLanguage;
   tsConfig: string;
+  optimization?: boolean | OptimizationOptions;
   hasServer: boolean;
   skipTypeChecking: boolean;
   useTsProjectReferences?: boolean;
