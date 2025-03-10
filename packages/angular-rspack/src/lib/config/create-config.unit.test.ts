@@ -61,47 +61,47 @@ describe('createConfig', () => {
     skipTypeChecking: false,
   };
 
-    it('should create config from options', () => {
-      expect(createConfig({ options: configBase })).toStrictEqual([
-        expect.objectContaining({
-          mode: 'development',
-          devServer: expect.objectContaining({
-            port: 4200,
-          }),
-          plugins: [
-            {
-              pluginOptions: {
-                ...configBase,
-                useTsProjectReferences: false,
-                polyfills: ['zone.js'],
-                devServer: {
-                  port: 4200,
-                },
+  it('should create config from options', () => {
+    expect(createConfig({ options: configBase })).toStrictEqual([
+      expect.objectContaining({
+        mode: 'development',
+        devServer: expect.objectContaining({
+          port: 4200,
+        }),
+        plugins: [
+          {
+            pluginOptions: {
+              ...configBase,
+              useTsProjectReferences: false,
+              polyfills: ['zone.js'],
+              devServer: {
+                port: 4200,
               },
             },
-          ],
-        }),
-      ]);
-    });
-
-    it('should allow changing the devServer port', () => {
-      expect(
-        createConfig({
-          options: {
-            ...configBase,
-            devServer: {
-              port: 8080,
-            },
           },
-        })
-      ).toStrictEqual([
-        expect.objectContaining({
-          devServer: expect.objectContaining({
+        ],
+      }),
+    ]);
+  });
+
+  it('should allow changing the devServer port', () => {
+    expect(
+      createConfig({
+        options: {
+          ...configBase,
+          devServer: {
             port: 8080,
-          }),
+          },
+        },
+      })
+    ).toStrictEqual([
+      expect.objectContaining({
+        devServer: expect.objectContaining({
+          port: 8080,
         }),
-      ]);
-    });
+      }),
+    ]);
+  });
 
   it.each([
     ['development', 'dev', true],

@@ -85,10 +85,10 @@ export function normalizeOptions(
 }
 
 export function normalizeOptionsServerOptions({
-                                                server,
-                                                ssrEntry,
-                                                root,
-                                              }: Pick<AngularRspackPluginOptions, 'root' | 'server' | 'ssrEntry'>) {
+  server,
+  ssrEntry,
+  root,
+}: Pick<AngularRspackPluginOptions, 'root' | 'server' | 'ssrEntry'>) {
   if (!getHasServer({ server, ssrEntry, root })) {
     return { hasServer: false };
   }
