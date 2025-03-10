@@ -54,6 +54,10 @@ const config: RsbuildConfig = {
       },
       "output": {
         "target": "web",
+        "filename": {
+          "js": "[name].[contenthash:8].js",
+          "css": "[name].[contenthash:8].css"
+        },
         "distPath": {
           "root": "dist/browser"
         },

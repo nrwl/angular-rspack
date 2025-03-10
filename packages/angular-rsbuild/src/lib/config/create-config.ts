@@ -11,12 +11,14 @@ import { pluginAngular } from '../plugin/plugin-angular';
 import { pluginHoistedJsTransformer } from '../plugin/plugin-hoisted-js-transformer';
 import { pluginSass } from '@rsbuild/plugin-sass';
 import { pluginLess } from '@rsbuild/plugin-less';
+import { getOutputHashFormat } from './helpers';
 
 export function _createConfig(
   pluginOptions: Partial<PluginAngularOptions>,
   rsbuildConfigOverrides?: Partial<RsbuildConfig>
 ): RsbuildConfig {
   const normalizedOptions = normalizeOptions(pluginOptions);
+  const hashFormat = getOutputHashFormat(normalizedOptions.outputHashing);
   const browserPolyfills = [...normalizedOptions.polyfills, 'zone.js'];
   const serverPolyfills = [
     ...normalizedOptions.polyfills,
@@ -132,6 +134,10 @@ export function _createConfig(
         },
         output: {
           target: 'web',
+          filename: {
+            js: `[name]${hashFormat.chunk}.js`,
+            css: `[name]${hashFormat.file}.css`,
+          },
           distPath: {
             root: 'dist/browser',
           },
