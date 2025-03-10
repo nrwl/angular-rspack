@@ -56,10 +56,10 @@ describe('getHasServer', () => {
     );
   });
 
-  it('should return true if both server and ssrEntry files exist', () => {
+  it('should return true if both server and ssr.entry files exist', () => {
     const result = getHasServer({
       server: 'server.js',
-      ssrEntry: 'ssr-entry.js',
+      ssr: { entry: 'ssr-entry.js' },
       root: MEMFS_VOLUME,
     });
 
@@ -68,14 +68,14 @@ describe('getHasServer', () => {
 
   it('should return false if server file is not provides', () => {
     const result = getHasServer({
-      ssrEntry: 'ssr-entry.js',
+      ssr: { entry: 'ssr-entry.js' },
       root: '/project-root',
     });
 
     expect(result).toBe(false);
   });
 
-  it('should return false if ssrEntry file is not provides', () => {
+  it('should return false if ssr.entry file is not provides', () => {
     const result = getHasServer({
       server: 'server.js',
       root: '/project-root',
@@ -95,27 +95,27 @@ describe('getHasServer', () => {
   it('should return false if server file does not exist', () => {
     const result = getHasServer({
       server: 'non-existing-server.js',
-      ssrEntry: 'ssr-entry.js',
+      ssr: { entry: 'ssr-entry.js' },
       root: '/project-root',
     });
 
     expect(result).toBe(false);
   });
 
-  it('should return false if ssrEntry file does not exist', () => {
+  it('should return false if ssr.entry file does not exist', () => {
     const result = getHasServer({
       server: 'server.js',
-      ssrEntry: 'non-existing-ssr-entry.js',
+      ssr: { entry: 'non-existing-ssr-entry.js' },
       root: '/project-root',
     });
 
     expect(result).toBe(false);
   });
 
-  it('should return false if neither server nor ssrEntry exists', () => {
+  it('should return false if neither server nor ssr.entry exists', () => {
     const result = getHasServer({
       server: 'non-existing-server.js',
-      ssrEntry: 'non-existing-ssr-entry.js',
+      ssr: { entry: 'non-existing-ssr-entry.js' },
       root: '/project-root',
     });
 
@@ -165,7 +165,7 @@ describe('normalizeOptions', () => {
     expect(
       normalizeOptions({
         server: 'server.js',
-        ssrEntry: 'ssr-entry.js',
+        ssr: { entry: 'ssr-entry.js' },
         root: MEMFS_VOLUME,
       }).hasServer
     ).toStrictEqual(true);

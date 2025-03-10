@@ -50,6 +50,7 @@ describe('createConfig', () => {
     argvSpy.mockReturnValue(['irrelevant', 'irrelevant', 'dev']);
     normalizeOptionsSpy.mockReturnValue({
       ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
+      ssr: { entry: 'main.ts' },
       hasServer: true,
     });
 

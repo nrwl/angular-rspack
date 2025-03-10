@@ -151,7 +151,7 @@ export function _createConfig(
               source: {
                 preEntry: [...serverPolyfills],
                 entry: {
-                  server: normalizedOptions.ssrEntry!,
+                  server: (normalizedOptions.ssr as { entry: string }).entry,
                 },
                 define: {
                   ngServerMode: true,
