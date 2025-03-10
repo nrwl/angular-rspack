@@ -14,13 +14,19 @@
   "include": [],
   "references": [
     {
-      "path": "../../../testing/utils"
+      "path": "../../../packages/compiler"
     },
     {
       "path": "../../../packages/angular-rspack-compiler"
     },
     {
+      "path": "../../../testing/vitest-setup"
+    },
+    {
       "path": "../../../testing/setup"
+    },
+    {
+      "path": "../../../testing/utils"
     },
     {
       "path": "../../../packages/angular-rspack"

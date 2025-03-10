@@ -11,7 +11,8 @@
       "vitest"
     ],
     "paths": {
-      "@ng-rspack/testing-setup": ["../../testing/setup/index.ts"]
+      "@ng-rspack/testing-setup": ["../../testing/setup/src/index.ts"],
+      "@ng-rspack/testing-utils": ["../../testing/utils/src/index.ts"]
     }
   },
   "references": [
