@@ -4,7 +4,7 @@ import {
   mergeRsbuildConfig,
   RsbuildPlugin,
 } from '@rsbuild/core';
-import { dirname } from 'path';
+import { dirname, resolve } from 'path';
 import { PluginAngularOptions } from '../models/plugin-options';
 import { normalizeOptions } from '../models/normalize-options';
 import { pluginAngular } from '../plugin/plugin-angular';
@@ -12,11 +12,12 @@ import { pluginHoistedJsTransformer } from '../plugin/plugin-hoisted-js-transfor
 import { pluginSass } from '@rsbuild/plugin-sass';
 import { pluginLess } from '@rsbuild/plugin-less';
 import { getOutputHashFormat } from './helpers';
+import { getProxyConfig } from './dev-server-config-utils';
 
-export function _createConfig(
+export async function _createConfig(
   pluginOptions: Partial<PluginAngularOptions>,
   rsbuildConfigOverrides?: Partial<RsbuildConfig>
-): RsbuildConfig {
+): Promise<RsbuildConfig> {
   const normalizedOptions = normalizeOptions(pluginOptions);
   const hashFormat = getOutputHashFormat(normalizedOptions.outputHashing);
   const browserPolyfills = [...normalizedOptions.polyfills, 'zone.js'];
@@ -112,6 +113,24 @@ export function _createConfig(
         index: '/index.html',
         rewrites: [{ from: /^\/$/, to: 'index.html' }],
       },
+      https:
+        normalizedOptions.devServer?.sslKey &&
+        normalizedOptions.devServer?.sslCert
+          ? {
+              key: resolve(
+                normalizedOptions.root,
+                normalizedOptions.devServer.sslKey
+              ),
+              cert: resolve(
+                normalizedOptions.root,
+                normalizedOptions.devServer.sslCert
+              ),
+            }
+          : undefined,
+      proxy: await getProxyConfig(
+        normalizedOptions.root,
+        normalizedOptions.devServer?.proxyConfig
+      ),
     },
     tools: {
       rspack(config) {
@@ -180,7 +199,7 @@ export function _createConfig(
   return mergeRsbuildConfig(rsbuildPluginAngularConfig, userDefinedConfig);
 }
 
-export function createConfig(
+export async function createConfig(
   defaultOptions: {
     options: Partial<PluginAngularOptions>;
     rsbuildConfigOverrides?: Partial<RsbuildConfig>;
@@ -193,7 +212,7 @@ export function createConfig(
     }
   > = {},
   configEnvVar = 'NGRS_CONFIG'
-) {
+): Promise<RsbuildConfig> {
   const configurationMode = process.env[configEnvVar] ?? 'production';
   const isDefault = configurationMode === 'default';
   const isModeConfigured = configurationMode in configurations;
@@ -218,5 +237,8 @@ export function createConfig(
     );
   }
 
-  return _createConfig(mergedBuildOptionsOptions, mergedRsbuildConfigOverrides);
+  return await _createConfig(
+    mergedBuildOptionsOptions,
+    mergedRsbuildConfigOverrides
+  );
 }

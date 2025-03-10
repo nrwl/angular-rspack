@@ -18,8 +18,8 @@ describe('createConfig', () => {
     vi.clearAllMocks();
   });
 
-  it('should create a CSR config', () => {
-    const config = createConfig({
+  it('should create a CSR config', async () => {
+    const config = await createConfig({
       options: {
         root,
         inlineStyleLanguage: 'scss',
@@ -44,8 +44,8 @@ describe('createConfig', () => {
     ).toMatchFileSnapshot('__snapshots__/create-config.csr.ts');
   });
 
-  it('should create a SSR config', () => {
-    const config = createConfig({
+  it('should create a SSR config', async () => {
+    const config = await createConfig({
       options: {
         root,
         server: './src/main.server.ts',

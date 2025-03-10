@@ -25,10 +25,10 @@ describe('createConfig', () => {
 
   it.each(['development', 'not-production'])(
     'should create config for mode "development" if env variable NODE_ENV is "%s"',
-    (nodeEnv) => {
+    async (nodeEnv) => {
       vi.stubEnv('NODE_ENV', nodeEnv);
 
-      expect(() => createConfig({ options: {} })).not.toThrow();
+      await expect(createConfig({ options: {} })).resolves.not.toThrow();
 
       expect(defineConfigSpy).toHaveBeenCalledWith(
         expect.objectContaining({ mode: 'development' })
@@ -36,17 +36,17 @@ describe('createConfig', () => {
     }
   );
 
-  it('should create config for mode "production" if env variable NODE_ENV is "production"', () => {
+  it('should create config for mode "production" if env variable NODE_ENV is "production"', async () => {
     vi.stubEnv('NODE_ENV', 'production');
 
-    expect(() => createConfig({ options: {} })).not.toThrow();
+    await expect(createConfig({ options: {} })).resolves.not.toThrow();
 
     expect(defineConfigSpy).toHaveBeenCalledWith(
       expect.objectContaining({ mode: 'production' })
     );
   });
 
-  it('should have dev property defined if the process started with "dev" argument and a server is configured', () => {
+  it('should have dev property defined if the process started with "dev" argument and a server is configured', async () => {
     argvSpy.mockReturnValue(['irrelevant', 'irrelevant', 'dev']);
     normalizeOptionsSpy.mockReturnValue({
       ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
@@ -54,7 +54,7 @@ describe('createConfig', () => {
       hasServer: true,
     });
 
-    expect(() => createConfig({ options: {} })).not.toThrow();
+    await expect(createConfig({ options: {} })).resolves.not.toThrow();
 
     expect(defineConfigSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -71,10 +71,10 @@ describe('createConfig', () => {
     );
   });
 
-  it('should create config without dev property configured if not running dev server', () => {
+  it('should create config without dev property configured if not running dev server', async () => {
     argvSpy.mockReturnValue([]);
 
-    expect(() => createConfig({ options: {} })).not.toThrow();
+    await expect(createConfig({ options: {} })).resolves.not.toThrow();
 
     expect(defineConfigSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -83,13 +83,13 @@ describe('createConfig', () => {
     );
   });
 
-  it('should used definedConfig for both passed objects', () => {
+  it('should used definedConfig for both passed objects', async () => {
     defineConfigSpy.mockImplementation((config) => config);
     normalizeOptionsSpy.mockImplementation(
       (options) => options as PluginAngularOptions
     );
 
-    expect(() =>
+    await expect(
       createConfig({
         options: {
           root: 'plugin-options',
@@ -103,7 +103,7 @@ describe('createConfig', () => {
           },
         },
       })
-    ).not.toThrow();
+    ).resolves.not.toThrow();
     expect(defineConfigSpy).toHaveBeenCalledTimes(2);
     expect(defineConfigSpy).toHaveBeenNthCalledWith(
       1,
@@ -119,13 +119,13 @@ describe('createConfig', () => {
     );
   });
 
-  it('should allow changing the devServer port', () => {
+  it('should allow changing the devServer port', async () => {
     defineConfigSpy.mockImplementation((config) => config);
     normalizeOptionsSpy.mockImplementation(
       (options) => options as PluginAngularOptions
     );
 
-    expect(() =>
+    await expect(
       createConfig({
         options: {
           root: 'plugin-options',
@@ -137,7 +137,7 @@ describe('createConfig', () => {
           },
         },
       })
-    ).not.toThrow();
+    ).resolves.not.toThrow();
     expect(defineConfigSpy).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({

@@ -450,6 +450,9 @@ importers:
       express:
         specifier: 4.21.1
         version: 4.21.1
+      jsonc-parser:
+        specifier: ^3.3.1
+        version: 3.3.1
       sass-embedded:
         specifier: ^1.79.3
         version: 1.85.1
@@ -481,6 +484,9 @@ importers:
       express:
         specifier: 4.21.1
         version: 4.21.1
+      jsonc-parser:
+        specifier: ^3.3.1
+        version: 3.3.1
       less-loader:
         specifier: ^12.2.0
         version: 12.2.0(@rspack/core@1.2.6(@swc/helpers@0.5.15))(less@4.2.1)(webpack@5.98.0(@swc/core@1.5.29(@swc/helpers@0.5.15))(esbuild@0.19.12))
