@@ -4,7 +4,6 @@ module.exports = () => {
     const { createConfig } = require('@nx/angular-rspack');
     return createConfig({
       options: {
-        root: __dirname,
         name: 'rspack-csr-css',
         index: './src/index.html',
         assets: ['./public'],

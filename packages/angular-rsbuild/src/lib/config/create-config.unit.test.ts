@@ -99,7 +99,6 @@ describe('createConfig', () => {
     await expect(
       createConfig({
         options: {
-          root: 'plugin-options',
           polyfills: [],
           styles: [],
           assets: [],
@@ -112,10 +111,6 @@ describe('createConfig', () => {
       })
     ).resolves.not.toThrow();
     expect(defineConfigSpy).toHaveBeenCalledTimes(2);
-    expect(defineConfigSpy).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ root: 'plugin-options' })
-    );
     expect(defineConfigSpy).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
@@ -135,7 +130,6 @@ describe('createConfig', () => {
     await expect(
       createConfig({
         options: {
-          root: 'plugin-options',
           polyfills: [],
           styles: [],
           assets: [],
@@ -148,7 +142,6 @@ describe('createConfig', () => {
     expect(defineConfigSpy).toHaveBeenNthCalledWith(
       1,
       expect.objectContaining({
-        root: 'plugin-options',
         server: expect.objectContaining({ port: 8080 }),
       })
     );
