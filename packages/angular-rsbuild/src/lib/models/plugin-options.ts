@@ -65,6 +65,9 @@ export interface PluginAngularOptions {
   hasServer: boolean;
   skipTypeChecking: boolean;
   useTsProjectReferences?: boolean;
+  namedChunks?: boolean;
+  commonChunk?: boolean;
+  vendorChunk?: boolean;
   stylePreprocessorOptions?: StylePreprocessorOptions;
   devServer?: DevServerOptions;
 }

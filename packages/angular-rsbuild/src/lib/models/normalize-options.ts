@@ -73,6 +73,18 @@ export function validateOptimization(
     );
 }
 
+function validateChunkOptions(options: Partial<PluginAngularOptions>) {
+  if (options.namedChunks !== undefined) {
+    console.warn(`The "namedChunks" option is not supported with Rsbuild.`);
+  }
+  if (options.commonChunk !== undefined) {
+    console.warn(`The "commonChunk" option is not supported with Rsbuild.`);
+  }
+  if (options.vendorChunk !== undefined) {
+    console.warn(`The "vendorChunk" option is not supported with Rsbuild.`);
+  }
+}
+
 export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   index: './src/index.html',
   browser: './src/main.ts',
@@ -92,6 +104,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   outputHashing: 'all',
   sourceMap: false,
   useTsProjectReferences: false,
+  namedChunks: false,
   skipTypeChecking: false,
   devServer: {
     port: 4200,
@@ -127,6 +140,8 @@ export function normalizeOptions(
   const aot = options.aot ?? true;
   const advancedOptimizations = aot && normalizedOptimization;
 
+  validateChunkOptions(options);
+
   return {
     ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
     ...restOptions,
@@ -138,6 +153,7 @@ export function normalizeOptions(
     advancedOptimizations,
     aot,
     outputHashing: options.outputHashing ?? 'all',
+    namedChunks: options.namedChunks ?? false,
     fileReplacements: resolveFileReplacements(fileReplacements, root),
     hasServer: getHasServer({ server, ssr: normalizedSsr }),
     devServer: normalizeDevServer(devServer),

@@ -33,6 +33,8 @@ module.exports = () => {
           options: {
             extractLicenses: false,
             optimization: false,
+            namedChunks: true,
+            vendorChunk: true,
           },
         },
       }
