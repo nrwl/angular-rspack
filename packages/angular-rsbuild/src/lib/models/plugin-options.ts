@@ -33,6 +33,13 @@ export interface OutputPath {
   media: string;
 }
 
+export interface SourceMap {
+  scripts: boolean;
+  styles: boolean;
+  hidden: boolean;
+  vendor: boolean;
+}
+
 export interface PluginAngularOptions {
   index: string;
   browser: string;
@@ -52,6 +59,7 @@ export interface PluginAngularOptions {
   aot: boolean;
   inlineStyleLanguage: InlineStyleLanguage;
   tsConfig: string;
+  sourceMap?: boolean | Partial<SourceMap>;
   optimization?: boolean | OptimizationOptions;
   outputHashing?: OutputHashing;
   hasServer: boolean;
@@ -67,4 +75,5 @@ export interface NormalizedPluginAngularOptions extends PluginAngularOptions {
   optimization: boolean | OptimizationOptions;
   outputHashing: OutputHashing;
   outputPath: OutputPath;
+  sourceMap: SourceMap;
 }

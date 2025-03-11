@@ -39,4 +39,7 @@ module.exports = [
       parser: require('jsonc-eslint-parser'),
     },
   },
+  {
+    ignores: ['build'],
+  },
 ];

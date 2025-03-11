@@ -29,8 +29,15 @@ export const pluginHoistedJsTransformer = (
     } = { errors: undefined, warnings: undefined };
     const javascriptTransformer = new JavaScriptTransformer(
       {
-        sourcemap: false,
-        thirdPartySourcemaps: false,
+        /**
+         * Matches https://github.com/angular/angular-cli/blob/33ed6e875e509ebbaa0cbdb57be9e932f9915dff/packages/angular/build/src/tools/esbuild/angular/compiler-plugin.ts#L89
+         * where pluginOptions.sourcemap is set https://github.com/angular/angular-cli/blob/61d98fde122468978de9b17bd79761befdbf2fac/packages/angular/build/src/tools/esbuild/compiler-plugin-options.ts#L34
+         */
+        sourcemap: !!(
+          pluginOptions.sourceMap.scripts &&
+          (pluginOptions.sourceMap.hidden ? 'external' : true)
+        ),
+        thirdPartySourcemaps: pluginOptions.sourceMap.vendor,
         // @TODO: it should be `pluginOptions.advancedOptimizations` but it currently fails the build
         advancedOptimizations: false,
         jit: !pluginOptions.aot,
