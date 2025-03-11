@@ -26,11 +26,11 @@ export function resolveFileReplacements(
   }));
 }
 
-export function getHasServer({
-  server,
-  ssr,
-}: Pick<PluginAngularOptions, 'server' | 'ssr'>): boolean {
-  const root = process.cwd();
+export function getHasServer(
+  root: string,
+  server: string | undefined,
+  ssr: PluginAngularOptions['ssr']
+): boolean {
   return !!(
     server &&
     ssr &&
@@ -114,7 +114,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
 export function normalizeOptions(
   options: Partial<PluginAngularOptions> = {}
 ): NormalizedPluginAngularOptions {
-  const root = process.cwd();
+  const root = options.root ?? process.cwd();
   const {
     fileReplacements = [],
     server,
@@ -139,6 +139,9 @@ export function normalizeOptions(
   const normalizedOptimization = optimization !== false; // @TODO: Add support for optimization options
   const aot = options.aot ?? true;
   const advancedOptimizations = aot && normalizedOptimization;
+  const tsConfig = options.tsConfig
+    ? resolve(root, options.tsConfig)
+    : join(root, 'tsconfig.app.json');
 
   validateChunkOptions(options);
 
@@ -155,8 +158,10 @@ export function normalizeOptions(
     outputHashing: options.outputHashing ?? 'all',
     namedChunks: options.namedChunks ?? false,
     fileReplacements: resolveFileReplacements(fileReplacements, root),
-    hasServer: getHasServer({ server, ssr: normalizedSsr }),
+    hasServer: getHasServer(root, server, normalizedSsr),
     devServer: normalizeDevServer(devServer),
+    root,
+    tsConfig,
   };
 }
 

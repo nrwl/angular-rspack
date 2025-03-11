@@ -89,7 +89,7 @@ export async function _createConfig(
     }
   }
 
-  const root = process.cwd();
+  const { root } = normalizedOptions;
   const rsbuildPluginAngularConfig = defineConfig({
     root,
     source: {

@@ -9,7 +9,6 @@ import {
   PartialMessage,
 } from '@nx/angular-rspack-compiler';
 import type { NormalizedPluginAngularOptions } from '../models/plugin-options';
-import { normalizeOptions } from '../models/normalize-options';
 
 export const pluginHoistedJsTransformer = (
   options: NormalizedPluginAngularOptions
@@ -17,12 +16,10 @@ export const pluginHoistedJsTransformer = (
   name: 'plugin-hoisted-js-transformer',
   post: ['plugin-angular'],
   setup(api) {
-    const pluginOptions = normalizeOptions(options);
-    const root = api.context.rootPath ?? process.cwd();
     const config = api.getRsbuildConfig();
     const typescriptFileCache = new Map<string, string | Uint8Array>();
     let watchMode = false;
-    let isServer = pluginOptions.hasServer;
+    let isServer = options.hasServer;
     const typeCheckResults: {
       errors: PartialMessage[] | undefined;
       warnings: PartialMessage[] | undefined;
@@ -34,13 +31,13 @@ export const pluginHoistedJsTransformer = (
          * where pluginOptions.sourcemap is set https://github.com/angular/angular-cli/blob/61d98fde122468978de9b17bd79761befdbf2fac/packages/angular/build/src/tools/esbuild/compiler-plugin-options.ts#L34
          */
         sourcemap: !!(
-          pluginOptions.sourceMap.scripts &&
-          (pluginOptions.sourceMap.hidden ? 'external' : true)
+          options.sourceMap.scripts &&
+          (options.sourceMap.hidden ? 'external' : true)
         ),
-        thirdPartySourcemaps: pluginOptions.sourceMap.vendor,
+        thirdPartySourcemaps: options.sourceMap.vendor,
         // @TODO: it should be `pluginOptions.advancedOptimizations` but it currently fails the build
         advancedOptimizations: false,
-        jit: !pluginOptions.aot,
+        jit: !options.aot,
       },
       maxWorkers()
     );
@@ -56,14 +53,14 @@ export const pluginHoistedJsTransformer = (
     api.onBeforeEnvironmentCompile(async () => {
       const parallelCompilation = await setupCompilationWithParallelCompilation(
         config,
-        { ...pluginOptions, root }
+        { ...options, root: options.root }
       );
       await buildAndAnalyzeWithParallelCompilation(
         parallelCompilation,
         typescriptFileCache,
         javascriptTransformer
       );
-      if (!pluginOptions.skipTypeChecking) {
+      if (!options.skipTypeChecking) {
         const { errors, warnings } = await parallelCompilation.diagnoseFiles(
           DiagnosticModes.All
         );

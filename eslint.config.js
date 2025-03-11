@@ -45,7 +45,8 @@ module.exports = tseslint.config(
       '**/__snapshots__/**',
       '**/dist',
       '**/*.md',
-      'e2e/fixtures/**/build',
+      '**/build',
+      '!packages/build',
     ],
   }
 );

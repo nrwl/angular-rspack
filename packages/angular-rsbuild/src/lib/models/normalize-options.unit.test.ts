@@ -1,3 +1,6 @@
+import { MEMFS_VOLUME } from '@ng-rspack/testing-utils';
+import { vol } from 'memfs';
+import { join } from 'node:path';
 import { describe, expect } from 'vitest';
 import {
   DEFAULT_PLUGIN_ANGULAR_OPTIONS,
@@ -6,9 +9,6 @@ import {
   normalizeOutputPath,
   resolveFileReplacements,
 } from './normalize-options.ts';
-import { vol } from 'memfs';
-
-import { MEMFS_VOLUME } from '@ng-rspack/testing-utils';
 import { PluginAngularOptions } from './plugin-options';
 
 describe('resolveFileReplacements', () => {
@@ -60,58 +60,52 @@ describe('getHasServer', () => {
   });
 
   it('should return true if both server and ssr.entry files exist', () => {
-    const result = getHasServer({
-      server: 'server.js',
-      ssr: { entry: 'ssr-entry.js' },
+    const result = getHasServer(process.cwd(), 'server.js', {
+      entry: 'ssr-entry.js',
     });
 
     expect(result).toBe(true);
   });
 
   it('should return false if server file is not provides', () => {
-    const result = getHasServer({
-      ssr: { entry: 'ssr-entry.js' },
+    const result = getHasServer(process.cwd(), undefined, {
+      entry: 'ssr-entry.js',
     });
 
     expect(result).toBe(false);
   });
 
   it('should return false if ssr.entry file is not provides', () => {
-    const result = getHasServer({
-      server: 'server.js',
-    });
+    const result = getHasServer(process.cwd(), 'server.js', undefined);
 
     expect(result).toBe(false);
   });
 
   it('should return false if neither file are not provides', () => {
-    const result = getHasServer({});
+    const result = getHasServer(process.cwd(), undefined, undefined);
 
     expect(result).toBe(false);
   });
 
   it('should return false if server file does not exist', () => {
-    const result = getHasServer({
-      server: 'non-existing-server.js',
-      ssr: { entry: 'ssr-entry.js' },
+    const result = getHasServer(process.cwd(), 'non-existing-server.js', {
+      entry: 'ssr-entry.js',
     });
 
     expect(result).toBe(false);
   });
 
   it('should return false if ssr.entry file does not exist', () => {
-    const result = getHasServer({
-      server: 'server.js',
-      ssr: { entry: 'non-existing-ssr-entry.js' },
+    const result = getHasServer(process.cwd(), 'server.js', {
+      entry: 'non-existing-ssr-entry.js',
     });
 
     expect(result).toBe(false);
   });
 
   it('should return false if neither server nor ssr.entry exists', () => {
-    const result = getHasServer({
-      server: 'non-existing-server.js',
-      ssr: { entry: 'non-existing-ssr-entry.js' },
+    const result = getHasServer(process.cwd(), 'non-existing-server.js', {
+      entry: 'non-existing-ssr-entry.js',
     });
 
     expect(result).toBe(false);
@@ -140,6 +134,8 @@ describe('normalizeOptions', () => {
 
     expect(result).toStrictEqual({
       ...defaultOptions,
+      root: process.cwd(),
+      tsConfig: join(process.cwd(), 'tsconfig.app.json'),
       advancedOptimizations: true,
     });
   });
@@ -149,6 +145,8 @@ describe('normalizeOptions', () => {
 
     expect(result).toStrictEqual({
       ...defaultOptions,
+      root: process.cwd(),
+      tsConfig: join(process.cwd(), 'tsconfig.app.json'),
       advancedOptimizations: true,
     });
   });
@@ -158,6 +156,8 @@ describe('normalizeOptions', () => {
 
     expect(result).toStrictEqual({
       ...defaultOptions,
+      root: process.cwd(),
+      tsConfig: join(process.cwd(), 'tsconfig.app.json'),
       optimization: false,
       advancedOptimizations: false,
     });
