@@ -97,6 +97,8 @@ export interface AngularRspackPluginOptions {
   outputHashing?: OutputHashing;
   stylePreprocessorOptions?: StylePreprocessorOptions;
   namedChunks?: boolean;
+  vendorChunk?: boolean;
+  commonChunk?: boolean;
   devServer?: DevServerOptions;
   extractLicenses?: boolean;
 }
@@ -109,6 +111,8 @@ export interface NormalizedAngularRspackPluginOptions
   devServer: DevServerOptions & { port: number };
   extractLicenses: boolean;
   namedChunks: boolean;
+  vendorChunk: boolean;
+  commonChunk: boolean;
   globalScripts: GlobalEntry[];
   globalStyles: GlobalEntry[];
   optimization: boolean | OptimizationOptions;

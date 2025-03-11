@@ -72,6 +72,18 @@ export function validateOptimization(
     );
 }
 
+function validateChunkOptions(options: Partial<PluginAngularOptions>) {
+  if (options.namedChunks !== undefined) {
+    console.warn(`The "namedChunks" option is not supported with Rsbuild.`);
+  }
+  if (options.commonChunk !== undefined) {
+    console.warn(`The "commonChunk" option is not supported with Rsbuild.`);
+  }
+  if (options.vendorChunk !== undefined) {
+    console.warn(`The "vendorChunk" option is not supported with Rsbuild.`);
+  }
+}
+
 export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   index: './src/index.html',
   browser: './src/main.ts',
@@ -126,9 +138,7 @@ export function normalizeOptions(
   const aot = options.aot ?? true;
   const advancedOptimizations = aot && normalizedOptimization;
 
-  if (options.namedChunks) {
-    console.warn(`The "namedChunks" option is not supported with Rsbuild.`);
-  }
+  validateChunkOptions(options);
 
   return {
     ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,

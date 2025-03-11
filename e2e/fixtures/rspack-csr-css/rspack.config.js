@@ -30,6 +30,7 @@ module.exports = () => {
             extractLicenses: false,
             optimization: false,
             namedChunks: true,
+            vendorChunk: true,
           },
         },
       }

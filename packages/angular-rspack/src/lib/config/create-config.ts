@@ -15,6 +15,8 @@ import { getStyleLoaders } from './style-config-utils';
 import { getOutputHashFormat } from './helpers';
 import { getProxyConfig } from './dev-server-config-utils';
 
+const VENDORS_TEST = /[\\/]node_modules[\\/]/;
+
 export async function _createConfig(
   options: AngularRspackPluginOptions,
   rspackConfigOverrides?: Partial<Configuration>
@@ -163,7 +165,7 @@ export async function _createConfig(
         ...(normalizedOptions.optimization
           ? {
               minimize: true,
-              runtimeChunk: false,
+              runtimeChunk: 'single',
               splitChunks: {
                 chunks: 'async',
                 minChunks: 1,
@@ -171,15 +173,24 @@ export async function _createConfig(
                 maxAsyncRequests: 30,
                 maxInitialRequests: 30,
                 cacheGroups: {
-                  defaultVendors: {
-                    test: /[\\/]node_modules[\\/]/,
-                    priority: -10,
-                    reuseExistingChunk: true,
-                  },
-                  default: {
+                  default: normalizedOptions.commonChunk && {
+                    chunks: 'async',
                     minChunks: 2,
-                    priority: -20,
-                    reuseExistingChunk: true,
+                    priority: 10,
+                  },
+                  common: normalizedOptions.commonChunk && {
+                    name: 'common',
+                    chunks: 'async',
+                    minChunks: 2,
+                    enforce: true,
+                    priority: 5,
+                  },
+                  vendors: false,
+                  defaultVendors: normalizedOptions.vendorChunk && {
+                    name: 'vendor',
+                    chunks: (chunk) => chunk.name === 'main',
+                    enforce: true,
+                    test: VENDORS_TEST,
                   },
                 },
               },
@@ -298,7 +309,7 @@ export async function _createConfig(
       ...(normalizedOptions.optimization
         ? {
             minimize: true,
-            runtimeChunk: 'single',
+            runtimeChunk: false,
             splitChunks: {
               chunks: 'all',
               minChunks: 1,
@@ -306,15 +317,24 @@ export async function _createConfig(
               maxAsyncRequests: 30,
               maxInitialRequests: 30,
               cacheGroups: {
-                defaultVendors: {
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: -10,
-                  reuseExistingChunk: true,
-                },
-                default: {
+                default: normalizedOptions.commonChunk && {
+                  chunks: 'async',
                   minChunks: 2,
-                  priority: -20,
-                  reuseExistingChunk: true,
+                  priority: 10,
+                },
+                common: normalizedOptions.commonChunk && {
+                  name: 'common',
+                  chunks: 'async',
+                  minChunks: 2,
+                  enforce: true,
+                  priority: 5,
+                },
+                vendors: false,
+                defaultVendors: normalizedOptions.vendorChunk && {
+                  name: 'vendor',
+                  chunks: (chunk) => chunk.name === 'main',
+                  enforce: true,
+                  test: VENDORS_TEST,
                 },
               },
             },
