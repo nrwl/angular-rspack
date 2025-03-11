@@ -146,6 +146,8 @@ export function normalizeOptions(
       'Disabling the "index" option is not yet supported. Defaulting to "src/index.html".'
     );
     options.index = join(root, 'src/index.html');
+  } else if (!options.index) {
+    options.index = join(root, 'src/index.html');
   }
 
   let index: NormalizedIndexElement | undefined;
@@ -206,32 +208,32 @@ export function normalizeOptions(
   }
 
   return {
-    index,
-    browser: options.browser ?? './src/main.ts',
-    ...(server ? { server } : {}),
-    ...(ssr ? { ssr: normalizedSsr } : {}),
-    optimization: normalizedOptimization,
     advancedOptimizations,
-    polyfills: options.polyfills ?? [],
     assets,
-    globalStyles,
-    globalScripts,
-    outputPath: normalizeOutputPath(root, options.outputPath),
-    fileReplacements: resolveFileReplacements(fileReplacements, root),
     aot,
-    outputHashing: options.outputHashing ?? 'all',
-    inlineStyleLanguage: options.inlineStyleLanguage ?? 'css',
-    tsConfig,
-    sourceMap: normalizeSourceMap(options.sourceMap),
-    hasServer: getHasServer(root, server, normalizedSsr),
-    skipTypeChecking: options.skipTypeChecking ?? false,
-    useTsProjectReferences: options.useTsProjectReferences ?? false,
-    namedChunks: options.namedChunks ?? false,
-    vendorChunk: options.vendorChunk ?? false,
+    browser: options.browser ?? './src/main.ts',
     commonChunk: options.commonChunk ?? true,
     devServer: normalizeDevServer(options.devServer),
     extractLicenses: options.extractLicenses ?? true,
+    fileReplacements: resolveFileReplacements(fileReplacements, root),
+    globalStyles,
+    globalScripts,
+    hasServer: getHasServer(root, server, normalizedSsr),
+    index,
+    inlineStyleLanguage: options.inlineStyleLanguage ?? 'css',
+    namedChunks: options.namedChunks ?? false,
+    optimization: normalizedOptimization,
+    outputHashing: options.outputHashing ?? 'all',
+    outputPath: normalizeOutputPath(root, options.outputPath),
+    polyfills: options.polyfills ?? [],
     root,
+    server,
+    skipTypeChecking: options.skipTypeChecking ?? false,
+    sourceMap: normalizeSourceMap(options.sourceMap),
+    ssr: normalizedSsr,
+    tsConfig,
+    useTsProjectReferences: options.useTsProjectReferences ?? false,
+    vendorChunk: options.vendorChunk ?? false,
   };
 }
 
