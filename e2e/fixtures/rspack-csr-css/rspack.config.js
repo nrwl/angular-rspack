@@ -1,10 +1,10 @@
 module.exports = () => {
   if (global.NX_GRAPH_CREATION === undefined) {
-    const { join } = require('path');
     const { createConfig } = require('@nx/angular-rspack');
     return createConfig(
       {
         options: {
+          root: __dirname,
           name: 'rspack-csr-css',
           index: './src/index.html',
           assets: [{ glob: '**/*', input: 'public' }],
@@ -20,7 +20,7 @@ module.exports = () => {
             styles: true,
           },
           outputHashing: 'none',
-          tsConfig: join(__dirname, './tsconfig.app.json'),
+          tsConfig: './tsconfig.app.json',
           skipTypeChecking: false,
           devServer: {
             port: 8080,

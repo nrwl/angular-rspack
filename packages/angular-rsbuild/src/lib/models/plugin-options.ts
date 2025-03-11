@@ -70,6 +70,7 @@ export interface PluginAngularOptions {
   vendorChunk?: boolean;
   stylePreprocessorOptions?: StylePreprocessorOptions;
   devServer?: DevServerOptions;
+  root?: string;
 }
 
 export interface NormalizedPluginAngularOptions extends PluginAngularOptions {
@@ -78,5 +79,6 @@ export interface NormalizedPluginAngularOptions extends PluginAngularOptions {
   optimization: boolean | OptimizationOptions;
   outputHashing: OutputHashing;
   outputPath: OutputPath;
+  root: string;
   sourceMap: SourceMap;
 }
