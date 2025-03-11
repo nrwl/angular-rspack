@@ -6,7 +6,7 @@ module.exports = () => {
       options: {
         name: 'rspack-csr-css',
         index: './src/index.html',
-        assets: ['./public'],
+        assets: [{ glob: '**/*', input: 'public' }],
         styles: ['./src/styles.css'],
         polyfills: ['zone.js'],
         main: './src/main.ts',
