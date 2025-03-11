@@ -4,6 +4,7 @@ module.exports = () => {
     return createConfig({
       options: {
         browser: './src/main.ts',
+        index: './src/index.html',
         server: './src/main.server.ts',
         ssr: { entry: './src/server.ts' },
       },
