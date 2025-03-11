@@ -57,6 +57,7 @@ export interface PluginAngularOptions {
   hasServer: boolean;
   skipTypeChecking: boolean;
   useTsProjectReferences?: boolean;
+  namedChunks?: boolean;
   stylePreprocessorOptions?: StylePreprocessorOptions;
   devServer?: DevServerOptions;
 }
@@ -66,5 +67,6 @@ export interface NormalizedPluginAngularOptions extends PluginAngularOptions {
   devServer: DevServerOptions & { port: number };
   optimization: boolean | OptimizationOptions;
   outputHashing: OutputHashing;
+  namedChunks: boolean;
   outputPath: OutputPath;
 }

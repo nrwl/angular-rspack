@@ -157,48 +157,52 @@ export async function _createConfig(
           normalizedOptions.devServer?.proxyConfig
         ),
       },
-      optimization: normalizedOptions.optimization
-        ? {
-            minimize: true,
-            runtimeChunk: false,
-            splitChunks: {
-              chunks: 'async',
-              minChunks: 1,
-              minSize: 20000,
-              maxAsyncRequests: 30,
-              maxInitialRequests: 30,
-              cacheGroups: {
-                defaultVendors: {
-                  test: /[\\/]node_modules[\\/]/,
-                  priority: -10,
-                  reuseExistingChunk: true,
-                },
-                default: {
-                  minChunks: 2,
-                  priority: -20,
-                  reuseExistingChunk: true,
+      optimization: {
+        chunkIds: normalizedOptions.namedChunks ? 'named' : 'deterministic',
+        moduleIds: 'deterministic',
+        ...(normalizedOptions.optimization
+          ? {
+              minimize: true,
+              runtimeChunk: false,
+              splitChunks: {
+                chunks: 'async',
+                minChunks: 1,
+                minSize: 20000,
+                maxAsyncRequests: 30,
+                maxInitialRequests: 30,
+                cacheGroups: {
+                  defaultVendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    priority: -10,
+                    reuseExistingChunk: true,
+                  },
+                  default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true,
+                  },
                 },
               },
-            },
-            minimizer: [
-              new SwcJsMinimizerRspackPlugin({
-                minimizerOptions: {
-                  minify: true,
-                  mangle: true,
-                  compress: {
-                    passes: 2,
+              minimizer: [
+                new SwcJsMinimizerRspackPlugin({
+                  minimizerOptions: {
+                    minify: true,
+                    mangle: true,
+                    compress: {
+                      passes: 2,
+                    },
+                    format: {
+                      comments: false,
+                    },
                   },
-                  format: {
-                    comments: false,
-                  },
-                },
-              }),
-            ],
-          }
-        : {
-            minimize: false,
-            minimizer: [],
-          },
+                }),
+              ],
+            }
+          : {
+              minimize: false,
+              minimizer: [],
+            }),
+      },
       plugins: [
         ...(defaultConfig.plugins ?? []),
         new NgRspackPlugin({
@@ -288,48 +292,52 @@ export async function _createConfig(
       scriptType: 'module',
       module: true,
     },
-    optimization: normalizedOptions.optimization
-      ? {
-          minimize: true,
-          runtimeChunk: 'single',
-          splitChunks: {
-            chunks: 'all',
-            minChunks: 1,
-            minSize: 20000,
-            maxAsyncRequests: 30,
-            maxInitialRequests: 30,
-            cacheGroups: {
-              defaultVendors: {
-                test: /[\\/]node_modules[\\/]/,
-                priority: -10,
-                reuseExistingChunk: true,
-              },
-              default: {
-                minChunks: 2,
-                priority: -20,
-                reuseExistingChunk: true,
+    optimization: {
+      chunkIds: normalizedOptions.namedChunks ? 'named' : 'deterministic',
+      moduleIds: 'deterministic',
+      ...(normalizedOptions.optimization
+        ? {
+            minimize: true,
+            runtimeChunk: 'single',
+            splitChunks: {
+              chunks: 'all',
+              minChunks: 1,
+              minSize: 20000,
+              maxAsyncRequests: 30,
+              maxInitialRequests: 30,
+              cacheGroups: {
+                defaultVendors: {
+                  test: /[\\/]node_modules[\\/]/,
+                  priority: -10,
+                  reuseExistingChunk: true,
+                },
+                default: {
+                  minChunks: 2,
+                  priority: -20,
+                  reuseExistingChunk: true,
+                },
               },
             },
-          },
-          minimizer: [
-            new SwcJsMinimizerRspackPlugin({
-              minimizerOptions: {
-                minify: true,
-                mangle: true,
-                compress: {
-                  passes: 2,
+            minimizer: [
+              new SwcJsMinimizerRspackPlugin({
+                minimizerOptions: {
+                  minify: true,
+                  mangle: true,
+                  compress: {
+                    passes: 2,
+                  },
+                  format: {
+                    comments: false,
+                  },
                 },
-                format: {
-                  comments: false,
-                },
-              },
-            }),
-          ],
-        }
-      : {
-          minimize: false,
-          minimizer: [],
-        },
+              }),
+            ],
+          }
+        : {
+            minimize: false,
+            minimizer: [],
+          }),
+    },
     plugins: [
       ...(defaultConfig.plugins ?? []),
       new NgRspackPlugin({

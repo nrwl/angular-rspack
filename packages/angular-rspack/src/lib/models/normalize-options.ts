@@ -221,6 +221,7 @@ export function normalizeOptions(
     hasServer: getHasServer({ server, ssr: normalizedSsr }),
     skipTypeChecking: options.skipTypeChecking ?? false,
     useTsProjectReferences: options.useTsProjectReferences ?? false,
+    namedChunks: options.namedChunks ?? false,
     devServer: normalizeDevServer(options.devServer),
     extractLicenses: options.extractLicenses ?? true,
   };

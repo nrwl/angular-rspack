@@ -90,6 +90,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   outputPath: normalizeOutputPath(process.cwd(), undefined),
   outputHashing: 'all',
   useTsProjectReferences: false,
+  namedChunks: false,
   skipTypeChecking: false,
   devServer: {
     port: 4200,
@@ -125,6 +126,10 @@ export function normalizeOptions(
   const aot = options.aot ?? true;
   const advancedOptimizations = aot && normalizedOptimization;
 
+  if (options.namedChunks) {
+    console.warn(`The "namedChunks" option is not supported with Rsbuild.`);
+  }
+
   return {
     ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
     ...restOptions,
@@ -135,6 +140,7 @@ export function normalizeOptions(
     advancedOptimizations,
     aot,
     outputHashing: options.outputHashing ?? 'all',
+    namedChunks: options.namedChunks ?? false,
     fileReplacements: resolveFileReplacements(fileReplacements, root),
     hasServer: getHasServer({ server, ssr: normalizedSsr }),
     devServer: normalizeDevServer(devServer),
