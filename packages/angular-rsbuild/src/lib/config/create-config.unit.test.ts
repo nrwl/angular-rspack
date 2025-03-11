@@ -108,6 +108,12 @@ describe('createConfig', () => {
             server: 'dist/server',
             media: 'dist/browser/media',
           },
+          sourceMap: {
+            scripts: true,
+            styles: true,
+            hidden: false,
+            vendor: false,
+          },
         },
         rsbuildConfigOverrides: {
           source: {
@@ -144,6 +150,12 @@ describe('createConfig', () => {
             browser: 'dist/browser',
             server: 'dist/server',
             media: 'dist/browser/media',
+          },
+          sourceMap: {
+            scripts: true,
+            styles: true,
+            hidden: false,
+            vendor: false,
           },
           devServer: {
             port: 8080,

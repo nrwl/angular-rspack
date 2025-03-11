@@ -4,6 +4,7 @@ import {
   type DevServerOptions,
   OutputPath,
   NormalizedPluginAngularOptions,
+  SourceMap,
 } from './plugin-options';
 import { join, resolve } from 'node:path';
 import { existsSync } from 'node:fs';
@@ -89,6 +90,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   optimization: true,
   outputPath: normalizeOutputPath(process.cwd(), undefined),
   outputHashing: 'all',
+  sourceMap: false,
   useTsProjectReferences: false,
   skipTypeChecking: false,
   devServer: {
@@ -132,12 +134,40 @@ export function normalizeOptions(
     ...(ssr != null ? { ssr: normalizedSsr } : {}),
     optimization: normalizedOptimization,
     outputPath: normalizeOutputPath(root, options.outputPath),
+    sourceMap: normalizeSourceMap(options.sourceMap),
     advancedOptimizations,
     aot,
     outputHashing: options.outputHashing ?? 'all',
     fileReplacements: resolveFileReplacements(fileReplacements, root),
     hasServer: getHasServer({ server, ssr: normalizedSsr }),
     devServer: normalizeDevServer(devServer),
+  };
+}
+
+function normalizeSourceMap(
+  sourceMap: boolean | Partial<SourceMap> | undefined
+): SourceMap {
+  if (sourceMap === undefined || sourceMap === true) {
+    return {
+      scripts: true,
+      styles: true,
+      hidden: false,
+      vendor: false,
+    };
+  }
+  if (sourceMap === false) {
+    return {
+      scripts: false,
+      styles: false,
+      hidden: false,
+      vendor: false,
+    };
+  }
+  return {
+    scripts: sourceMap.scripts ?? true,
+    styles: sourceMap.styles ?? true,
+    hidden: sourceMap.hidden ?? false,
+    vendor: sourceMap.vendor ?? false,
   };
 }
 

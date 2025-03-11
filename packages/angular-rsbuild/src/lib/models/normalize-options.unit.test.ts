@@ -126,6 +126,12 @@ describe('normalizeOptions', () => {
     defaultOptions = {
       ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
       outputPath: normalizeOutputPath(process.cwd(), undefined),
+      sourceMap: {
+        scripts: true,
+        styles: true,
+        hidden: false,
+        vendor: false,
+      },
     };
   });
 

@@ -44,6 +44,7 @@ export async function _createConfig(
       stylePlugins.push(
         pluginSass({
           sassLoaderOptions: {
+            sourceMap: normalizedOptions.sourceMap.styles,
             sassOptions: {
               includePaths:
                 normalizedOptions.stylePreprocessorOptions?.includePaths,
@@ -53,13 +54,20 @@ export async function _createConfig(
         })
       );
     } else {
-      stylePlugins.push(pluginSass());
+      stylePlugins.push(
+        pluginSass({
+          sassLoaderOptions: {
+            sourceMap: normalizedOptions.sourceMap.styles,
+          },
+        })
+      );
     }
   } else if (normalizedOptions.inlineStyleLanguage === 'less') {
     if (normalizedOptions.stylePreprocessorOptions?.includePaths) {
       stylePlugins.push(
         pluginLess({
           lessLoaderOptions: {
+            sourceMap: normalizedOptions.sourceMap.styles,
             lessOptions: {
               javascriptEnabled: true,
               paths: normalizedOptions.stylePreprocessorOptions?.includePaths,
@@ -71,6 +79,7 @@ export async function _createConfig(
       stylePlugins.push(
         pluginLess({
           lessLoaderOptions: {
+            sourceMap: normalizedOptions.sourceMap.styles,
             lessOptions: {
               javascriptEnabled: true,
             },
@@ -152,6 +161,10 @@ export async function _createConfig(
           filename: {
             js: `[name]${hashFormat.chunk}.js`,
             css: `[name]${hashFormat.file}.css`,
+          },
+          sourceMap: {
+            js: normalizedOptions.sourceMap.scripts ? 'source-map' : false,
+            css: normalizedOptions.sourceMap.styles,
           },
           distPath: {
             root: normalizedOptions.outputPath.browser,

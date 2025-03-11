@@ -502,6 +502,9 @@ importers:
       sass-loader:
         specifier: ^16.0.2
         version: 16.0.5(@rspack/core@1.2.6(@swc/helpers@0.5.15))(sass-embedded@1.85.1)(sass@1.85.1)(webpack@5.98.0(@swc/core@1.5.29(@swc/helpers@0.5.15))(esbuild@0.19.12))
+      source-map-loader:
+        specifier: ^5.0.0
+        version: 5.0.0(webpack@5.98.0(@swc/core@1.5.29(@swc/helpers@0.5.15))(esbuild@0.19.12))
       tslib:
         specifier: ^2.3.0
         version: 2.8.1
