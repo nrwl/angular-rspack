@@ -73,7 +73,7 @@
       "code-pushup": {},
       "unit-test": {
         "dependsOn": [
-          "^build"
+          "build"
         ]
       }
     }
