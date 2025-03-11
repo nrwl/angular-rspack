@@ -55,18 +55,6 @@ export function getLessLoaderConfig(
   };
 }
 
-export function getCssLoaderConfig(sourceMap?: SourceMap) {
-  return {
-    test: /\.css$/,
-    loader: require.resolve('css-loader'),
-    options: {
-      url: false,
-      sourceMap: sourceMap?.styles,
-      importLoaders: 1,
-    },
-  };
-}
-
 /**
  * Returns an array of style loaders for sass and less. Both loader´s are always returned
  *
@@ -81,7 +69,6 @@ export function getStyleLoaders(
     getIncludePathOptions(stylePreprocessorOptions?.includePaths);
 
   return [
-    getCssLoaderConfig(sourceMap),
     getSassLoaderConfig(
       sassPathOptions,
       stylePreprocessorOptions?.sass,
