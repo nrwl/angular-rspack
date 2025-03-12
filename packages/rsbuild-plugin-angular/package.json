@@ -6,6 +6,17 @@
     "rsbuild-plugin"
   ],
   "version": "19.0.0-alpha.29",
+  "description": "Rsbuild Plugin for building Angular.",
+  "author": "Colum Ferry",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nrwl/angular-rspack/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nrwl/angular-rspack.git",
+    "directory": "packages/rsbuild-plugin-angular"
+  },
   "dependencies": {
     "@ng-rspack/compiler": "workspace:*",
     "sass-embedded": "^1.79.3",
