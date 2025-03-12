@@ -3,8 +3,12 @@ import type {
   InlineStyleLanguage,
   StylePreprocessorOptions,
 } from '@nx/angular-rspack-compiler';
+import type {
+  DevServerUnsupportedOptions,
+  PluginUnsupportedOptions,
+} from './unsupported-options';
 
-export interface DevServerOptions {
+export interface DevServerOptions extends DevServerUnsupportedOptions {
   port?: number;
   ssl?: boolean;
   sslKey?: string;
@@ -76,7 +80,7 @@ export interface SourceMap {
   vendor: boolean;
 }
 
-export interface AngularRspackPluginOptions {
+export interface AngularRspackPluginOptions extends PluginUnsupportedOptions {
   aot?: boolean;
   assets?: AssetElement[];
   browser?: string;
