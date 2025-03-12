@@ -55,6 +55,9 @@
     "sourceRoot": "packages/compiler/src",
     "projectType": "library",
     "name": "compiler",
+    "tags": [
+      "publishable"
+    ],
     "targets": {
       "code-pushup": {},
       "integration-test": {
