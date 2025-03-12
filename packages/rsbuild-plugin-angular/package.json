@@ -5,7 +5,7 @@
     "rsbuild",
     "rsbuild-plugin"
   ],
-  "version": "19.0.0-alpha.29",
+  "version": "20.5.0-beta.2",
   "dependencies": {
     "@ng-rspack/compiler": "workspace:*",
     "sass-embedded": "^1.79.3",
