@@ -4,6 +4,29 @@ import {
   releasePublish,
 } from 'nx/src/command-line/release';
 import yargs from 'yargs';
+import { parse } from 'semver';
+
+export function deriveDistTagFromSpecifier(distTag: string, specifier: string) {
+  // dist-tag was explicitly set
+  if (distTag && distTag !== 'infer-from-specifier') {
+    return distTag;
+  }
+
+  // Derive dist-tag from specifier
+  if (
+    specifier.startsWith('pre') ||
+    specifier.includes('-alpha') ||
+    specifier.includes('-beta')
+  ) {
+    return 'next';
+  }
+
+  if (parse(specifier)?.prerelease.length) {
+    return 'next';
+  }
+
+  return 'latest';
+}
 
 (async () => {
   try {
@@ -46,7 +69,7 @@ import yargs from 'yargs';
       specifier: options.version,
       // stage package.json updates to be committed later by the changelog command
       stageChanges: true,
-      dryRun: true,
+      dryRun: options.dryRun,
       verbose: options.verbose,
     });
 
@@ -56,15 +79,15 @@ import yargs from 'yargs';
       gitTag: true,
       versionData: projectsVersionData,
       version: workspaceVersion,
-      interactive: 'workspace',
-      dryRun: true,
+      dryRun: options.dryRun,
       verbose: options.verbose,
+      firstRelease: options.firstRelease,
     });
 
     await releasePublish({
       firstRelease: options.firstRelease,
-      tag: options.distTag,
-      dryRun: true,
+      tag: deriveDistTagFromSpecifier(options.distTag, options.version),
+      dryRun: options.dryRun,
       verbose: options.verbose,
     });
 

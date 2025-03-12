@@ -40,12 +40,17 @@ jobs:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       NPM_CONFIG_PROVENANCE: true
       GH_TOKEN: ${{ github.token }}
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          fetch-tags: 'true'
+
+      - name: Configure Git User
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -55,10 +60,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.12
+          registry-url: 'https://registry.npmjs.org'
           cache: 'pnpm'
+
+      # Ensure that the NPM_TOKEN secret is still valid before wasting any time deriving data or building projects
+      - name: Check NPM Credentials
+        run: npm whoami && echo "NPM credentials are valid" || (echo "NPM credentials are invalid or have expired." && exit 1)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+          GH_TOKEN: ${{ github.token }}
+
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Release packages
         run: pnpm release --version ${{ github.event.inputs.specifier }} --dist-tag ${{ github.event.inputs.dist-tag }} --dry-run=${{ github.event.inputs.dry-run }} --first-release=${{ github.event.inputs.first-release }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+          GH_TOKEN: ${{ github.token }}
