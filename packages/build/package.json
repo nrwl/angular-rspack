@@ -64,6 +64,9 @@
     "name": "build",
     "sourceRoot": "packages/build/src",
     "projectType": "library",
+    "tags": [
+      "publishable"
+    ],
     "targets": {
       "code-pushup": {}
     }

@@ -45,6 +45,9 @@
     "sourceRoot": "packages/rsbuild-plugin-angular/src",
     "projectType": "library",
     "name": "rsbuild-plugin-angular",
+    "tags": [
+      "publishable"
+    ],
     "targets": {
       "integration-test": {
         "dependsOn": [
