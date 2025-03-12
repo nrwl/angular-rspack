@@ -1,3 +1,7 @@
+## 20.5.0-beta.3 (2025-03-12)
+
+This was a version bump only, there were no code changes.
+
 ## 19.0.0-alpha.29 (2025-03-03)
 
 ### 🚀 Features
