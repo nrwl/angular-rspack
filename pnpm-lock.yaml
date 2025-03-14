@@ -291,6 +291,9 @@ importers:
       prettier:
         specifier: ^2.6.2
         version: 2.8.8
+      resolve-url-loader:
+        specifier: ^5.0.0
+        version: 5.0.0
       sass:
         specifier: ^1.79.3
         version: 1.85.1
@@ -511,6 +514,9 @@ importers:
       license-webpack-plugin:
         specifier: ^4.0.2
         version: 4.0.2(webpack@5.98.0(@swc/core@1.5.29(@swc/helpers@0.5.15))(esbuild@0.19.12))
+      resolve-url-loader:
+        specifier: ^5.0.0
+        version: 5.0.0
       sass-embedded:
         specifier: ^1.79.3
         version: 1.85.1
@@ -19638,7 +19644,7 @@ snapshots:
       adjust-sourcemap-loader: 4.0.0
       convert-source-map: 1.9.0
       loader-utils: 2.0.4
-      postcss: 8.4.49
+      postcss: 8.5.3
       source-map: 0.6.1
 
   resolve.exports@2.0.3: {}
