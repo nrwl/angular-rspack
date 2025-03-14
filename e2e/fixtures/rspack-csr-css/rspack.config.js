@@ -7,8 +7,15 @@ module.exports = () => {
           root: __dirname,
           name: 'rspack-csr-css',
           index: './src/index.html',
-          assets: [{ glob: '**/*', input: 'public' }],
-          styles: ['./src/styles.css'],
+          assets: [
+            {
+              input: '../shared/assets/src/assets',
+              glob: '**/*',
+              output: 'assets',
+            },
+            { glob: '**/*', input: 'public' },
+          ],
+          styles: ['../shared/styles/src/index.scss', './src/styles.css'],
           polyfills: ['zone.js'],
           main: './src/main.ts',
           outputPath: {
