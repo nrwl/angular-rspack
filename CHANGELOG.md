@@ -1,3 +1,13 @@
+## 20.6.1 (2025-03-14)
+
+### 🩹 Fixes
+
+- **angular-rspack:** publicPath for server should not be auto ([110cf85](https://github.com/nrwl/angular-rspack/commit/110cf85))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 20.6.0 (2025-03-14)
 
 This was a version bump only, there were no code changes.
