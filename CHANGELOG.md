@@ -1,3 +1,13 @@
+## 20.6.0-beta.1 (2025-03-14)
+
+### 🩹 Fixes
+
+- **angular-rspack:** stylesheet should be attached to html ([#41](https://github.com/nrwl/angular-rspack/pull/41))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 20.6.0-beta.0 (2025-03-14)
 
 ### 🚀 Features
