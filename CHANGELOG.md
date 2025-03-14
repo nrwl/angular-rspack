@@ -1,3 +1,7 @@
+## 20.6.2 (2025-03-14)
+
+This was a version bump only, there were no code changes.
+
 ## 20.6.2-beta.0 (2025-03-14)
 
 ### 🩹 Fixes
