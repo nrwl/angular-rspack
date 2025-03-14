@@ -1,3 +1,19 @@
+## 20.6.0-beta.0 (2025-03-14)
+
+### 🚀 Features
+
+- **angular-rspack:** support `host` option for the dev server ([#38](https://github.com/nrwl/angular-rspack/pull/38))
+
+### 🩹 Fixes
+
+- **angular-rspack:** fix assets normalization ([#39](https://github.com/nrwl/angular-rspack/pull/39))
+- **angular-rspack:** process styles correctly handling urls ([#40](https://github.com/nrwl/angular-rspack/pull/40))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+- Leosvel Pérez Espinosa @leosvelperez
+
 ## 20.5.0-beta.3 (2025-03-12)
 
 This was a version bump only, there were no code changes.
