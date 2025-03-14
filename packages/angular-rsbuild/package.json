@@ -1,6 +1,6 @@
 {
   "name": "@nx/angular-rsbuild",
-  "version": "20.6.1",
+  "version": "20.6.2-beta.0",
   "description": "Rsbuild Plugin for building Angular.",
   "private": false,
   "publishConfig": {

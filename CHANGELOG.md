@@ -1,3 +1,13 @@
+## 20.6.2-beta.0 (2025-03-14)
+
+### 🩹 Fixes
+
+- **angular-rspack-compiler:** depend directly on @angular/build ([82b8713](https://github.com/nrwl/angular-rspack/commit/82b8713))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 20.6.1 (2025-03-14)
 
 ### 🩹 Fixes
