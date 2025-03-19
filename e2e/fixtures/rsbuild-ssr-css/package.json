@@ -1,7 +1,7 @@
 {
   "private": true,
   "devDependencies": {
-    "@ng-rsbuild/plugin-angular": "workspace:*"
+    "@nx/angular-rsbuild": "workspace:*"
   },
   "nx": {
     "name": "rsbuild-ssr-css",

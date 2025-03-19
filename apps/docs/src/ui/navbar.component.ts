@@ -77,7 +77,7 @@ import { RouterLink } from '@angular/router';
         <a
           mat-icon-button
           aria-label="Github Repo"
-          href="https://github.com/Coly010/ng-rspack-build"
+          href="https://github.com/nrwl/angular-rspack"
           target="_blank"
           class="github-link"
         >

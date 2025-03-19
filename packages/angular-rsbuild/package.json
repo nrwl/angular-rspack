@@ -1,0 +1,79 @@
+{
+  "name": "@nx/angular-rsbuild",
+  "version": "20.6.2",
+  "description": "Rsbuild Plugin for building Angular.",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "Colum Ferry",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nrwl/angular-rspack/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nrwl/angular-rspack.git",
+    "directory": "packages/angular-rsbuild"
+  },
+  "keywords": [
+    "angular",
+    "rsbuild",
+    "rsbuild-plugin"
+  ],
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "typings": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./ssr": {
+      "types": "./dist/lib/ssr/server.d.ts",
+      "default": "./dist/lib/ssr/server.js"
+    }
+  },
+  "dependencies": {
+    "@nx/angular-rspack-compiler": "workspace:*",
+    "@rsbuild/plugin-less": "^1.1.1",
+    "@rsbuild/plugin-sass": "^1.1.2",
+    "express": "4.21.1",
+    "jsonc-parser": "^3.3.1",
+    "sass-embedded": "^1.79.3",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@ng-rspack/testing-setup": "workspace:*"
+  },
+  "peerDependencies": {
+    "@angular/common": ">=19.0.0 <20.0.0",
+    "@angular/ssr": ">=19.0.0 <20.0.0",
+    "@rsbuild/core": ">=1.0.5 <2.0.0"
+  },
+  "nx": {
+    "sourceRoot": "packages/angular-rsbuild/src",
+    "projectType": "library",
+    "name": "angular-rsbuild",
+    "tags": [
+      "publishable"
+    ],
+    "targets": {
+      "integration-test": {
+        "dependsOn": [
+          "^build"
+        ],
+        "options": {
+          "config": "vitest.integration.config.mts"
+        }
+      },
+      "unit-test": {
+        "dependsOn": [
+          "^build"
+        ]
+      },
+      "code-pushup": {}
+    }
+  }
+}

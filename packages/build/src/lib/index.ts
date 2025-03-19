@@ -1,2 +1,1 @@
-export * from './config/create-config';
-export * from './plugins/ng-rspack';
+export * from '@nx/angular-rspack';

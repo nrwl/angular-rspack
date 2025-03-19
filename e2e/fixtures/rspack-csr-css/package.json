@@ -4,6 +4,16 @@
   "private": true,
   "scripts": {},
   "dependencies": {
-    "@ng-rspack/build": "workspace:*"
+    "@nx/angular-rspack": "workspace:*"
+  },
+  "nx": {
+    "targets": {
+      "serve-api": {
+        "command": "node ./src/api.mjs",
+        "options": {
+          "cwd": "e2e/fixtures/rspack-csr-css"
+        }
+      }
+    }
   }
 }

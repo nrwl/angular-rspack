@@ -59,6 +59,9 @@
       "options": {
         "config": "vitest.integration.config.mts"
       }
+    },
+    "unit-test": {
+      "cache": true
     }
   },
   "release": {
@@ -69,7 +72,12 @@
         "currentVersionResolver": "git-tag",
         "fallbackCurrentVersionResolver": "disk"
       },
-      "preVersionCommand": "pnpm nx run-many -t build --exclude=\"apps/**\" --skip-sync"
+      "preVersionCommand": "pnpm nx run-many -t build --projects=\"tag:publishable\""
+    },
+    "changelog": {
+      "workspaceChangelog": {
+        "createRelease": "github"
+      }
     }
   },
   "plugins": [

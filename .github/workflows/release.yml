@@ -1,0 +1,83 @@
+name: Release Angular Rspack
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  NX_RUN_GROUP: ${{ github.run_id }}-${{ github.run_attempt }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      specifier:
+        description: 'Semver specifier for the current release (e.g. "patch", "preminor", "1.2.3")'
+        type: string
+        required: true
+      dist-tag:
+        description: 'dist-tag to use for publish to https://registry.npmjs.org'
+        required: true
+        type: choice
+        options:
+          - infer-from-specifier
+          - latest
+          - next
+      dry-run:
+        description: 'Whether to run the release in dry-run mode'
+        type: boolean
+        default: true
+      first-release:
+        description: 'Whether this is the first release of any packages in the group'
+        type: boolean
+        default: false
+
+run-name: "${{ github.event.inputs.dry-run == 'true' && '[dry-run]: ' || '' }}Release Angular Rspack packages => '${{ github.event.inputs.specifier }}' [dist-tag: '${{ github.event.inputs.dist-tag }}']"
+
+jobs:
+  release:
+    if: github.repository == 'nrwl/angular-rspack'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write # needed for provenance data generation
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      NPM_CONFIG_PROVENANCE: true
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: 'true'
+
+      - name: Configure Git User
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      # Cache node_modules
+      - name: Cache node_modules
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.12
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'pnpm'
+
+      # Ensure that the NPM_TOKEN secret is still valid before wasting any time deriving data or building projects
+      - name: Check NPM Credentials
+        run: npm whoami && echo "NPM credentials are valid" || (echo "NPM credentials are invalid or have expired." && exit 1)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+          GH_TOKEN: ${{ github.token }}
+
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Release packages
+        run: pnpm release --version ${{ github.event.inputs.specifier }} --dist-tag ${{ github.event.inputs.dist-tag }} --dry-run=${{ github.event.inputs.dry-run }} --first-release=${{ github.event.inputs.first-release }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: true
+          GH_TOKEN: ${{ github.token }}

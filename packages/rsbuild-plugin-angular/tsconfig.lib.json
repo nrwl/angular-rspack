@@ -7,8 +7,8 @@
     "tsBuildInfoFile": "dist/tsconfig.lib.tsbuildinfo",
     "emitDeclarationOnly": false,
     "types": ["node"],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
     "noImplicitAny": false,
     "noUnusedLocals": false,
     "esModuleInterop": true,
@@ -18,13 +18,19 @@
   "include": ["src/**/*.ts", "src/lib/patch/patch-angular-build.ts"],
   "references": [
     {
-      "path": "../../testing/setup/tsconfig.lib.json"
+      "path": "../angular-rsbuild/tsconfig.lib.json"
     },
     {
       "path": "../../testing/utils/tsconfig.lib.json"
     },
     {
+      "path": "../angular-rspack-compiler/tsconfig.lib.json"
+    },
+    {
       "path": "../compiler/tsconfig.lib.json"
+    },
+    {
+      "path": "../../testing/setup/tsconfig.lib.json"
     }
   ],
   "exclude": [

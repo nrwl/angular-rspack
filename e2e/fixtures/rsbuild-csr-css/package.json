@@ -5,7 +5,7 @@
     "@angular/core": "19.1.6",
     "@angular/platform-browser": "19.1.6",
     "@angular/router": "19.1.6",
-    "@ng-rsbuild/plugin-angular": "workspace:*"
+    "@nx/angular-rsbuild": "workspace:*"
   },
   "devDependencies": {
     "jsonc-eslint-parser": "2.4.0"

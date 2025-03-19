@@ -27,13 +27,13 @@
       "path": "../../testing/utils"
     },
     {
-      "path": "../../packages/compiler"
+      "path": "../../packages/angular-rspack-compiler"
     },
     {
       "path": "../../testing/setup"
     },
     {
-      "path": "../../packages/rsbuild-plugin-angular"
+      "path": "../../packages/angular-rsbuild"
     },
     {
       "path": "./tsconfig.test.json"
