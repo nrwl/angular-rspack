@@ -34,6 +34,9 @@ module.exports = () => {
             port: 8080,
             proxyConfig: './proxy.conf.json',
           },
+          define: {
+            nxAngularRspack: '"20.6.2"',
+          },
         },
       },
       {
