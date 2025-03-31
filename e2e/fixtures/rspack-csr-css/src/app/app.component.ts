@@ -6,6 +6,8 @@ import { ApiService } from './api.service';
 import { NxWelcomeComponent } from './nx-welcome.component';
 import { ScssInlineTestComponent } from './scss-inline-test';
 
+declare const nxAngularRspack: string;
+
 @Component({
   imports: [
     NxWelcomeComponent,
@@ -20,6 +22,7 @@ import { ScssInlineTestComponent } from './scss-inline-test';
 export class AppComponent implements OnInit {
   title = 'rsbuild-csr-css';
   greeting$!: Observable<string>;
+  nxAngularRspackVersion = nxAngularRspack;
 
   constructor(private readonly apiService: ApiService) {}
 

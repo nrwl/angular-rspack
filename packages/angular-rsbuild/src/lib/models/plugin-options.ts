@@ -43,6 +43,12 @@ export interface SourceMap {
 export interface PluginAngularOptions {
   index: string;
   browser: string;
+  /**
+   * Defines global identifiers that will be replaced with a specified constant value when found in any JavaScript or TypeScript code including libraries.
+   * The value will be used directly.
+   * String values must be put in quotes.
+   */
+  define?: Record<string, string>;
   server?: string;
   ssr?:
     | boolean

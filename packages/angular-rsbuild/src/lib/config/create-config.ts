@@ -154,6 +154,7 @@ export async function _createConfig(
           define: {
             ...(isProd ? { ngDevMode: 'false' } : undefined),
             ngJitMode: normalizedOptions.aot ? undefined : 'true', // @TODO: use normalizedOptions
+            ...normalizedOptions.define,
           },
         },
         output: {
@@ -194,6 +195,7 @@ export async function _createConfig(
                   ngServerMode: true,
                   ...(isProd ? { ngDevMode: 'false' } : undefined),
                   ngJitMode: normalizedOptions.aot ? undefined : 'true', // @TODO: use normalizedOptions
+                  ...normalizedOptions.define,
                 },
               },
               output: {

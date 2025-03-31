@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NxWelcomeComponent } from './nx-welcome.component';
 
+declare const nxAngularRsbuild: string;
+
 @Component({
   imports: [NxWelcomeComponent, RouterModule],
   selector: 'app-root',
@@ -10,4 +12,5 @@ import { NxWelcomeComponent } from './nx-welcome.component';
 })
 export class AppComponent {
   title = 'rsbuild-csr-css';
+  ngAngularRsbuildVersion = nxAngularRsbuild;
 }

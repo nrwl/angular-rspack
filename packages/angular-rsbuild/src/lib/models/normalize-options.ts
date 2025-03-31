@@ -88,6 +88,7 @@ function validateChunkOptions(options: Partial<PluginAngularOptions>) {
 export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   index: './src/index.html',
   browser: './src/main.ts',
+  define: {},
   server: undefined,
   ssr: undefined,
   fileReplacements: [],
@@ -121,6 +122,7 @@ export function normalizeOptions(
     ssr,
     optimization,
     devServer,
+    define,
     ...restOptions
   } = options;
 
@@ -150,6 +152,7 @@ export function normalizeOptions(
     ...restOptions,
     ...(server != null ? { server } : {}),
     ...(ssr != null ? { ssr: normalizedSsr } : {}),
+    ...(define != null ? { define } : {}),
     optimization: normalizedOptimization,
     outputPath: normalizeOutputPath(root, options.outputPath),
     sourceMap: normalizeSourceMap(options.sourceMap),

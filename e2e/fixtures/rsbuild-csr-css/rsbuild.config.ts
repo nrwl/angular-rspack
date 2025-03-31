@@ -6,6 +6,9 @@ export default () => {
         browser: './src/main.ts',
         inlineStylesExtension: 'css',
         outputPath: './build',
+        define: {
+          nxAngularRsbuild: '"20.6.2"',
+        },
       },
     });
   }
