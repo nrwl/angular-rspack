@@ -174,6 +174,7 @@ export async function _createConfig(
             media: normalizedOptions.outputPath.media,
             assets: normalizedOptions.outputPath.media,
           },
+          cleanDistPath: normalizedOptions.deleteOutputPath,
           copy: normalizedOptions.assets.map((srcPath) => ({
             from: srcPath,
             to: dirname(srcPath),
@@ -203,6 +204,7 @@ export async function _createConfig(
                 target: 'node',
                 polyfill: 'entry',
                 distPath: { root: normalizedOptions.outputPath.server },
+                cleanDistPath: normalizedOptions.deleteOutputPath,
               },
             },
           }

@@ -49,6 +49,10 @@ export interface PluginAngularOptions {
    * String values must be put in quotes.
    */
   define?: Record<string, string>;
+  /**
+   * Delete the output path before building.
+   */
+  deleteOutputPath?: boolean;
   server?: string;
   ssr?:
     | boolean
