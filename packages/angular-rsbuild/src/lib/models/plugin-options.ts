@@ -57,6 +57,7 @@ export interface PluginAngularOptions {
         experimentalPlatform?: 'node' | 'neutral';
       };
   polyfills: string[];
+  preserveSymlinks?: boolean;
   assets: string[];
   styles: string[];
   scripts: string[];
