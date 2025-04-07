@@ -90,6 +90,7 @@ export const DEFAULT_PLUGIN_ANGULAR_OPTIONS: PluginAngularOptions = {
   browser: './src/main.ts',
   define: {},
   deleteOutputPath: true,
+  externalDependencies: [],
   server: undefined,
   ssr: undefined,
   fileReplacements: [],
@@ -125,6 +126,7 @@ export function normalizeOptions(
     devServer,
     define,
     deleteOutputPath,
+    externalDependencies,
     ...restOptions
   } = options;
 
@@ -156,6 +158,7 @@ export function normalizeOptions(
     ...(ssr != null ? { ssr: normalizedSsr } : {}),
     ...(define != null ? { define } : {}),
     ...(deleteOutputPath != null ? { deleteOutputPath } : {}),
+    externalDependencies: externalDependencies ?? [],
     optimization: normalizedOptimization,
     outputPath: normalizeOutputPath(root, options.outputPath),
     sourceMap: normalizeSourceMap(options.sourceMap),
