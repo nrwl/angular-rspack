@@ -141,6 +141,7 @@ export async function _createConfig(
       rspack(config) {
         config.resolve ??= {};
         config.resolve.extensionAlias = {};
+        config.resolve.symlinks = normalizedOptions.preserveSymlinks;
       },
     },
     environments: {
