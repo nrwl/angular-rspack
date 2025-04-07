@@ -205,6 +205,7 @@ export async function _createConfig(
                 polyfill: 'entry',
                 distPath: { root: normalizedOptions.outputPath.server },
                 cleanDistPath: normalizedOptions.deleteOutputPath,
+                externals: normalizedOptions.externalDependencies,
               },
             },
           }

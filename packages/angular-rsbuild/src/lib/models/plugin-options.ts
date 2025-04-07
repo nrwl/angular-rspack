@@ -53,6 +53,10 @@ export interface PluginAngularOptions {
    * Delete the output path before building.
    */
   deleteOutputPath?: boolean;
+  /**
+   * Exclude the listed external dependencies from being bundled into the bundle. Instead, the created bundle relies on these dependencies to be available during runtime.
+   */
+  externalDependencies?: string[];
   server?: string;
   ssr?:
     | boolean
@@ -87,6 +91,7 @@ export interface PluginAngularOptions {
 export interface NormalizedPluginAngularOptions extends PluginAngularOptions {
   advancedOptimizations: boolean;
   devServer: DevServerOptions & { port: number };
+  externalDependencies: string[];
   optimization: boolean | OptimizationOptions;
   outputHashing: OutputHashing;
   outputPath: OutputPath;
