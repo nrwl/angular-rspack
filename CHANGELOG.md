@@ -1,3 +1,18 @@
+## 20.7.0-beta.0 (2025-04-15)
+
+### 🚀 Features
+
+- **angular-rspack:** add allowedHosts option ([#47](https://github.com/nrwl/angular-rspack/pull/47))
+- **angular-rspack:** add support for i18n ([#51](https://github.com/nrwl/angular-rspack/pull/51))
+- **angular-rspack,angular-rsbuild:** add define option ([#45](https://github.com/nrwl/angular-rspack/pull/45))
+- **angular-rspack,angular-rsbuild:** add preserveSymlinks option ([#48](https://github.com/nrwl/angular-rspack/pull/48))
+- **angular-rspack,angular-rsbuild:** add deleteOutputPath option ([#49](https://github.com/nrwl/angular-rspack/pull/49))
+- **angular-rspack,angular-rsbuild:** add externalDependencies option ([#50](https://github.com/nrwl/angular-rspack/pull/50))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 20.6.2 (2025-03-14)
 
 This was a version bump only, there were no code changes.
