@@ -94,6 +94,7 @@
     "includedScripts": []
   },
   "dependencies": {
+    "@ampproject/remapping": "2.3.0",
     "@angular/animations": "19.1.6",
     "@angular/cdk": "19.0.4",
     "@angular/common": "19.1.6",
@@ -106,6 +107,8 @@
     "@angular/platform-server": "19.1.6",
     "@angular/router": "19.1.6",
     "@angular/ssr": "19.1.6",
+    "@angular/localize": "19.1.6",
+    "@babel/core": "7.26.10",
     "@code-pushup/cli": "^0.63.0",
     "@code-pushup/coverage-plugin": "^0.64.0",
     "@code-pushup/eslint-plugin": "^0.63.0",
