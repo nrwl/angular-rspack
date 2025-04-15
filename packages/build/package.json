@@ -1,6 +1,6 @@
 {
   "name": "@ng-rspack/build",
-  "version": "20.7.0-beta.0",
+  "version": "20.7.0",
   "private": false,
   "publishConfig": {
     "access": "public"

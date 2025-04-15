@@ -1,3 +1,7 @@
+## 20.7.0 (2025-04-15)
+
+This was a version bump only, there were no code changes.
+
 ## 20.7.0-beta.0 (2025-04-15)
 
 ### 🚀 Features
