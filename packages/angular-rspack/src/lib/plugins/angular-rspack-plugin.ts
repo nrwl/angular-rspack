@@ -1,29 +1,26 @@
+import { augmentAppWithServiceWorker } from '@angular/build/private';
 import {
-  Compiler,
-  HtmlRspackPlugin,
-  RspackOptionsNormalized,
-  RspackPluginInstance,
+  buildAndAnalyzeWithParallelCompilation,
+  DiagnosticModes,
+  JavaScriptTransformer,
+  maxWorkers,
+  setupCompilationWithParallelCompilation,
+} from '@nx/angular-rspack-compiler';
+import { workspaceRoot } from '@nx/devkit';
+import {
+  type Compiler,
+  type RspackOptionsNormalized,
+  type RspackPluginInstance,
   sources,
 } from '@rspack/core';
+import { dirname, join, normalize, resolve } from 'node:path';
 import {
-  I18nOptions,
+  type I18nOptions,
   NG_RSPACK_SYMBOL_NAME,
-  NgRspackCompilation,
+  type NgRspackCompilation,
   type NormalizedAngularRspackPluginOptions,
 } from '../models';
-import {
-  maxWorkers,
-  buildAndAnalyzeWithParallelCompilation,
-  JavaScriptTransformer,
-  setupCompilationWithParallelCompilation,
-  DiagnosticModes,
-} from '@nx/angular-rspack-compiler';
-import { augmentAppWithServiceWorker } from '@angular/build/private';
-import { dirname, normalize, resolve } from 'path';
-import fs_1 from 'fs';
-import { workspaceRoot } from '@nx/devkit';
 import { getLocaleBaseHref } from '../utils/get-locale-base-href';
-import { join } from 'node:path';
 
 const PLUGIN_NAME = 'AngularRspackPlugin';
 type Awaited<T> = T extends Promise<infer U> ? U : T;
@@ -240,23 +237,6 @@ export class AngularRspackPlugin implements RspackPluginInstance {
           .#javascriptTransformer as unknown as JavaScriptTransformer,
         typescriptFileCache: this.#typescriptFileCache,
         i18n: this.#i18n,
-      });
-    });
-
-    compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
-      const htmlRspackPluginHooks =
-        HtmlRspackPlugin.getCompilationHooks(compilation);
-      htmlRspackPluginHooks.beforeEmit.tap(PLUGIN_NAME, (data) => {
-        const ngJsDispatchEvent = `<script type="text/javascript" id="ng-event-dispatch-contract">
-                ${fs_1.readFileSync(
-                  require.resolve(
-                    '@angular/core/event-dispatch-contract.min.js'
-                  ),
-                  'utf-8'
-                )}
-                </script>`;
-        data.html = data.html.replace('</body>', `${ngJsDispatchEvent}</body>`);
-        return data;
       });
     });
 

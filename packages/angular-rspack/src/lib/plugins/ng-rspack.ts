@@ -2,32 +2,38 @@ import {
   Compiler,
   CopyRspackPlugin,
   DefinePlugin,
-  EntryPlugin,
-  HtmlRspackPlugin,
+  experiments,
   ProgressPlugin,
   RspackPluginInstance,
 } from '@rspack/core';
 import { posix, relative, resolve } from 'node:path';
-import { RxjsEsmResolutionPlugin } from './rxjs-esm-resolution';
-import { AngularRspackPlugin } from './angular-rspack-plugin';
-import { I18nInlinePlugin } from './i18n-inline-plugin';
-import {
+import { getEntryPoints } from '../config/entry-points';
+import type {
   I18nOptions,
   NormalizedAngularRspackPluginOptions,
   OutputPath,
 } from '../models';
+import { AngularRspackPlugin } from './angular-rspack-plugin';
 import { AngularSsrDevServer } from './angular-ssr-dev-server';
+import { I18nInlinePlugin } from './i18n-inline-plugin';
+import { IndexHtmlPlugin } from './index-html-plugin';
+import { RxjsEsmResolutionPlugin } from './rxjs-esm-resolution';
 
 export class NgRspackPlugin implements RspackPluginInstance {
-  pluginOptions: NormalizedAngularRspackPluginOptions;
-  i18n: I18nOptions | undefined;
+  readonly pluginOptions: NormalizedAngularRspackPluginOptions;
+  readonly isPlatformServer: boolean;
+  readonly i18n: I18nOptions | undefined;
 
   constructor(
-    options: NormalizedAngularRspackPluginOptions,
-    i18nOptions?: I18nOptions
+    pluginOptions: NormalizedAngularRspackPluginOptions,
+    extraOptions: {
+      platform: 'browser' | 'server';
+      i18nOptions?: I18nOptions;
+    }
   ) {
-    this.pluginOptions = options;
-    this.i18n = i18nOptions;
+    this.pluginOptions = pluginOptions;
+    this.i18n = extraOptions.i18nOptions;
+    this.isPlatformServer = extraOptions.platform === 'server';
   }
 
   apply(compiler: Compiler) {
@@ -35,36 +41,7 @@ export class NgRspackPlugin implements RspackPluginInstance {
     const isProduction = process.env['NODE_ENV'] === 'production';
     const isDevServer = process.env['WEBPACK_SERVE'];
 
-    const polyfills = this.pluginOptions.polyfills ?? [];
-    if (polyfills.length > 0) {
-      compiler.hooks.entryOption.tap('NgRspackPlugin', (context, entry) => {
-        const keys = Object.keys(entry);
-        for (const key of keys) {
-          if (key === 'styles') {
-            continue;
-          }
-          const entryValue = entry[key];
-          entryValue.import = [...polyfills, ...entryValue.import];
-        }
-      });
-    }
-    if (!this.pluginOptions.hasServer) {
-      const scripts = this.pluginOptions.globalScripts ?? [];
-      for (const script of scripts) {
-        for (const file of script.files) {
-          new EntryPlugin(compiler.context, file, {
-            name: isProduction ? script.name : undefined,
-          }).apply(compiler);
-        }
-      }
-      if (this.pluginOptions.index) {
-        new HtmlRspackPlugin({
-          minify: false,
-          inject: 'body',
-          scriptLoading: 'module',
-          template: this.pluginOptions.index.input,
-        }).apply(compiler);
-      }
+    if (!this.isPlatformServer) {
       if (
         this.pluginOptions.ssr &&
         typeof this.pluginOptions.ssr === 'object' &&
@@ -82,7 +59,7 @@ export class NgRspackPlugin implements RspackPluginInstance {
       // TODO: Replace with ...(this.pluginOptions.optimization.scripts ? { 'ngDevMode': 'false' } : undefined) when Optimization is implemented
       ...(this.pluginOptions.optimization ? { ngDevMode: 'false' } : {}),
       ngJitMode: this.pluginOptions.aot ? undefined : 'true',
-      ngServerMode: this.pluginOptions.hasServer,
+      ngServerMode: this.isPlatformServer,
       ...(this.pluginOptions.define ?? {}),
     }).apply(compiler);
     if (this.pluginOptions.assets) {
@@ -141,5 +118,49 @@ export class NgRspackPlugin implements RspackPluginInstance {
     }
     new RxjsEsmResolutionPlugin().apply(compiler);
     new AngularRspackPlugin(this.pluginOptions, this.i18n).apply(compiler);
+    if (this.pluginOptions.subresourceIntegrity) {
+      new experiments.SubresourceIntegrityPlugin({
+        hashFuncNames: ['sha384'],
+      }).apply(compiler);
+    }
+    if (this.pluginOptions.index) {
+      // @TODO: remove this once we properly support optimization granular options
+      const optimize = this.pluginOptions.optimization !== false;
+
+      new IndexHtmlPlugin(
+        {
+          indexPath: this.pluginOptions.index.input,
+          baseHref: this.pluginOptions.baseHref,
+          outputPath: this.pluginOptions.index.output || 'index.html',
+          entrypoints: getEntryPoints(
+            this.pluginOptions.globalStyles,
+            this.pluginOptions.globalScripts,
+            this.pluginOptions.devServer?.hmr
+          ),
+          // @TODO: wire up i18n here
+          lang: undefined,
+          optimization: {
+            fonts: { inline: optimize },
+            scripts: optimize,
+            styles: {
+              inlineCritical: optimize,
+              minify: optimize,
+              removeSpecialComments: optimize,
+            },
+          },
+          generateDedicatedSSRContent:
+            this.isPlatformServer &&
+            !!(
+              this.pluginOptions.ssr ||
+              this.pluginOptions.prerender ||
+              this.pluginOptions.appShell
+            ),
+          deployUrl: this.pluginOptions.deployUrl,
+          crossOrigin: this.pluginOptions.crossOrigin,
+          sri: this.pluginOptions.subresourceIntegrity,
+        },
+        this.isPlatformServer
+      ).apply(compiler);
+    }
   }
 }

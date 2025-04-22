@@ -1,4 +1,5 @@
-import { FileReplacement } from '@nx/angular-rspack-compiler';
+import { getSupportedBrowsers } from '@angular/build/private';
+import type { FileReplacement } from '@nx/angular-rspack-compiler';
 import {
   normalizePath,
   readCachedProjectGraph,
@@ -207,12 +208,39 @@ export function normalizeOptions(
      * This approach can also be applied to service workers, where the `index.csr.html` is served instead of the prerendered `index.html`.
      */
     const indexBaseName = basename(indexOutput);
-    indexOutput =
-      // @TODO: use this once we support prerenderOptions
-      // (normalizedSsr || prerenderOptions) && indexBaseName === 'index.html'
-      normalizedSsr && indexBaseName === 'index.html'
-        ? INDEX_HTML_CSR
-        : indexBaseName;
+    // @TODO: use this once we properly support SSR/SSG options
+    // (normalizedSsr || prerenderOptions) && indexBaseName === 'index.html'
+    //   ? INDEX_HTML_CSR
+    //   : indexBaseName;
+    indexOutput = indexBaseName;
+
+    const entryPoints: [name: string, isEsm: boolean][] = [
+      // TODO: this should be true when !!devServer?.hot (HMR is supported)
+      ['runtime', false],
+      ['polyfills', true],
+      ...(globalStyles.filter((s) => s.initial).map((s) => [s.name, false]) as [
+        string,
+        boolean
+      ][]),
+      ...(globalScripts
+        .filter((s) => s.initial)
+        .map((s) => [s.name, false]) as [string, boolean][]),
+      ['vendor', true],
+      ['main', true],
+    ];
+
+    const duplicates = entryPoints.filter(
+      ([name]) =>
+        entryPoints[0].indexOf(name) !== entryPoints[0].lastIndexOf(name)
+    );
+
+    if (duplicates.length > 0) {
+      throw new Error(
+        `Multiple bundles have been named the same: '${duplicates.join(
+          `', '`
+        )}'.`
+      );
+    }
 
     index = {
       input: resolve(
@@ -220,13 +248,6 @@ export function normalizeOptions(
         typeof options.index === 'string' ? options.index : options.index.input
       ),
       output: indexOutput,
-      insertionOrder: [
-        ['polyfills', true],
-        ...globalStyles.filter((s) => s.initial).map((s) => [s.name, false]),
-        ...globalScripts.filter((s) => s.initial).map((s) => [s.name, false]),
-        ['main', true],
-        // [name, esm]
-      ] as [string, boolean][],
       // @TODO: Add support for transformer
       transformer: undefined,
       // Preload initial defaults to true
@@ -240,10 +261,13 @@ export function normalizeOptions(
     advancedOptimizations,
     assets,
     aot,
+    baseHref: options.baseHref,
     browser: options.browser ?? './src/main.ts',
     commonChunk: options.commonChunk ?? true,
+    crossOrigin: options.crossOrigin ?? 'none',
     define: options.define ?? {},
     deleteOutputPath: options.deleteOutputPath ?? true,
+    deployUrl: options.deployUrl,
     devServer: normalizeDevServer(options.devServer),
     externalDependencies: options.externalDependencies ?? [],
     extractLicenses: options.extractLicenses ?? true,
@@ -255,9 +279,10 @@ export function normalizeOptions(
     inlineStyleLanguage: options.inlineStyleLanguage ?? 'css',
     namedChunks: options.namedChunks ?? false,
     optimization: normalizedOptimization,
-    outputHashing: options.outputHashing ?? 'all',
+    outputHashing: options.outputHashing ?? 'none',
     outputPath: normalizeOutputPath(root, options.outputPath),
     polyfills: options.polyfills ?? [],
+    projectName: project?.name ?? undefined,
     root,
     serviceWorker: options.serviceWorker,
     ngswConfigPath: options.ngswConfigPath,
@@ -265,6 +290,8 @@ export function normalizeOptions(
     skipTypeChecking: options.skipTypeChecking ?? false,
     sourceMap: normalizeSourceMap(options.sourceMap),
     ssr: normalizedSsr,
+    subresourceIntegrity: options.subresourceIntegrity ?? false,
+    supportedBrowsers: getSupportedBrowsers(root, { warn: console.warn }),
     tsConfig,
     useTsProjectReferences: options.useTsProjectReferences ?? false,
     vendorChunk: options.vendorChunk ?? false,
@@ -274,15 +301,7 @@ export function normalizeOptions(
 function normalizeSourceMap(
   sourceMap: boolean | Partial<SourceMap> | undefined
 ): SourceMap {
-  if (sourceMap === undefined || sourceMap === true) {
-    return {
-      scripts: true,
-      styles: true,
-      hidden: false,
-      vendor: false,
-    };
-  }
-  if (sourceMap === false) {
+  if (sourceMap === undefined) {
     return {
       scripts: false,
       styles: false,
@@ -290,6 +309,16 @@ function normalizeSourceMap(
       vendor: false,
     };
   }
+
+  if (typeof sourceMap === 'boolean') {
+    return {
+      scripts: sourceMap,
+      styles: sourceMap,
+      hidden: sourceMap,
+      vendor: sourceMap,
+    };
+  }
+
   return {
     scripts: sourceMap.scripts ?? true,
     styles: sourceMap.styles ?? true,
@@ -446,7 +475,7 @@ function normalizeAssetPatterns(
 
 function normalizeGlobalEntries(
   rawEntries: ScriptOrStyleEntry[] | undefined,
-  _defaultName: string
+  defaultName: string
 ): GlobalEntry[] {
   if (!rawEntries?.length) {
     return [];
@@ -454,8 +483,6 @@ function normalizeGlobalEntries(
 
   const bundles = new Map<string, GlobalEntry>();
 
-  let warnForInject = false;
-  let warnForBundleName = false;
   for (const rawEntry of rawEntries) {
     let entry: ScriptOrStyleEntry;
     if (typeof rawEntry === 'string') {
@@ -467,49 +494,24 @@ function normalizeGlobalEntries(
 
     const { bundleName, input, inject = true } = entry;
 
-    // @TODO: remove this once we support inject
-    if (inject === false) {
-      warnForInject = true;
-    }
-    // @TODO: remove this once we support bundleName
-    if (bundleName) {
-      warnForBundleName = true;
-    }
-
-    // @TODO: use this once we support inject and bundleName
     // Non-injected entries default to the file name
-    // const name =
-    //   bundleName || (inject ? defaultName : basename(input, extname(input)));
-    const name = basename(input, extname(input));
+    const name =
+      bundleName || (inject ? defaultName : basename(input, extname(input)));
 
     const existing = bundles.get(name);
     if (!existing) {
-      // @TODO: use this once we support inject
-      // bundles.set(name, { name, files: [input], initial: inject });
-      bundles.set(name, { name, files: [input], initial: true });
+      bundles.set(name, { name, files: [input], initial: inject });
       continue;
     }
 
-    // @TODO: uncomment this once we support inject
-    // if (existing.initial !== inject) {
-    //   throw new Error(
-    //     `The "${name}" bundle is mixing injected and non-injected entries. ` +
-    //       'Verify that the project options are correct.'
-    //   );
-    // }
+    if (existing.initial !== inject) {
+      throw new Error(
+        `The "${name}" bundle is mixing injected and non-injected entries. ` +
+          'Verify that the project options are correct.'
+      );
+    }
 
     existing.files.push(input);
-  }
-
-  if (warnForInject) {
-    console.warn(
-      `The "inject" option for scripts/styles is not yet supported.`
-    );
-  }
-  if (warnForBundleName) {
-    console.warn(
-      `The "bundleName" option for scripts/styles is not yet supported.`
-    );
   }
 
   return [...bundles.values()];

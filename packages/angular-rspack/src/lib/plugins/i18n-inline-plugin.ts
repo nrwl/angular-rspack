@@ -8,6 +8,7 @@ import {
 import remapping from '@ampproject/remapping';
 import assert from 'node:assert';
 import { I18nOptions, NormalizedAngularRspackPluginOptions } from '../models';
+import { loadEsmModule } from '../utils/misc-helpers';
 
 /**
  * A Type representing the localize tools module.
@@ -145,10 +146,9 @@ export class I18nInlinePlugin implements RspackPluginInstance {
     // Load ESM `@angular/localize/tools` using the TypeScript dynamic import workaround.
     // Once TypeScript provides support for keeping the dynamic import this workaround can be
     // changed to a direct dynamic import.
-    this.#localizeToolsModule ??=
-      await this.#loadEsmModule<LocalizeUtilityModule>(
-        '@angular/localize/tools'
-      );
+    this.#localizeToolsModule ??= await loadEsmModule<LocalizeUtilityModule>(
+      '@angular/localize/tools'
+    );
   }
 
   /**
@@ -190,15 +190,6 @@ export class I18nInlinePlugin implements RspackPluginInstance {
     });
 
     return { diagnostics, plugins };
-  }
-
-  #loadEsmModule<T>(modulePath: string | URL): Promise<T> {
-    const load = new Function(
-      'modulePath',
-      `return import(modulePath);`
-    ) as Exclude<typeof load, undefined>;
-
-    return load(modulePath);
   }
 
   #assertIsError(value: unknown): asserts value is Error & { code?: string } {
@@ -305,7 +296,7 @@ export class I18nInlinePlugin implements RspackPluginInstance {
   ): Promise<string | undefined> {
     try {
       const localeData = (
-        await this.#loadEsmModule<typeof import('@angular/common/locales/en')>(
+        await loadEsmModule<typeof import('@angular/common/locales/en')>(
           `@angular/common/locales/${locale}`
         )
       ).default;
