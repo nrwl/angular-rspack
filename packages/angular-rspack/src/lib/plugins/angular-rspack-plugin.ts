@@ -156,32 +156,25 @@ export class AngularRspackPlugin implements RspackPluginInstance {
             if (assetNameWithoutHash !== 'main.js') {
               continue;
             }
-            const originalSource = asset.source.source();
-            let updatedSourceContent =
-              typeof originalSource === 'string'
-                ? originalSource
-                : originalSource.toString();
+            const originalSource = asset.source;
+            let setLocaleContent = '';
             if (this.#i18n?.shouldInline) {
               // When inlining, a placeholder is used to allow the post-processing step to inject the $localize locale identifier.
-              updatedSourceContent +=
+              setLocaleContent +=
                 '(globalThis.$localize ??= {}).locale = "___NG_LOCALE_INSERT___";\n';
             } else if (this.#i18n?.hasDefinedSourceLocale) {
               // If not inlining translations and source locale is defined, inject the locale specifier.
-              updatedSourceContent += `(globalThis.$localize ??= {}).locale = "${
+              setLocaleContent += `(globalThis.$localize ??= {}).locale = "${
                 this.#i18n.sourceLocale
               }";\n`;
             }
 
-            // Replace the asset with the modified content
-            const map = asset.source.map();
-            const updatedSource = map
-              ? new sources.SourceMapSource(
-                  updatedSourceContent,
-                  asset.name,
-                  map
-                )
-              : new sources.RawSource(updatedSourceContent);
-            compilation.updateAsset(assetName, updatedSource);
+            const concatLocaleSource = new sources.ConcatSource(
+              setLocaleContent,
+              originalSource
+            );
+
+            compilation.updateAsset(assetName, concatLocaleSource);
           }
         }
       );

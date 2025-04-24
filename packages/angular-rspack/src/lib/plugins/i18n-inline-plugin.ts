@@ -65,6 +65,9 @@ export class I18nInlinePlugin implements RspackPluginInstance {
           { text: string | Buffer; map: sources.RawSourceMap | null }
         >();
         for (const [filename, { text, map }] of filesToInline.entries()) {
+          if (this.#checkAssetHasBeenProcessed(filename)) {
+            continue;
+          }
           const result = await this.#transformWithBabel(
             text,
             map,
@@ -77,6 +80,9 @@ export class I18nInlinePlugin implements RspackPluginInstance {
           // TODO: Add support for diagnostics
         }
         for (const [filename, source] of additionalFiles.entries()) {
+          if (this.#checkAssetHasBeenProcessed(filename)) {
+            continue;
+          }
           localeFiles.set(filename, {
             text: source.source(),
             map: source.map(),
@@ -88,22 +94,6 @@ export class I18nInlinePlugin implements RspackPluginInstance {
       for (const [localeSubPath, files] of filesToOutput.entries()) {
         for (const [filename, { text, map }] of files.entries()) {
           const localeFileName = `${localeSubPath}/${filename}`;
-          if (localeFileName.endsWith('index.html')) {
-            // update the baseHref for the locale and set the lang attribute
-            const html = typeof text === 'string' ? text : text.toString();
-            const updatedHtml = await this.#updateBaseHrefAndLang(
-              html,
-              localeSubPath
-            );
-            compilation.emitAsset(
-              localeFileName,
-              new sources.RawSource(updatedHtml)
-            );
-            if (compilation.getAsset(filename)) {
-              compilation.deleteAsset(filename);
-            }
-            continue;
-          }
           if (map) {
             compilation.emitAsset(
               localeFileName,
@@ -121,20 +111,8 @@ export class I18nInlinePlugin implements RspackPluginInstance {
     });
   }
 
-  async #updateBaseHrefAndLang(html: string, localeSubPath: string) {
-    // TODO: add support for diagnostics
-    const dir = localeSubPath
-      ? await this.#getLanguageDirection(localeSubPath, [])
-      : undefined;
-    html = html.replace(
-      /<base href="([^"]+)">/g,
-      `<base href="/${localeSubPath}$1">`
-    );
-    html = html.replace(
-      /<html lang="([^"]+)">/g,
-      `<html lang="${localeSubPath}"${dir ? ` dir="${dir}"` : ''}>`
-    );
-    return html;
+  #checkAssetHasBeenProcessed(filename: string) {
+    return this.#i18n.inlineLocales.has(filename.split('/')[0]);
   }
 
   /**
@@ -207,7 +185,10 @@ export class I18nInlinePlugin implements RspackPluginInstance {
    * Transforms a JavaScript file using Babel to inline the request locale and translation.
    * @param code A string containing the JavaScript code to transform.
    * @param map A sourcemap object for the provided JavaScript code.
-   * @param options The inline request options to use.
+   * @param filename The filename of the JavaScript file to transform.
+   * @param locale The locale to inline.
+   * @param translation The translation to inline.
+   * @param shouldOptimize Whether to optimize the transformed code.
    * @returns An object containing the code, map, and diagnostics from the transformation.
    */
   async #transformWithBabel(
@@ -274,49 +255,5 @@ export class I18nInlinePlugin implements RspackPluginInstance {
       map: outputMap && JSON.stringify(outputMap),
       diagnostics,
     };
-  }
-
-  async #getLanguageDirection(
-    locale: string,
-    warnings: string[]
-  ): Promise<string | undefined> {
-    const dir = await this.#getLanguageDirectionFromLocales(locale);
-
-    if (!dir) {
-      warnings.push(
-        `Locale data for '${locale}' cannot be found. 'dir' attribute will not be set for this locale.`
-      );
-    }
-
-    return dir;
-  }
-
-  async #getLanguageDirectionFromLocales(
-    locale: string
-  ): Promise<string | undefined> {
-    try {
-      const localeData = (
-        await loadEsmModule<typeof import('@angular/common/locales/en')>(
-          `@angular/common/locales/${locale}`
-        )
-      ).default;
-
-      const dir = localeData[localeData.length - 2];
-
-      return this.#isString(dir) ? dir : undefined;
-    } catch {
-      // In some cases certain locales might map to files which are named only with language id.
-      // Example: `en-US` -> `en`.
-      const [languageId] = locale.split('-', 1);
-      if (languageId !== locale) {
-        return this.#getLanguageDirectionFromLocales(languageId);
-      }
-    }
-
-    return undefined;
-  }
-
-  #isString(value: unknown): value is string {
-    return typeof value === 'string';
   }
 }

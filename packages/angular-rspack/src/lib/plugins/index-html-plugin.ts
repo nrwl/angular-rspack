@@ -4,7 +4,7 @@ import {
   type IndexHtmlGeneratorOptions,
 } from '@angular/build/private';
 import { Compilation, RspackPluginInstance, type Compiler } from '@rspack/core';
-import { basename, extname } from 'node:path';
+import { basename, extname, join } from 'node:path';
 import type { I18nOptions, IndexExpandedDefinition } from '../models';
 import { assertIsError } from '../utils/misc-helpers';
 import { ensureOutputPaths } from '../utils/output-paths';
@@ -91,7 +91,9 @@ export class IndexHtmlPlugin
 
               const { RawSource } = compiler.rspack.sources;
               compilation.emitAsset(
-                getIndexOutputFile(this.options.index),
+                locale
+                  ? join(locale, getIndexOutputFile(this.options.index))
+                  : getIndexOutputFile(this.options.index),
                 new RawSource(html)
               );
               warnings.forEach((msg) => addWarning(compilation, msg));
