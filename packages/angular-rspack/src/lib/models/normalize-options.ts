@@ -1,11 +1,6 @@
 import { getSupportedBrowsers } from '@angular/build/private';
 import type { FileReplacement } from '@nx/angular-rspack-compiler';
-import {
-  normalizePath,
-  readCachedProjectGraph,
-  workspaceRoot,
-  type ProjectGraphProjectNode,
-} from '@nx/devkit';
+import { workspaceRoot, type ProjectGraphProjectNode } from '@nx/devkit';
 import assert from 'node:assert';
 import { existsSync, statSync } from 'node:fs';
 import {
@@ -14,9 +9,15 @@ import {
   extname,
   join,
   normalize,
+  posix,
   relative,
   resolve,
 } from 'node:path';
+import {
+  findProjectForPath,
+  normalizeProjectRoot,
+} from '../utils/find-project-for-path';
+import { retrieveOrCreateProjectGraph } from '../utils/graph';
 import type {
   AngularRspackPluginOptions,
   AssetElement,
@@ -125,9 +126,9 @@ function validateGeneralUnsupportedOptions(
   }
 }
 
-export function normalizeOptions(
+export async function normalizeOptions(
   options: AngularRspackPluginOptions
-): NormalizedAngularRspackPluginOptions {
+): Promise<NormalizedAngularRspackPluginOptions> {
   validateGeneralUnsupportedOptions(options);
 
   const { fileReplacements = [], server, ssr, optimization } = options;
@@ -156,7 +157,7 @@ export function normalizeOptions(
   // const advancedOptimizations = aot && normalizedOptimization.scripts;
   const advancedOptimizations = aot && normalizedOptimization;
 
-  const project = getProject(root);
+  const project = await getProject(root);
 
   const assets =
     project && options.assets?.length
@@ -356,52 +357,26 @@ function normalizeOutputPath(
     | (Required<Pick<OutputPath, 'base'>> & Partial<OutputPath>)
     | undefined
 ): OutputPath {
-  const defaultBase = join(root, 'dist');
-  const defaultBrowser = join(defaultBase, 'browser');
-  if (!outputPath) {
-    return {
-      base: defaultBase,
-      browser: defaultBrowser,
-      server: join(defaultBase, 'server'),
-      media: join(defaultBrowser, 'media'),
-    };
+  let base =
+    typeof outputPath === 'string' ? outputPath : outputPath?.base ?? 'dist';
+  if (!base.startsWith(root)) {
+    base = join(root, base);
   }
 
-  if (typeof outputPath === 'string') {
-    if (!outputPath.startsWith(root)) {
-      outputPath = join(root, outputPath);
-    }
-    return {
-      base: outputPath,
-      browser: join(outputPath, 'browser'),
-      server: join(outputPath, 'server'),
-      media: join(outputPath, 'browser', 'media'),
-    };
-  }
-  if (outputPath.base && !outputPath.base.startsWith(root)) {
-    outputPath.base = join(root, outputPath.base);
-  }
-  if (outputPath.browser && !outputPath.browser.startsWith(root)) {
-    outputPath.browser = join(root, outputPath.browser);
-  }
-  if (outputPath.server && !outputPath.server.startsWith(root)) {
-    outputPath.server = join(root, outputPath.server);
-  }
-  if (
-    outputPath.browser &&
-    !outputPath.browser.startsWith(outputPath.browser)
-  ) {
-    outputPath.browser = join(outputPath.browser, outputPath.browser);
-  }
+  const browser =
+    typeof outputPath === 'string' || !outputPath?.browser
+      ? join(base, 'browser')
+      : join(base, outputPath.browser);
+  const server =
+    typeof outputPath === 'string' || !outputPath?.server
+      ? join(base, 'server')
+      : join(base, outputPath.server);
+  const media =
+    typeof outputPath === 'string' || !outputPath?.media
+      ? join(browser, 'media')
+      : join(browser, outputPath.media);
 
-  const providedBase = outputPath.base ?? defaultBase;
-  const providedBrowser = outputPath.browser ?? join(providedBase, 'browser');
-  return {
-    base: providedBase,
-    browser: providedBrowser,
-    server: outputPath.server ?? join(outputPath.base ?? defaultBase, 'server'),
-    media: outputPath.media ?? join(providedBrowser, 'media'),
-  };
+  return { base, browser, server, media };
 }
 
 function normalizeAssetPatterns(
@@ -517,17 +492,27 @@ function normalizeGlobalEntries(
   return [...bundles.values()];
 }
 
-function getProject(root: string): ProjectGraphProjectNode | undefined {
+async function getProject(
+  root: string
+): Promise<ProjectGraphProjectNode | undefined> {
   if (global.NX_GRAPH_CREATION) {
     return undefined;
   }
 
-  const projectGraph = readCachedProjectGraph();
+  const projectGraph = await retrieveOrCreateProjectGraph();
+  assert(
+    projectGraph,
+    'Cannot find the project. Please make sure to run this task with the Nx CLI and set "root" to a directory contained in a project.'
+  );
 
   let projectName = process.env.NX_TASK_TARGET_PROJECT;
   if (!projectName) {
     const projectRootMappings = createProjectRootMappings(projectGraph.nodes);
-    projectName = findProjectForPath(root, projectRootMappings) ?? undefined;
+    projectName =
+      findProjectForPath(
+        posix.relative(workspaceRoot, root),
+        projectRootMappings
+      ) ?? undefined;
   }
 
   assert(
@@ -548,33 +533,4 @@ function createProjectRootMappings(
     projectRootMappings.set(normalizeProjectRoot(root), projectName);
   }
   return projectRootMappings;
-}
-
-function findProjectForPath(
-  filePath: string,
-  projectRootMap: Map<string, string>
-): string | undefined {
-  /**
-   * Project Mappings are in UNIX-style file paths
-   * Windows may pass Win-style file paths
-   * Ensure filePath is in UNIX-style
-   */
-  let currentPath = normalizePath(filePath);
-  for (
-    ;
-    currentPath != dirname(currentPath);
-    currentPath = dirname(currentPath)
-  ) {
-    const p = projectRootMap.get(currentPath);
-    if (p) {
-      return p;
-    }
-  }
-
-  return projectRootMap.get(currentPath);
-}
-
-function normalizeProjectRoot(root: string) {
-  root = root === '' ? '.' : root;
-  return root && root.endsWith('/') ? root.substring(0, root.length - 1) : root;
 }

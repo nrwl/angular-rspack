@@ -2,7 +2,6 @@ import {
   Compiler,
   CopyRspackPlugin,
   DefinePlugin,
-  experiments,
   ProgressPlugin,
   RspackPluginInstance,
 } from '@rspack/core';
@@ -22,13 +21,13 @@ import { RxjsEsmResolutionPlugin } from './rxjs-esm-resolution';
 export class NgRspackPlugin implements RspackPluginInstance {
   readonly pluginOptions: NormalizedAngularRspackPluginOptions;
   readonly isPlatformServer: boolean;
-  readonly i18n: I18nOptions | undefined;
+  readonly i18n: I18nOptions;
 
   constructor(
     pluginOptions: NormalizedAngularRspackPluginOptions,
     extraOptions: {
       platform: 'browser' | 'server';
-      i18nOptions?: I18nOptions;
+      i18nOptions: I18nOptions;
     }
   ) {
     this.pluginOptions = pluginOptions;
@@ -113,54 +112,44 @@ export class NgRspackPlugin implements RspackPluginInstance {
         skipChildCompilers: true,
       }).apply(compiler as any);
     }
-    if (this.i18n?.shouldInline) {
+    if (this.i18n.shouldInline) {
       new I18nInlinePlugin(this.pluginOptions, this.i18n).apply(compiler);
     }
     new RxjsEsmResolutionPlugin().apply(compiler);
     new AngularRspackPlugin(this.pluginOptions, this.i18n).apply(compiler);
-    if (this.pluginOptions.subresourceIntegrity) {
-      new experiments.SubresourceIntegrityPlugin({
-        hashFuncNames: ['sha384'],
-      }).apply(compiler);
-    }
-    if (this.pluginOptions.index) {
+    if (!this.isPlatformServer && this.pluginOptions.index) {
       // @TODO: remove this once we properly support optimization granular options
       const optimize = this.pluginOptions.optimization !== false;
 
-      new IndexHtmlPlugin(
-        {
-          indexPath: this.pluginOptions.index.input,
-          baseHref: this.pluginOptions.baseHref,
-          outputPath: this.pluginOptions.index.output || 'index.html',
-          entrypoints: getEntryPoints(
-            this.pluginOptions.globalStyles,
-            this.pluginOptions.globalScripts,
-            this.pluginOptions.devServer?.hmr
-          ),
-          // @TODO: wire up i18n here
-          lang: undefined,
-          optimization: {
-            fonts: { inline: optimize },
-            scripts: optimize,
-            styles: {
-              inlineCritical: optimize,
-              minify: optimize,
-              removeSpecialComments: optimize,
-            },
+      new IndexHtmlPlugin({
+        indexPath: this.pluginOptions.index.input,
+        index: this.pluginOptions.index,
+        baseHref: this.pluginOptions.baseHref,
+        outputPath: this.pluginOptions.outputPath.browser,
+        entrypoints: getEntryPoints(
+          this.pluginOptions.globalStyles,
+          this.pluginOptions.globalScripts,
+          this.pluginOptions.devServer?.hmr
+        ),
+        i18n: this.i18n,
+        optimization: {
+          fonts: { inline: optimize },
+          scripts: optimize,
+          styles: {
+            inlineCritical: optimize,
+            minify: optimize,
+            removeSpecialComments: optimize,
           },
-          generateDedicatedSSRContent:
-            this.isPlatformServer &&
-            !!(
-              this.pluginOptions.ssr ||
-              this.pluginOptions.prerender ||
-              this.pluginOptions.appShell
-            ),
-          deployUrl: this.pluginOptions.deployUrl,
-          crossOrigin: this.pluginOptions.crossOrigin,
-          sri: this.pluginOptions.subresourceIntegrity,
         },
-        this.isPlatformServer
-      ).apply(compiler);
+        isSsr: !!(
+          this.pluginOptions.ssr ||
+          this.pluginOptions.prerender ||
+          this.pluginOptions.appShell
+        ),
+        deployUrl: this.pluginOptions.deployUrl,
+        crossOrigin: this.pluginOptions.crossOrigin,
+        sri: this.pluginOptions.subresourceIntegrity,
+      }).apply(compiler);
     }
   }
 }

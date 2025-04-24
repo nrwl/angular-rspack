@@ -1,5 +1,3 @@
-//
-// @ts-check
 module.exports = () => {
   if (global.NX_GRAPH_CREATION === undefined) {
     const { createConfig } = require('@nx/angular-rspack');
@@ -44,7 +42,7 @@ module.exports = () => {
           browser: './src/main.ts',
           outputPath: {
             base: './dist',
-            browser: './dist/static',
+            browser: './static',
           },
           sourceMap: {
             scripts: true,
@@ -63,7 +61,6 @@ module.exports = () => {
           baseHref: '/foo',
           subresourceIntegrity: true,
           crossOrigin: 'anonymous',
-          deployUrl: '/public/',
         },
       },
       {

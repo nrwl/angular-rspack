@@ -109,7 +109,7 @@ export async function _createConfig(
         // no-op as i18n is not inlined
       };
 
-  const normalizedOptions = normalizeOptions(_options);
+  const normalizedOptions = await normalizeOptions(_options);
   const isProduction = process.env['NODE_ENV'] === 'production';
   const isDevServer = process.env['WEBPACK_SERVE'];
   const hashFormat = getOutputHashFormat(normalizedOptions.outputHashing);
@@ -168,9 +168,6 @@ export async function _createConfig(
     },
     watchOptions: {
       followSymlinks: normalizedOptions.preserveSymlinks,
-    },
-    performance: {
-      hints: false,
     },
     ignoreWarnings: [
       // https://github.com/webpack-contrib/source-map-loader/blob/b2de4249c7431dd8432da607e08f0f65e9d64219/src/index.js#L83

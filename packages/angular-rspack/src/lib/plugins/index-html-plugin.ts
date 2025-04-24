@@ -2,18 +2,23 @@ import {
   IndexHtmlGenerator,
   type FileInfo,
   type IndexHtmlGeneratorOptions,
-  type IndexHtmlGeneratorProcessOptions,
 } from '@angular/build/private';
 import { Compilation, RspackPluginInstance, type Compiler } from '@rspack/core';
-import { basename, dirname, extname } from 'node:path';
+import { basename, extname } from 'node:path';
+import type { I18nOptions, IndexExpandedDefinition } from '../models';
 import { assertIsError } from '../utils/misc-helpers';
+import { ensureOutputPaths } from '../utils/output-paths';
 import { addError, addWarning } from '../utils/rspack-diagnostics';
+import { urlJoin } from '../utils/url-join';
+import { addEventDispatchContract } from '../utils/index-file/add-event-dispatch-contract';
 
-const INDEX_HTML_SERVER = 'index.server.html';
-
-export interface IndexHtmlPluginOptions
-  extends IndexHtmlGeneratorOptions,
-    Omit<IndexHtmlGeneratorProcessOptions, 'files'> {}
+export interface IndexHtmlPluginOptions extends IndexHtmlGeneratorOptions {
+  baseHref: string | undefined;
+  i18n: I18nOptions;
+  index: IndexExpandedDefinition;
+  isSsr: boolean;
+  outputPath: string;
+}
 
 const PLUGIN_NAME = 'IndexHtmlPlugin';
 
@@ -30,10 +35,7 @@ export class IndexHtmlPlugin
     throw new Error('compilation is undefined.');
   }
 
-  constructor(
-    override readonly options: IndexHtmlPluginOptions,
-    private readonly isServer: boolean
-  ) {
+  constructor(override readonly options: IndexHtmlPluginOptions) {
     super(options);
   }
 
@@ -68,29 +70,33 @@ export class IndexHtmlPlugin
               }
             }
 
-            const { csrContent, ssrContent, warnings, errors } =
-              await this.process({
+            const outputPaths = ensureOutputPaths(
+              this.options.outputPath,
+              this.options.i18n
+            );
+
+            for (const [locale, outputPath] of outputPaths.entries()) {
+              const { csrContent, warnings, errors } = await this.process({
                 files,
-                outputPath: dirname(this.options.outputPath),
-                baseHref: this.options.baseHref,
-                lang: this.options.lang,
+                outputPath,
+                baseHref:
+                  this.getLocaleBaseHref(locale) ?? this.options.baseHref,
+                lang: locale || undefined,
               });
 
-            const { RawSource } = compiler.rspack.sources;
-            if (!this.isServer) {
-              compilation.emitAsset(
-                this.options.outputPath,
-                new RawSource(csrContent)
-              );
-            } else if (ssrContent) {
-              compilation.emitAsset(
-                INDEX_HTML_SERVER,
-                new RawSource(ssrContent)
-              );
-            }
+              let html = csrContent;
+              if (this.options.isSsr) {
+                html = await addEventDispatchContract(csrContent);
+              }
 
-            warnings.forEach((msg) => addWarning(compilation, msg));
-            errors.forEach((msg) => addError(compilation, msg));
+              const { RawSource } = compiler.rspack.sources;
+              compilation.emitAsset(
+                getIndexOutputFile(this.options.index),
+                new RawSource(html)
+              );
+              warnings.forEach((msg) => addWarning(compilation, msg));
+              errors.forEach((msg) => addError(compilation, msg));
+            }
           } catch (error) {
             assertIsError(error);
             addError(compilation, error.message);
@@ -127,4 +133,29 @@ export class IndexHtmlPlugin
       );
     });
   }
+
+  getLocaleBaseHref(locale: string): string | undefined {
+    if (this.options.i18n.flatOutput) {
+      return undefined;
+    }
+
+    const localeData = this.options.i18n.locales[locale];
+    if (!localeData) {
+      return undefined;
+    }
+
+    const baseHrefSuffix = localeData.baseHref ?? localeData.subPath + '/';
+
+    return baseHrefSuffix !== ''
+      ? urlJoin(this.options.baseHref || '', baseHrefSuffix)
+      : undefined;
+  }
+}
+
+function getIndexOutputFile(index: IndexExpandedDefinition): string {
+  if (typeof index === 'string') {
+    return basename(index);
+  }
+
+  return index.output || 'index.html';
 }
