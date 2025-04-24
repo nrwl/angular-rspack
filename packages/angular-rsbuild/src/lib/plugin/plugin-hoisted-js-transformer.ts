@@ -53,7 +53,10 @@ export const pluginHoistedJsTransformer = (
     api.onBeforeEnvironmentCompile(async () => {
       const parallelCompilation = await setupCompilationWithParallelCompilation(
         config,
-        { ...options, root: options.root }
+        {
+          ...options,
+          root: options.root,
+        }
       );
       await buildAndAnalyzeWithParallelCompilation(
         parallelCompilation,
