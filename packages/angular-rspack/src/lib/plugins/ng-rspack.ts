@@ -37,7 +37,6 @@ export class NgRspackPlugin implements RspackPluginInstance {
 
   apply(compiler: Compiler) {
     const root = this.pluginOptions.root;
-    const isProduction = process.env['NODE_ENV'] === 'production';
     const isDevServer = process.env['WEBPACK_SERVE'];
 
     if (!this.isPlatformServer) {

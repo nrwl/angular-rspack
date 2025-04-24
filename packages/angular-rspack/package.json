@@ -75,7 +75,13 @@
     "@angular/localize": ">=19.0.0 <20.0.0",
     "@angular/ssr": ">=19.0.0 <20.0.0",
     "@nx/devkit": ">=20.0.0 <21.0.0",
-    "@rspack/core": ">=1.0.5 <2.0.0"
+    "@rspack/core": ">=1.0.5 <2.0.0",
+    "tailwindcss": "^2.0.0 || ^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "tailwindcss": {
+      "optional": true
+    }
   },
   "nx": {
     "name": "angular-rspack",
