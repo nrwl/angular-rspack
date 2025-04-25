@@ -611,9 +611,18 @@ importers:
         specifier: ^8.18.0
         version: 8.18.1
     devDependencies:
+      '@code-pushup/models':
+        specifier: ^0.63.0
+        version: 0.63.0
+      '@code-pushup/utils':
+        specifier: ^0.63.0
+        version: 0.63.0
       '@ng-rspack/testing-setup':
         specifier: workspace:*
         version: link:../../testing/setup
+      jsonc-eslint-parser:
+        specifier: ^2.4.0
+        version: 2.4.0
 
   packages/angular-rspack-compiler:
     dependencies:
