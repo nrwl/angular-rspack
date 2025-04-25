@@ -12,6 +12,10 @@
       "locales": {
         "fr": {
           "translation": "e2e/fixtures/rspack-csr-i18n/src/locale/messages.fr.xlf"
+        },
+        "es": {
+          "translation": "e2e/fixtures/rspack-csr-i18n/src/locale/messages.es.xlf",
+          "subPath": "es-ES"
         }
       }
     }

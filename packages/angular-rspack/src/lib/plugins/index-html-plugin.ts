@@ -6,11 +6,11 @@ import {
 import { Compilation, RspackPluginInstance, type Compiler } from '@rspack/core';
 import { basename, extname, join } from 'node:path';
 import type { I18nOptions, IndexExpandedDefinition } from '../models';
+import { addEventDispatchContract } from '../utils/index-file/add-event-dispatch-contract';
 import { assertIsError } from '../utils/misc-helpers';
-import { ensureOutputPaths } from '../utils/output-paths';
+import { ensureOutputPaths } from '../utils/i18n';
 import { addError, addWarning } from '../utils/rspack-diagnostics';
 import { urlJoin } from '../utils/url-join';
-import { addEventDispatchContract } from '../utils/index-file/add-event-dispatch-contract';
 
 export interface IndexHtmlPluginOptions extends IndexHtmlGeneratorOptions {
   baseHref: string | undefined;
@@ -91,11 +91,10 @@ export class IndexHtmlPlugin
 
               const { RawSource } = compiler.rspack.sources;
               compilation.emitAsset(
-                locale
-                  ? join(locale, getIndexOutputFile(this.options.index))
-                  : getIndexOutputFile(this.options.index),
+                join(outputPath, getIndexOutputFile(this.options.index)),
                 new RawSource(html)
               );
+
               warnings.forEach((msg) => addWarning(compilation, msg));
               errors.forEach((msg) => addError(compilation, msg));
             }

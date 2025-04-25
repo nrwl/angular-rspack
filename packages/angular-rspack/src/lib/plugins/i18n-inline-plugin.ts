@@ -1,13 +1,21 @@
-import { RspackPluginInstance, Compiler, sources } from '@rspack/core';
+import remapping from '@ampproject/remapping';
 import {
-  PluginObj,
+  type PluginObj,
   parseSync,
   transformFromAstAsync,
   types,
 } from '@babel/core';
-import remapping from '@ampproject/remapping';
+import {
+  type Compiler,
+  type RspackPluginInstance,
+  sources,
+} from '@rspack/core';
 import assert from 'node:assert';
-import { I18nOptions, NormalizedAngularRspackPluginOptions } from '../models';
+import type {
+  I18nOptions,
+  NormalizedAngularRspackPluginOptions,
+} from '../models';
+import { getLocaleOutputPaths } from '../utils/i18n';
 import { loadEsmModule } from '../utils/misc-helpers';
 
 /**
@@ -25,6 +33,7 @@ export class I18nInlinePlugin implements RspackPluginInstance {
    * This is used to remove the need to repeatedly import the module per file translation.
    */
   #localizeToolsModule: LocalizeUtilityModule | undefined;
+  #outputPaths: Set<string>;
 
   constructor(
     pluginOptions: NormalizedAngularRspackPluginOptions,
@@ -32,6 +41,7 @@ export class I18nInlinePlugin implements RspackPluginInstance {
   ) {
     this.#pluginOptions = pluginOptions;
     this.#i18n = i18nOptions;
+    this.#outputPaths = new Set(getLocaleOutputPaths(i18nOptions).values());
   }
 
   apply(compiler: Compiler) {
@@ -112,7 +122,7 @@ export class I18nInlinePlugin implements RspackPluginInstance {
   }
 
   #checkAssetHasBeenProcessed(filename: string) {
-    return this.#i18n.inlineLocales.has(filename.split('/')[0]);
+    return this.#outputPaths.has(filename.split('/')[0]);
   }
 
   /**

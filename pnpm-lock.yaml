@@ -463,6 +463,12 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/angular-rspack
 
+  e2e/fixtures/rspack-csr-i18n:
+    dependencies:
+      '@nx/angular-rspack':
+        specifier: workspace:*
+        version: link:../../../packages/angular-rspack
+
   e2e/fixtures/rspack-csr-tailwind:
     dependencies:
       '@nx/angular-rspack':
