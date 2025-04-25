@@ -7,15 +7,6 @@
       "path": "../angular-rspack"
     },
     {
-      "path": "../../testing/utils"
-    },
-    {
-      "path": "../angular-rspack-compiler"
-    },
-    {
-      "path": "../../testing/setup"
-    },
-    {
       "path": "../compiler"
     },
     {

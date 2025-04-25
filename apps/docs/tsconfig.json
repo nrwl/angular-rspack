@@ -13,15 +13,6 @@
   "include": [],
   "references": [
     {
-      "path": "../../testing/utils"
-    },
-    {
-      "path": "../../packages/angular-rspack-compiler"
-    },
-    {
-      "path": "../../testing/setup"
-    },
-    {
       "path": "../../packages/angular-rsbuild"
     },
     {
