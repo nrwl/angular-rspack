@@ -1,3 +1,21 @@
+## 20.8.0-beta.0 (2025-04-25)
+
+### 🚀 Features
+
+- **angular-rspack:** add service-worker support ([#55](https://github.com/nrwl/angular-rspack/pull/55))
+- **angular-rspack:** improve entry files handling and index.html generation ([#56](https://github.com/nrwl/angular-rspack/pull/56))
+- **angular-rspack,angular-rsbuild:** support web workers ([#58](https://github.com/nrwl/angular-rspack/pull/58))
+
+### 🩹 Fixes
+
+- **angular-rspack:** multiple configurations ([#54](https://github.com/nrwl/angular-rspack/pull/54))
+- **angular-rspack:** ensure ngDevMode set correctly by DefinePlugin ([#57](https://github.com/nrwl/angular-rspack/pull/57))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+- Leosvel Pérez Espinosa @leosvelperez
+
 ## 20.7.0 (2025-04-15)
 
 This was a version bump only, there were no code changes.
