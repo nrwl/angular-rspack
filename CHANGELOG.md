@@ -1,3 +1,13 @@
+## 20.8.0 (2025-04-25)
+
+### 🩹 Fixes
+
+- **angular-rspack:** mark @angular/localize as optional peer dep ([#60](https://github.com/nrwl/angular-rspack/pull/60))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 20.8.0-beta.0 (2025-04-25)
 
 ### 🚀 Features
