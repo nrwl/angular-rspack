@@ -20,7 +20,7 @@ declare const nxAngularRspack: string;
   styleUrl: './app.component.css',
 })
 export class AppComponent implements OnInit {
-  title = 'rsbuild-csr-css';
+  title = 'rspack-csr-css';
   greeting$!: Observable<string>;
   nxAngularRspackVersion = nxAngularRspack;
 

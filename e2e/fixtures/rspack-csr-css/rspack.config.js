@@ -5,7 +5,6 @@ module.exports = () => {
       {
         options: {
           root: __dirname,
-          name: 'rspack-csr-css',
           index: './src/index.html',
           assets: [
             {
@@ -15,18 +14,40 @@ module.exports = () => {
             },
             { glob: '**/*', input: 'public' },
           ],
-          styles: ['../shared/styles/src/index.scss', './src/styles.css'],
+          styles: [
+            {
+              input: '../shared/styles/src/index.scss',
+              bundleName: 'shared-styles',
+            },
+            './src/styles.css',
+          ],
+          scripts: [
+            './scripts/script1.js',
+            { input: './scripts/script2.js', bundleName: 'scripts' },
+            {
+              input: './scripts/internal-shared-script.js',
+              bundleName: 'shared-scripts',
+            },
+            {
+              input: '../shared/scripts/shared-script.js',
+              bundleName: 'shared-scripts',
+            },
+            {
+              input: './scripts/non-initial-script.js',
+              bundleName: 'non-initial-script',
+              inject: false,
+            },
+          ],
           polyfills: ['zone.js'],
-          main: './src/main.ts',
+          browser: './src/main.ts',
           outputPath: {
             base: './dist',
-            browser: './dist/static',
+            browser: './static',
           },
           sourceMap: {
             scripts: true,
             styles: true,
           },
-          outputHashing: 'none',
           tsConfig: './tsconfig.app.json',
           skipTypeChecking: false,
           devServer: {
@@ -37,6 +58,9 @@ module.exports = () => {
           define: {
             nxAngularRspack: '"20.6.2"',
           },
+          baseHref: '/foo',
+          subresourceIntegrity: true,
+          crossOrigin: 'anonymous',
         },
       },
       {
@@ -44,8 +68,14 @@ module.exports = () => {
           options: {
             extractLicenses: false,
             optimization: false,
+            outputHashing: 'none',
             namedChunks: true,
             vendorChunk: true,
+          },
+        },
+        production: {
+          options: {
+            outputHashing: 'all',
           },
         },
       }
