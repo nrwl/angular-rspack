@@ -1,3 +1,13 @@
+## 20.8.2 (2025-04-28)
+
+### 🩹 Fixes
+
+- **angular-rspack:** handle windows disk drive in loader #53 ([#64](https://github.com/nrwl/angular-rspack/pull/64), [#53](https://github.com/nrwl/angular-rspack/issues/53))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 20.8.1 (2025-04-28)
 
 ### 🩹 Fixes
