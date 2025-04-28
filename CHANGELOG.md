@@ -1,3 +1,13 @@
+## 20.8.1 (2025-04-28)
+
+### 🩹 Fixes
+
+- **angular-rspack:** do not rely on nx workspace ([#62](https://github.com/nrwl/angular-rspack/pull/62))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 20.8.0 (2025-04-25)
 
 ### 🩹 Fixes
