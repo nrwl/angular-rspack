@@ -39,6 +39,10 @@
       "types": "./dist/lib/plugins/loaders/angular-transform.loader.d.ts",
       "default": "./dist/lib/plugins/loaders/angular-transform.loader.js"
     },
+    "./loaders/platform-server-exports-loader": {
+      "types": "./dist/lib/plugins/loaders/platform-server-exports.loader.d.ts",
+      "default": "./dist/lib/plugins/loaders/platform-server-exports.loader.js"
+    },
     "./ssr": {
       "types": "./dist/lib/ssr/server.d.ts",
       "default": "./dist/lib/ssr/server.js"

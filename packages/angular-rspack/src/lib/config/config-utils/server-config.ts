@@ -11,6 +11,7 @@ import {
   I18nOptions,
   NormalizedAngularRspackPluginOptions,
 } from '../../models';
+import { TS_ALL_EXT_REGEX } from '@nx/angular-rspack-compiler';
 
 export async function getServerConfig(
   root: string,
@@ -92,6 +93,49 @@ export async function getServerConfig(
     },
     externals: normalizedOptions.externalDependencies,
     optimization: getOptimization(normalizedOptions, 'server'),
+    module: {
+      ...defaultConfig.module,
+      rules: [
+        {
+          test: TS_ALL_EXT_REGEX,
+          use: [
+            {
+              loader: 'builtin:swc-loader',
+              options: {
+                jsc: {
+                  parser: {
+                    syntax: 'typescript',
+                  },
+                  // minify: {
+                  //   mangle: {
+                  //     reserved: [
+                  //       'renderApplication',
+                  //       'renderModule',
+                  //       'ɵSERVER_CONTEXT',
+                  //       'ɵgetRoutesFromAngularRouterConfig',
+                  //     ],
+                  //   },
+                  // },
+                  target: 'es2022',
+                },
+              },
+            },
+          ],
+        },
+        {
+          loader: require.resolve(
+            '@nx/angular-rspack/loaders/platform-server-exports-loader'
+          ),
+          include: [
+            resolve(root, (normalizedOptions.ssr as { entry: string }).entry),
+          ],
+          options: {
+            angularSSRInstalled: isPackageInstalled(root, '@angular/ssr'),
+          },
+        },
+        ...(defaultConfig.module?.rules ?? []),
+      ],
+    },
     plugins: [
       ...(defaultConfig.plugins ?? []),
       // Fixes Critical dependency: the request of a dependency is an expression
