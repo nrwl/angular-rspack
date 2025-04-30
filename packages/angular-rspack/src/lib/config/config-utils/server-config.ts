@@ -12,6 +12,7 @@ import {
   NormalizedAngularRspackPluginOptions,
 } from '../../models';
 import { TS_ALL_EXT_REGEX } from '@nx/angular-rspack-compiler';
+import { PrerenderPlugin } from '../../plugins/prerender-plugin';
 
 export async function getServerConfig(
   root: string,
@@ -106,16 +107,6 @@ export async function getServerConfig(
                   parser: {
                     syntax: 'typescript',
                   },
-                  // minify: {
-                  //   mangle: {
-                  //     reserved: [
-                  //       'renderApplication',
-                  //       'renderModule',
-                  //       'ɵSERVER_CONTEXT',
-                  //       'ɵgetRoutesFromAngularRouterConfig',
-                  //     ],
-                  //   },
-                  // },
                   target: 'es2022',
                 },
               },
@@ -144,6 +135,9 @@ export async function getServerConfig(
         i18nOptions: i18n,
         platform: 'server',
       }),
+      ...(normalizedOptions.prerender
+        ? [new PrerenderPlugin(normalizedOptions, i18n)]
+        : []),
     ],
   };
 }

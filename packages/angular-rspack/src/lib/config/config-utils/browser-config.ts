@@ -12,7 +12,6 @@ import {
   I18nOptions,
   NormalizedAngularRspackPluginOptions,
 } from '../../models';
-import { isPackageInstalled } from '../../utils/misc-helpers';
 import { TS_ALL_EXT_REGEX } from '@nx/angular-rspack-compiler';
 
 export async function getBrowserConfig(
@@ -133,14 +132,8 @@ export async function getBrowserConfig(
                   parser: {
                     syntax: 'typescript',
                   },
-                  // minify: {
-                  //   compress: {
-                  //     passes: 2,
-                  //   },
-                  // },
                   target: 'es2022',
                 },
-                // minify: true,
               },
             },
           ],

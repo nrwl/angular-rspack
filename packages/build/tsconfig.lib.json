@@ -18,9 +18,6 @@
   "exclude": ["vitest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
   "references": [
     {
-      "path": "../angular-rspack/tsconfig.lib.json"
-    },
-    {
       "path": "../compiler/tsconfig.lib.json"
     }
   ]

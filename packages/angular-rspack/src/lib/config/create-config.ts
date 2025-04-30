@@ -1,9 +1,6 @@
 import { type Configuration } from '@rspack/core';
 import { merge as rspackMerge } from 'webpack-merge';
-import {
-  type AngularRspackPluginOptions,
-  type NormalizedAngularRspackPluginOptions,
-} from '../models';
+import { type AngularRspackPluginOptions } from '../models';
 import {
   deleteOutputDir,
   getOutputHashFormat,
@@ -43,10 +40,6 @@ export async function createConfig(
     mergedConfigurationBuildOptions,
     mergedRspackConfigOverrides
   );
-}
-
-function configurePrerender(options: NormalizedAngularRspackPluginOptions) {
-  // This should contain a new MultiCompiler instance that will use a Plugin instance to prerender the app.
 }
 
 export async function _createConfig(

@@ -1,11 +1,7 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": {
-    "outDir": "../../../dist/out-tsc",
-    "types": ["@angular/localize"]
-  },
-  "files": ["src/main.ts"],
-  "include": ["src/**/*.d.ts"],
+  "include": ["src/**/*.ts"],
+  "compilerOptions": {},
   "exclude": [
     "jest.config.ts",
     "src/**/*.test.ts",
@@ -20,6 +16,5 @@
     "src/**/*.spec.js",
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx"
-  ],
-  "references": []
+  ]
 }
