@@ -67,12 +67,9 @@
   "release": {
     "projects": ["packages/*"],
     "version": {
-      "generatorOptions": {
-        "preserveLocalDependencyProtocols": true,
-        "currentVersionResolver": "git-tag",
-        "fallbackCurrentVersionResolver": "disk"
-      },
-      "preVersionCommand": "pnpm nx run-many -t build --projects=\"tag:publishable\""
+      "preVersionCommand": "pnpm nx run-many -t build --projects=\"tag:publishable\"",
+      "currentVersionResolver": "git-tag",
+      "fallbackCurrentVersionResolver": "disk"
     },
     "changelog": {
       "workspaceChangelog": {
