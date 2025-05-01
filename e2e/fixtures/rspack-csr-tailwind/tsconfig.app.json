@@ -6,5 +6,9 @@
   },
   "files": ["src/main.ts"],
   "include": ["src/**/*.d.ts"],
-  "references": []
+  "references": [
+    {
+      "path": "../../../packages/angular-rspack/tsconfig.lib.json"
+    }
+  ]
 }

@@ -4,6 +4,9 @@
   "include": [],
   "references": [
     {
+      "path": "../angular-rspack"
+    },
+    {
       "path": "../compiler"
     },
     {
