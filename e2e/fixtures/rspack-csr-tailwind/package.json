@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {},
   "dependencies": {
-    "@nx/angular-rspack": "workspace:*"
+    "@nx/angular-rspack": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.5"
   }
 }
