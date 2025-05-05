@@ -42,7 +42,10 @@ export async function getDevServerConfig(
     ),
     devMiddleware: {
       publicPath: servePath,
-      writeToDisk: (file) => !file.includes('.hot-update.'),
+      writeToDisk:
+        platform === 'browser' && options.hasServer
+          ? (file) => !file.includes('.hot-update.')
+          : undefined,
     },
     liveReload: options.devServer.liveReload,
     hot: false,
