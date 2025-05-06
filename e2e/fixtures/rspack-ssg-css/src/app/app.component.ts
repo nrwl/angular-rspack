@@ -10,5 +10,5 @@ import { FooComponent } from './foo.component';
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'rspack-ssr-css';
+  title = 'rspack-ssg-css';
 }
