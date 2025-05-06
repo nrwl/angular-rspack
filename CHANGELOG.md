@@ -1,3 +1,23 @@
+## 20.9.0 (2025-05-06)
+
+### 🚀 Features
+
+- **angular-rspack:** use development config for serve ([#61](https://github.com/nrwl/angular-rspack/pull/61))
+- **angular-rspack:** support static site generation ([#65](https://github.com/nrwl/angular-rspack/pull/65))
+- **angular-rspack:** improve styles processing and support tailwindcss v4 ([#70](https://github.com/nrwl/angular-rspack/pull/70))
+- **angular-rspack:** add support for more devServer options ([#71](https://github.com/nrwl/angular-rspack/pull/71))
+
+### 🩹 Fixes
+
+- **angular-rspack:** ensure `stylePreprocessorOptions` is correctly used ([#72](https://github.com/nrwl/angular-rspack/pull/72))
+- **angular-rspack:** update `@rspack/core` dependency ([#73](https://github.com/nrwl/angular-rspack/pull/73))
+- **angular-rspack:** ssg should not run on serve ([#75](https://github.com/nrwl/angular-rspack/pull/75))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+- Leosvel Pérez Espinosa @leosvelperez
+
 ## 20.8.2 (2025-04-28)
 
 ### 🩹 Fixes
