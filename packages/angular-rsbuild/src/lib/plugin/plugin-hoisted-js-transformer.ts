@@ -1,11 +1,11 @@
 import { logger, RsbuildPlugin } from '@rsbuild/core';
 import {
-  buildAndAnalyzeWithParallelCompilation,
+  buildAndAnalyze,
   JavaScriptTransformer,
   DiagnosticModes,
   JS_ALL_EXT_REGEX,
   maxWorkers,
-  setupCompilationWithParallelCompilation,
+  setupCompilationWithAngularCompilation,
   PartialMessage,
 } from '@nx/angular-rspack-compiler';
 import type { NormalizedPluginAngularOptions } from '../models/plugin-options';
@@ -51,14 +51,14 @@ export const pluginHoistedJsTransformer = (
     });
 
     api.onBeforeEnvironmentCompile(async () => {
-      const parallelCompilation = await setupCompilationWithParallelCompilation(
+      const parallelCompilation = await setupCompilationWithAngularCompilation(
         config,
         {
           ...options,
           root: options.root,
         }
       );
-      await buildAndAnalyzeWithParallelCompilation(
+      await buildAndAnalyze(
         parallelCompilation,
         typescriptFileCache,
         javascriptTransformer
@@ -70,7 +70,6 @@ export const pluginHoistedJsTransformer = (
         typeCheckResults.errors = errors;
         typeCheckResults.warnings = warnings;
       }
-      await parallelCompilation.close();
     });
 
     api.onAfterBuild(() => {
