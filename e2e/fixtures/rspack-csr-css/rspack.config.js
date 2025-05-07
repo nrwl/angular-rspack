@@ -54,6 +54,8 @@ module.exports = () => {
             host: '127.0.0.1',
             port: 8080,
             proxyConfig: './proxy.conf.json',
+            hmr: true,
+            liveReload: false,
           },
           define: {
             nxAngularRspack: '"20.6.2"',
