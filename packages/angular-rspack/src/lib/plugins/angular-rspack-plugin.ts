@@ -293,7 +293,8 @@ export class AngularRspackPlugin implements RspackPluginInstance {
         fileReplacements: this.#_options.fileReplacements,
         useTsProjectReferences: this.#_options.useTsProjectReferences,
         hasServer: this.#_options.hasServer,
-      }
+      },
+      this.#angularCompilation
     );
   }
 }

@@ -8,11 +8,12 @@ import {
 
 export async function setupCompilationWithParallelCompilation(
   config: Pick<RsbuildConfig, 'source'>,
-  options: SetupCompilationOptions
+  options: SetupCompilationOptions,
+  parallelCompilation?: ParallelCompilation
 ) {
   const { rootNames, compilerOptions, componentStylesheetBundler } =
     await setupCompilation(config, options);
-  const parallelCompilation = new ParallelCompilation(
+  parallelCompilation ??= new ParallelCompilation(
     !options.aot,
     options.hasServer === false
   );
