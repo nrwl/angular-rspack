@@ -571,6 +571,9 @@ importers:
       '@babel/core':
         specifier: 7.26.10
         version: 7.26.10
+      '@discoveryjs/json-ext':
+        specifier: 0.6.3
+        version: 0.6.3
       '@nx/angular-rspack-compiler':
         specifier: workspace:*
         version: link:../angular-rspack-compiler
