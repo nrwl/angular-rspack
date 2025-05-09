@@ -14,6 +14,7 @@ module.exports = () => {
           tsConfig: './tsconfig.app.json',
           polyfills: ['zone.js'],
           assets: [{ glob: '**/*', input: 'public' }],
+          statsJson: true,
           styles: ['./src/styles.scss'],
           stylePreprocessorOptions: {
             includePaths: ['../shared/styles/src'],
