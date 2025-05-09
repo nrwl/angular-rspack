@@ -56,6 +56,7 @@ module.exports = () => {
             proxyConfig: './proxy.conf.json',
             hmr: true,
             liveReload: false,
+            open: false, // Set to true when testing open option
           },
           define: {
             nxAngularRspack: '"20.6.2"',
