@@ -63,6 +63,7 @@ module.exports = () => {
           baseHref: '/foo',
           subresourceIntegrity: true,
           crossOrigin: 'anonymous',
+          watch: false, // Set to true when testing watch mode
         },
       },
       {
