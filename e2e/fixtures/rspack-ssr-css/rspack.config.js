@@ -10,6 +10,7 @@ module.exports = () => {
           server: './src/main.server.ts',
           polyfills: ['zone.js'],
           ssr: { entry: './src/server.ts' },
+          verbose: true,
           assets: [
             {
               glob: '**/*',
