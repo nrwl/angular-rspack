@@ -2,7 +2,10 @@ import { RsbuildConfig } from '@rsbuild/core';
 import * as ts from 'typescript';
 import { InlineStyleLanguage, FileReplacement } from '../models';
 import { loadCompilerCli } from '../utils';
-import { ComponentStylesheetBundler } from '@angular/build/src/tools/esbuild/angular/component-stylesheets';
+import {
+  ComponentStylesheetBundler,
+  type ComponentStylesheetResult
+} from '@angular/build/src/tools/esbuild/angular/component-stylesheets';
 import { transformSupportedBrowsersToTargets } from '../utils/targets-from-browsers';
 import { getSupportedBrowsers } from '@angular/build/private';
 
@@ -92,7 +95,7 @@ export function styleTransform(
     stylesheetFile?: string
   ) => {
     try {
-      let stylesheetResult;
+      let stylesheetResult: ComponentStylesheetResult;
       if (stylesheetFile) {
         stylesheetResult = await componentStylesheetBundler.bundleFile(
           stylesheetFile
@@ -103,6 +106,14 @@ export function styleTransform(
           containingFile,
           containingFile.endsWith('.html') ? 'css' : undefined
         );
+      }
+      if (stylesheetResult.errors && stylesheetResult.errors.length > 0) {
+        for (const error of stylesheetResult.errors) {
+          console.error(
+            'Failed to compile styles. Continuing execution ignoring failing stylesheet...',
+            error.text
+          );
+        }
       }
       return stylesheetResult.contents;
     } catch (e) {
