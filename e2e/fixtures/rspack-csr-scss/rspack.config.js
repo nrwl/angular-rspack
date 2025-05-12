@@ -34,6 +34,13 @@ module.exports = () => {
         production: {
           options: {
             outputHashing: 'all',
+            optimization: {
+              scripts: true,
+              styles: {
+                minify: false,
+                inlineCritical: true,
+              },
+            },
           },
         },
       }
