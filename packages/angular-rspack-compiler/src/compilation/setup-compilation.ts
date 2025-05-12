@@ -1,6 +1,6 @@
 import { RsbuildConfig } from '@rsbuild/core';
 import * as ts from 'typescript';
-import { InlineStyleLanguage, FileReplacement } from '../models';
+import { InlineStyleLanguage, FileReplacement, type Sass } from '../models';
 import { loadCompilerCli } from '../utils';
 import {
   ComponentStylesheetBundler,
@@ -17,6 +17,8 @@ export interface SetupCompilationOptions {
   fileReplacements: Array<FileReplacement>;
   useTsProjectReferences?: boolean;
   hasServer?: boolean;
+  includePaths?: string[];
+  sass?: Sass;
 }
 
 export const DEFAULT_NG_COMPILER_OPTIONS: ts.CompilerOptions = {
@@ -74,6 +76,8 @@ export async function setupCompilation(
           warn: (message) => console.warn(message),
         })
       ),
+      includePaths: options.includePaths,
+      sass: options.sass,
     },
     options.inlineStyleLanguage,
     false
