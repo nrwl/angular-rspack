@@ -5,5 +5,16 @@
   "scripts": {},
   "dependencies": {
     "@nx/angular-rspack": "workspace:*"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "inputs": [
+          {
+            "env": "NGRS_CONFIG"
+          }
+        ]
+      }
+    }
   }
 }
