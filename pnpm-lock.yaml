@@ -469,6 +469,12 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/angular-rsbuild
 
+  e2e/fixtures/rspack-appshell-css:
+    dependencies:
+      '@nx/angular-rspack':
+        specifier: workspace:*
+        version: link:../../../packages/angular-rspack
+
   e2e/fixtures/rspack-csr-css:
     dependencies:
       '@nx/angular-rspack':
