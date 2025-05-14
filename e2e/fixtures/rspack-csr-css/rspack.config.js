@@ -79,6 +79,18 @@ module.exports = () => {
         },
         production: {
           options: {
+            budgets: [
+              {
+                type: 'initial',
+                maximumWarning: '500kB',
+                maximumError: '1MB',
+              },
+              {
+                type: 'anyComponentStyle',
+                maximumWarning: '4kB',
+                maximumError: '8kB',
+              },
+            ],
             outputHashing: 'all',
           },
         },

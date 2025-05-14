@@ -21,6 +21,7 @@ import {
   loadPostcssConfiguration,
   type SearchDirectory,
 } from '../../utils/postcss-configuration';
+import { AnyComponentStyleBudgetChecker } from '../../plugins/any-component-style-budget-checker-plugin';
 
 export async function getStylesConfig(
   buildOptions: NormalizedAngularRspackPluginOptions,
@@ -31,6 +32,8 @@ export async function getStylesConfig(
   plugins: Plugins;
 }> {
   const extraPlugins: Plugins = [];
+
+  extraPlugins.push(new AnyComponentStyleBudgetChecker(buildOptions.budgets));
 
   const cssSourceMap = buildOptions.sourceMap.styles;
 
