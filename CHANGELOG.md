@@ -1,3 +1,30 @@
+## 21.0.0-beta.0 (2025-05-14)
+
+### 🚀 Features
+
+- **angular-rspack:** add hmr support ([#78](https://github.com/nrwl/angular-rspack/pull/78))
+- **angular-rspack:** add statsJson plugin ([#79](https://github.com/nrwl/angular-rspack/pull/79))
+- **angular-rspack:** add poll option ([#80](https://github.com/nrwl/angular-rspack/pull/80))
+- **angular-rspack:** add verbose option ([#82](https://github.com/nrwl/angular-rspack/pull/82))
+- **angular-rspack:** add progress option ([#83](https://github.com/nrwl/angular-rspack/pull/83))
+- **angular-rspack:** add watch option ([#84](https://github.com/nrwl/angular-rspack/pull/84))
+- **angular-rspack:** add open option ([#85](https://github.com/nrwl/angular-rspack/pull/85))
+- **angular-rspack:** finalize devServer options ([#86](https://github.com/nrwl/angular-rspack/pull/86))
+- **angular-rspack:** add granular optimization support ([#89](https://github.com/nrwl/angular-rspack/pull/89))
+- **angular-rspack:** add budgets support ([#92](https://github.com/nrwl/angular-rspack/pull/92))
+- **angular-rspack:** add appShell option ([#93](https://github.com/nrwl/angular-rspack/pull/93))
+- **angular-rspack,angular-rspack-compiler:** reuse existing compilation if exists ([#77](https://github.com/nrwl/angular-rspack/pull/77))
+
+### 🩹 Fixes
+
+- **angular-rspack:** remove options that do not exist in Angular Webpack ([#81](https://github.com/nrwl/angular-rspack/pull/81))
+- **angular-rspack,angular-rspack-compiler:** surface errors from ComponentStylesheetResult ensuring sass andincludePaths are passed ([#87](https://github.com/nrwl/angular-rspack/pull/87))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+- Marvin Scharle @marvinscharle
+
 ## 20.9.0 (2025-05-06)
 
 ### 🚀 Features
