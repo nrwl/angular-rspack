@@ -22,6 +22,7 @@ import {
   type SearchDirectory,
 } from '../../utils/postcss-configuration';
 import { AnyComponentStyleBudgetChecker } from '../../plugins/any-component-style-budget-checker-plugin';
+import { SuppressJsForCssOnlyEntryPlugin } from '../../plugins/suppress-js-for-css-chunks-plugin';
 
 export async function getStylesConfig(
   buildOptions: NormalizedAngularRspackPluginOptions,
@@ -31,9 +32,14 @@ export async function getStylesConfig(
   loaderRules: RuleSetRules;
   plugins: Plugins;
 }> {
+  const isDevServer = process.env['WEBPACK_SERVE'];
   const extraPlugins: Plugins = [];
 
   extraPlugins.push(new AnyComponentStyleBudgetChecker(buildOptions.budgets));
+
+  if (!isDevServer || buildOptions.devServer?.hmr) {
+    extraPlugins.push(new SuppressJsForCssOnlyEntryPlugin());
+  }
 
   const cssSourceMap = buildOptions.sourceMap.styles;
 
