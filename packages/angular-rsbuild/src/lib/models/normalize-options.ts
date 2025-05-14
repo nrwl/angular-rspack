@@ -203,7 +203,7 @@ function normalizeSourceMap(
 
 function normalizeDevServer(
   devServer: DevServerOptions | undefined
-): DevServerOptions & { port: number } {
+): NormalizedPluginAngularOptions['devServer'] {
   const defaultPort = 4200;
 
   if (!devServer) {
