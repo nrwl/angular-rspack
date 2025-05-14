@@ -26,8 +26,12 @@ export class AppComponent implements OnInit {
 
   constructor(private readonly apiService: ApiService) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.greeting$ = this.apiService.getGreeting('world');
+    const version = await import('../../package.json').then(
+      (m) => m.default.version
+    );
+    console.log('version', version);
   }
 }
 
