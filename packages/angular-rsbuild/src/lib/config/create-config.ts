@@ -4,19 +4,23 @@ import {
   mergeRsbuildConfig,
   RsbuildPlugin,
 } from '@rsbuild/core';
-import { dirname } from 'path';
-import { PluginAngularOptions } from '../models/plugin-options';
+import { dirname, resolve } from 'path';
+import { OutputPath, PluginAngularOptions } from '../models/plugin-options';
 import { normalizeOptions } from '../models/normalize-options';
 import { pluginAngular } from '../plugin/plugin-angular';
 import { pluginHoistedJsTransformer } from '../plugin/plugin-hoisted-js-transformer';
 import { pluginSass } from '@rsbuild/plugin-sass';
 import { pluginLess } from '@rsbuild/plugin-less';
+import { getOutputHashFormat } from './helpers';
+import { getProxyConfig } from './dev-server-config-utils';
+import { join } from 'node:path';
 
-export function createConfig(
+export async function _createConfig(
   pluginOptions: Partial<PluginAngularOptions>,
   rsbuildConfigOverrides?: Partial<RsbuildConfig>
-): RsbuildConfig {
+): Promise<RsbuildConfig> {
   const normalizedOptions = normalizeOptions(pluginOptions);
+  const hashFormat = getOutputHashFormat(normalizedOptions.outputHashing);
   const browserPolyfills = [...normalizedOptions.polyfills, 'zone.js'];
   const serverPolyfills = [
     ...normalizedOptions.polyfills,
@@ -30,8 +34,8 @@ export function createConfig(
   const stylePlugins: RsbuildPlugin[] = [];
 
   if (
-    normalizedOptions.inlineStylesExtension === 'scss' ||
-    normalizedOptions.inlineStylesExtension === 'sass'
+    normalizedOptions.inlineStyleLanguage === 'scss' ||
+    normalizedOptions.inlineStyleLanguage === 'sass'
   ) {
     if (
       normalizedOptions.stylePreprocessorOptions?.includePaths ||
@@ -40,6 +44,7 @@ export function createConfig(
       stylePlugins.push(
         pluginSass({
           sassLoaderOptions: {
+            sourceMap: normalizedOptions.sourceMap.styles,
             sassOptions: {
               includePaths:
                 normalizedOptions.stylePreprocessorOptions?.includePaths,
@@ -49,13 +54,20 @@ export function createConfig(
         })
       );
     } else {
-      stylePlugins.push(pluginSass());
+      stylePlugins.push(
+        pluginSass({
+          sassLoaderOptions: {
+            sourceMap: normalizedOptions.sourceMap.styles,
+          },
+        })
+      );
     }
-  } else if (normalizedOptions.inlineStylesExtension === 'less') {
+  } else if (normalizedOptions.inlineStyleLanguage === 'less') {
     if (normalizedOptions.stylePreprocessorOptions?.includePaths) {
       stylePlugins.push(
         pluginLess({
           lessLoaderOptions: {
+            sourceMap: normalizedOptions.sourceMap.styles,
             lessOptions: {
               javascriptEnabled: true,
               paths: normalizedOptions.stylePreprocessorOptions?.includePaths,
@@ -67,6 +79,7 @@ export function createConfig(
       stylePlugins.push(
         pluginLess({
           lessLoaderOptions: {
+            sourceMap: normalizedOptions.sourceMap.styles,
             lessOptions: {
               javascriptEnabled: true,
             },
@@ -76,19 +89,26 @@ export function createConfig(
     }
   }
 
+  const { root } = normalizedOptions;
   const rsbuildPluginAngularConfig = defineConfig({
-    root: normalizedOptions.root,
+    root,
     source: {
-      tsconfigPath: normalizedOptions.tsconfigPath,
+      tsconfigPath: normalizedOptions.tsConfig,
     },
     plugins: [pluginHoistedJsTransformer(normalizedOptions), ...stylePlugins],
-    mode: isProd ? 'production' : 'development',
+    mode:
+      // mode is set to production to enable optimizations
+      normalizedOptions.optimization === false
+        ? 'development'
+        : isProd
+        ? 'production'
+        : 'development',
     dev: {
       ...(isRunningDevServer && normalizedOptions.hasServer
         ? {
             writeToDisk: (file) => !file.includes('.hot-update.'),
             client: {
-              port: 4200,
+              port: normalizedOptions.devServer?.port ?? 4200,
               host: 'localhost',
             },
             hmr: false,
@@ -98,17 +118,30 @@ export function createConfig(
     },
     server: {
       host: 'localhost',
-      port: 4200,
+      port: normalizedOptions.devServer?.port ?? 4200,
       htmlFallback: false,
       historyApiFallback: {
         index: '/index.html',
         rewrites: [{ from: /^\/$/, to: 'index.html' }],
       },
+      https:
+        normalizedOptions.devServer?.sslKey &&
+        normalizedOptions.devServer?.sslCert
+          ? {
+              key: resolve(root, normalizedOptions.devServer.sslKey),
+              cert: resolve(root, normalizedOptions.devServer.sslCert),
+            }
+          : undefined,
+      proxy: await getProxyConfig(
+        root,
+        normalizedOptions.devServer?.proxyConfig
+      ),
     },
     tools: {
       rspack(config) {
         config.resolve ??= {};
         config.resolve.extensionAlias = {};
+        config.resolve.symlinks = normalizedOptions.preserveSymlinks;
       },
     },
     environments: {
@@ -121,14 +154,27 @@ export function createConfig(
           },
           define: {
             ...(isProd ? { ngDevMode: 'false' } : undefined),
-            ngJitMode: pluginOptions.jit, // @TODO: use normalizedOptions
+            ngJitMode: normalizedOptions.aot ? undefined : 'true', // @TODO: use normalizedOptions
+            ...normalizedOptions.define,
           },
         },
         output: {
           target: 'web',
-          distPath: {
-            root: 'dist/browser',
+          filename: {
+            js: `[name]${hashFormat.chunk}.js`,
+            css: `[name]${hashFormat.file}.css`,
           },
+          sourceMap: {
+            js: normalizedOptions.sourceMap.scripts ? 'source-map' : false,
+            css: normalizedOptions.sourceMap.styles,
+          },
+          distPath: {
+            root: normalizedOptions.outputPath.browser,
+            js: '',
+            media: normalizedOptions.outputPath.media,
+            assets: normalizedOptions.outputPath.media,
+          },
+          cleanDistPath: normalizedOptions.deleteOutputPath,
           copy: normalizedOptions.assets.map((srcPath) => ({
             from: srcPath,
             to: dirname(srcPath),
@@ -145,18 +191,21 @@ export function createConfig(
               source: {
                 preEntry: [...serverPolyfills],
                 entry: {
-                  server: normalizedOptions.ssrEntry!,
+                  server: (normalizedOptions.ssr as { entry: string }).entry,
                 },
                 define: {
                   ngServerMode: true,
                   ...(isProd ? { ngDevMode: 'false' } : undefined),
-                  ngJitMode: pluginOptions.jit, // @TODO: use normalizedOptions
+                  ngJitMode: normalizedOptions.aot ? undefined : 'true', // @TODO: use normalizedOptions
+                  ...normalizedOptions.define,
                 },
               },
               output: {
                 target: 'node',
                 polyfill: 'entry',
-                distPath: { root: 'dist/server' },
+                distPath: { root: normalizedOptions.outputPath.server },
+                cleanDistPath: normalizedOptions.deleteOutputPath,
+                externals: normalizedOptions.externalDependencies,
               },
             },
           }
@@ -168,7 +217,7 @@ export function createConfig(
   return mergeRsbuildConfig(rsbuildPluginAngularConfig, userDefinedConfig);
 }
 
-export function withConfigurations(
+export async function createConfig(
   defaultOptions: {
     options: Partial<PluginAngularOptions>;
     rsbuildConfigOverrides?: Partial<RsbuildConfig>;
@@ -181,7 +230,7 @@ export function withConfigurations(
     }
   > = {},
   configEnvVar = 'NGRS_CONFIG'
-) {
+): Promise<RsbuildConfig> {
   const configurationMode = process.env[configEnvVar] ?? 'production';
   const isDefault = configurationMode === 'default';
   const isModeConfigured = configurationMode in configurations;
@@ -206,5 +255,8 @@ export function withConfigurations(
     );
   }
 
-  return createConfig(mergedBuildOptionsOptions, mergedRsbuildConfigOverrides);
+  return await _createConfig(
+    mergedBuildOptionsOptions,
+    mergedRsbuildConfigOverrides
+  );
 }

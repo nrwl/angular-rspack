@@ -1,37 +1,43 @@
 import { logger, RsbuildPlugin } from '@rsbuild/core';
 import {
-  buildAndAnalyzeWithParallelCompilation,
+  buildAndAnalyze,
   JavaScriptTransformer,
   DiagnosticModes,
   JS_ALL_EXT_REGEX,
   maxWorkers,
-  setupCompilationWithParallelCompilation,
+  setupCompilationWithAngularCompilation,
   PartialMessage,
-} from '@ng-rspack/compiler';
-import { PluginAngularOptions } from '../models/plugin-options';
-import { normalizeOptions } from '../models/normalize-options';
+} from '@nx/angular-rspack-compiler';
+import type { NormalizedPluginAngularOptions } from '../models/plugin-options';
 
 export const pluginHoistedJsTransformer = (
-  options: PluginAngularOptions
+  options: NormalizedPluginAngularOptions
 ): RsbuildPlugin => ({
   name: 'plugin-hoisted-js-transformer',
   post: ['plugin-angular'],
   setup(api) {
-    const pluginOptions = normalizeOptions(options);
     const config = api.getRsbuildConfig();
     const typescriptFileCache = new Map<string, string | Uint8Array>();
     let watchMode = false;
-    let isServer = pluginOptions.hasServer;
+    let isServer = options.hasServer;
     const typeCheckResults: {
       errors: PartialMessage[] | undefined;
       warnings: PartialMessage[] | undefined;
     } = { errors: undefined, warnings: undefined };
     const javascriptTransformer = new JavaScriptTransformer(
       {
-        sourcemap: false,
-        thirdPartySourcemaps: false,
+        /**
+         * Matches https://github.com/angular/angular-cli/blob/33ed6e875e509ebbaa0cbdb57be9e932f9915dff/packages/angular/build/src/tools/esbuild/angular/compiler-plugin.ts#L89
+         * where pluginOptions.sourcemap is set https://github.com/angular/angular-cli/blob/61d98fde122468978de9b17bd79761befdbf2fac/packages/angular/build/src/tools/esbuild/compiler-plugin-options.ts#L34
+         */
+        sourcemap: !!(
+          options.sourceMap.scripts &&
+          (options.sourceMap.hidden ? 'external' : true)
+        ),
+        thirdPartySourcemaps: options.sourceMap.vendor,
+        // @TODO: it should be `pluginOptions.advancedOptimizations` but it currently fails the build
         advancedOptimizations: false,
-        jit: pluginOptions.jit,
+        jit: !options.aot,
       },
       maxWorkers()
     );
@@ -45,23 +51,25 @@ export const pluginHoistedJsTransformer = (
     });
 
     api.onBeforeEnvironmentCompile(async () => {
-      const parallelCompilation = await setupCompilationWithParallelCompilation(
+      const parallelCompilation = await setupCompilationWithAngularCompilation(
         config,
-        pluginOptions
+        {
+          ...options,
+          root: options.root,
+        }
       );
-      await buildAndAnalyzeWithParallelCompilation(
+      await buildAndAnalyze(
         parallelCompilation,
         typescriptFileCache,
         javascriptTransformer
       );
-      if (!pluginOptions.skipTypeChecking) {
+      if (!options.skipTypeChecking) {
         const { errors, warnings } = await parallelCompilation.diagnoseFiles(
           DiagnosticModes.All
         );
         typeCheckResults.errors = errors;
         typeCheckResults.warnings = warnings;
       }
-      await parallelCompilation.close();
     });
 
     api.onAfterBuild(() => {

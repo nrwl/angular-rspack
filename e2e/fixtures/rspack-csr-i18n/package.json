@@ -1,0 +1,23 @@
+{
+  "name": "rspack-csr-i18n",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "@nx/angular-rspack": "workspace:*"
+  },
+  "nx": {
+    "i18n": {
+      "sourceLocale": "en-GB",
+      "locales": {
+        "fr": {
+          "translation": "e2e/fixtures/rspack-csr-i18n/src/locale/messages.fr.xlf"
+        },
+        "es": {
+          "translation": "e2e/fixtures/rspack-csr-i18n/src/locale/messages.es.xlf",
+          "subPath": "es-ES"
+        }
+      }
+    }
+  }
+}

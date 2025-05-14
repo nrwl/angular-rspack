@@ -3,7 +3,7 @@ import { beforeAll, beforeEach, expect } from 'vitest';
 import * as normalizeModule from '../models/normalize-options.ts';
 import { DEFAULT_PLUGIN_ANGULAR_OPTIONS } from '../models/normalize-options.ts';
 import * as rsbuildCoreModule from '@rsbuild/core';
-import { PluginAngularOptions } from '../models/plugin-options.ts';
+import type { NormalizedPluginAngularOptions } from '../models/plugin-options.ts';
 
 vi.mock('@rsbuild/core');
 
@@ -11,10 +11,17 @@ describe('createConfig', () => {
   const argvSpy = vi.spyOn(process, 'argv', 'get');
   const normalizeOptionsSpy = vi.spyOn(normalizeModule, 'normalizeOptions');
   const defineConfigSpy = vi.spyOn(rsbuildCoreModule, 'defineConfig');
+  const defaultNormalizedOptions: NormalizedPluginAngularOptions = {
+    ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
+    advancedOptimizations: true,
+    devServer: { port: 4200 },
+    optimization: true,
+    outputHashing: 'all',
+  };
 
   beforeAll(() => {
     argvSpy.mockReturnValue([]);
-    normalizeOptionsSpy.mockReturnValue(DEFAULT_PLUGIN_ANGULAR_OPTIONS);
+    normalizeOptionsSpy.mockReturnValue(defaultNormalizedOptions);
     defineConfigSpy.mockReturnValue({});
   });
 
@@ -25,10 +32,10 @@ describe('createConfig', () => {
 
   it.each(['development', 'not-production'])(
     'should create config for mode "development" if env variable NODE_ENV is "%s"',
-    (nodeEnv) => {
+    async (nodeEnv) => {
       vi.stubEnv('NODE_ENV', nodeEnv);
 
-      expect(() => createConfig({})).not.toThrow();
+      await expect(createConfig({ options: {} })).resolves.not.toThrow();
 
       expect(defineConfigSpy).toHaveBeenCalledWith(
         expect.objectContaining({ mode: 'development' })
@@ -36,24 +43,25 @@ describe('createConfig', () => {
     }
   );
 
-  it('should create config for mode "production" if env variable NODE_ENV is "production"', () => {
+  it('should create config for mode "production" if env variable NODE_ENV is "production"', async () => {
     vi.stubEnv('NODE_ENV', 'production');
 
-    expect(() => createConfig({})).not.toThrow();
+    await expect(createConfig({ options: {} })).resolves.not.toThrow();
 
     expect(defineConfigSpy).toHaveBeenCalledWith(
       expect.objectContaining({ mode: 'production' })
     );
   });
 
-  it('should have dev property defined if the process started with "dev" argument and a server is configured', () => {
+  it('should have dev property defined if the process started with "dev" argument and a server is configured', async () => {
     argvSpy.mockReturnValue(['irrelevant', 'irrelevant', 'dev']);
     normalizeOptionsSpy.mockReturnValue({
-      ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
+      ...defaultNormalizedOptions,
+      ssr: { entry: 'main.ts' },
       hasServer: true,
     });
 
-    expect(() => createConfig({})).not.toThrow();
+    await expect(createConfig({ options: {} })).resolves.not.toThrow();
 
     expect(defineConfigSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -70,10 +78,10 @@ describe('createConfig', () => {
     );
   });
 
-  it('should create config without dev property configured if not running dev server', () => {
+  it('should create config without dev property configured if not running dev server', async () => {
     argvSpy.mockReturnValue([]);
 
-    expect(() => createConfig({})).not.toThrow();
+    await expect(createConfig({ options: {} })).resolves.not.toThrow();
 
     expect(defineConfigSpy).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -82,38 +90,83 @@ describe('createConfig', () => {
     );
   });
 
-  it('should used definedConfig for both passed objects', () => {
+  it('should used definedConfig for both passed objects', async () => {
     defineConfigSpy.mockImplementation((config) => config);
     normalizeOptionsSpy.mockImplementation(
-      (options) => options as PluginAngularOptions
+      (options) => options as NormalizedPluginAngularOptions
     );
 
-    expect(() =>
-      createConfig(
-        {
-          root: 'plugin-options',
+    await expect(
+      createConfig({
+        options: {
           polyfills: [],
           styles: [],
           assets: [],
+          outputPath: {
+            base: 'dist',
+            browser: 'dist/browser',
+            server: 'dist/server',
+            media: 'dist/browser/media',
+          },
+          sourceMap: {
+            scripts: true,
+            styles: true,
+            hidden: false,
+            vendor: false,
+          },
         },
-        {
+        rsbuildConfigOverrides: {
           source: {
             tsconfigPath: 'tsconfig.random.json',
           },
-        }
-      )
-    ).not.toThrow();
+        },
+      })
+    ).resolves.not.toThrow();
     expect(defineConfigSpy).toHaveBeenCalledTimes(2);
-    expect(defineConfigSpy).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ root: 'plugin-options' })
-    );
     expect(defineConfigSpy).toHaveBeenNthCalledWith(
       2,
       expect.objectContaining({
         source: {
           tsconfigPath: 'tsconfig.random.json',
         },
+      })
+    );
+  });
+
+  it('should allow changing the devServer port', async () => {
+    defineConfigSpy.mockImplementation((config) => config);
+    normalizeOptionsSpy.mockImplementation(
+      (options) => options as NormalizedPluginAngularOptions
+    );
+
+    await expect(
+      createConfig({
+        options: {
+          polyfills: [],
+          styles: [],
+          assets: [],
+          outputPath: {
+            base: 'dist',
+            browser: 'dist/browser',
+            server: 'dist/server',
+            media: 'dist/browser/media',
+          },
+          sourceMap: {
+            scripts: true,
+            styles: true,
+            hidden: false,
+            vendor: false,
+          },
+          devServer: {
+            port: 8080,
+          },
+        },
+      })
+    ).resolves.not.toThrow();
+    expect(defineConfigSpy).toHaveBeenNthCalledWith(
+      1,
+      expect.objectContaining({
+        server: expect.objectContaining({ port: 8080 }),
       })
     );
   });

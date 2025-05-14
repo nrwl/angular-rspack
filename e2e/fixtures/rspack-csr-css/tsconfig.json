@@ -7,28 +7,14 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true
   },
   "files": [],
   "include": [],
   "references": [
     {
       "path": "../../../packages/angular-rspack"
-    },
-    {
-      "path": "../../../testing/utils"
-    },
-    {
-      "path": "../../../packages/angular-rspack-compiler"
-    },
-    {
-      "path": "../../../testing/setup"
-    },
-    {
-      "path": "../../../packages/compiler"
-    },
-    {
-      "path": "../../../packages/build"
     },
     {
       "path": "./tsconfig.editor.json"

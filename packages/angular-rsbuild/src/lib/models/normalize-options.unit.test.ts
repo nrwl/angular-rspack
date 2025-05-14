@@ -1,13 +1,15 @@
+import { MEMFS_VOLUME } from '@ng-rspack/testing-utils';
+import { vol } from 'memfs';
+import { join } from 'node:path';
 import { describe, expect } from 'vitest';
 import {
   DEFAULT_PLUGIN_ANGULAR_OPTIONS,
   getHasServer,
   normalizeOptions,
+  normalizeOutputPath,
   resolveFileReplacements,
 } from './normalize-options.ts';
-import { vol } from 'memfs';
-
-import { MEMFS_VOLUME } from '@ng-rspack/testing-utils';
+import { PluginAngularOptions } from './plugin-options';
 
 describe('resolveFileReplacements', () => {
   it('should work with empty results', () => {
@@ -54,69 +56,56 @@ describe('getHasServer', () => {
       },
       MEMFS_VOLUME
     );
+    vi.stubGlobal('process', { cwd: () => MEMFS_VOLUME });
   });
 
-  it('should return true if both server and ssrEntry files exist', () => {
-    const result = getHasServer({
-      server: 'server.js',
-      ssrEntry: 'ssr-entry.js',
-      root: MEMFS_VOLUME,
+  it('should return true if both server and ssr.entry files exist', () => {
+    const result = getHasServer(process.cwd(), 'server.js', {
+      entry: 'ssr-entry.js',
     });
 
     expect(result).toBe(true);
   });
 
   it('should return false if server file is not provides', () => {
-    const result = getHasServer({
-      ssrEntry: 'ssr-entry.js',
-      root: '/project-root',
+    const result = getHasServer(process.cwd(), undefined, {
+      entry: 'ssr-entry.js',
     });
 
     expect(result).toBe(false);
   });
 
-  it('should return false if ssrEntry file is not provides', () => {
-    const result = getHasServer({
-      server: 'server.js',
-      root: '/project-root',
-    });
+  it('should return false if ssr.entry file is not provides', () => {
+    const result = getHasServer(process.cwd(), 'server.js', undefined);
 
     expect(result).toBe(false);
   });
 
   it('should return false if neither file are not provides', () => {
-    const result = getHasServer({
-      root: '/project-root',
-    });
+    const result = getHasServer(process.cwd(), undefined, undefined);
 
     expect(result).toBe(false);
   });
 
   it('should return false if server file does not exist', () => {
-    const result = getHasServer({
-      server: 'non-existing-server.js',
-      ssrEntry: 'ssr-entry.js',
-      root: '/project-root',
+    const result = getHasServer(process.cwd(), 'non-existing-server.js', {
+      entry: 'ssr-entry.js',
     });
 
     expect(result).toBe(false);
   });
 
-  it('should return false if ssrEntry file does not exist', () => {
-    const result = getHasServer({
-      server: 'server.js',
-      ssrEntry: 'non-existing-ssr-entry.js',
-      root: '/project-root',
+  it('should return false if ssr.entry file does not exist', () => {
+    const result = getHasServer(process.cwd(), 'server.js', {
+      entry: 'non-existing-ssr-entry.js',
     });
 
     expect(result).toBe(false);
   });
 
-  it('should return false if neither server nor ssrEntry exists', () => {
-    const result = getHasServer({
-      server: 'non-existing-server.js',
-      ssrEntry: 'non-existing-ssr-entry.js',
-      root: '/project-root',
+  it('should return false if neither server nor ssr.entry exists', () => {
+    const result = getHasServer(process.cwd(), 'non-existing-server.js', {
+      entry: 'non-existing-ssr-entry.js',
     });
 
     expect(result).toBe(false);
@@ -124,26 +113,53 @@ describe('getHasServer', () => {
 });
 
 describe('normalizeOptions', () => {
-  const defaultOptions = DEFAULT_PLUGIN_ANGULAR_OPTIONS;
+  let defaultOptions: PluginAngularOptions;
+
+  beforeEach(() => {
+    // Need to reset the default options with the stubbed value for process.cwd()
+    defaultOptions = {
+      ...DEFAULT_PLUGIN_ANGULAR_OPTIONS,
+      outputPath: normalizeOutputPath(process.cwd(), undefined),
+      sourceMap: {
+        scripts: true,
+        styles: true,
+        hidden: false,
+        vendor: false,
+      },
+    };
+  });
 
   it('should apply default values when no options are provided', () => {
     const result = normalizeOptions();
 
-    expect(result).toStrictEqual(defaultOptions);
+    expect(result).toStrictEqual({
+      ...defaultOptions,
+      root: process.cwd(),
+      tsConfig: join(process.cwd(), 'tsconfig.app.json'),
+      advancedOptimizations: true,
+    });
   });
 
   it('should apply default values when empty options are provided', () => {
     const result = normalizeOptions({});
 
-    expect(result).toStrictEqual(defaultOptions);
+    expect(result).toStrictEqual({
+      ...defaultOptions,
+      root: process.cwd(),
+      tsConfig: join(process.cwd(), 'tsconfig.app.json'),
+      advancedOptimizations: true,
+    });
   });
 
-  it('should apply provides options', () => {
-    const result = normalizeOptions({ root: 'project-root' });
+  it('should set optimization to false when provided in options', () => {
+    const result = normalizeOptions({ optimization: false });
 
     expect(result).toStrictEqual({
       ...defaultOptions,
-      root: 'project-root',
+      root: process.cwd(),
+      tsConfig: join(process.cwd(), 'tsconfig.app.json'),
+      optimization: false,
+      advancedOptimizations: false,
     });
   });
 
@@ -165,8 +181,7 @@ describe('normalizeOptions', () => {
     expect(
       normalizeOptions({
         server: 'server.js',
-        ssrEntry: 'ssr-entry.js',
-        root: MEMFS_VOLUME,
+        ssr: { entry: 'ssr-entry.js' },
       }).hasServer
     ).toStrictEqual(true);
   });
@@ -178,7 +193,6 @@ describe('normalizeOptions', () => {
 
     const resolvedFileReplacements = normalizeOptions({
       fileReplacements,
-      root: MEMFS_VOLUME,
     }).fileReplacements;
 
     expect(resolvedFileReplacements).toStrictEqual([

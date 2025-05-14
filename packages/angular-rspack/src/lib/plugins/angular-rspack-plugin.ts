@@ -1,82 +1,96 @@
 import {
-  Compiler,
-  HtmlRspackPlugin,
-  RspackOptionsNormalized,
-  RspackPluginInstance,
-} from '@rspack/core';
+  augmentAppWithServiceWorker,
+  type BudgetCalculatorResult,
+  checkBudgets,
+  ThresholdSeverity,
+} from '@angular/build/private';
 import {
-  AngularRspackPluginOptions,
-  NG_RSPACK_SYMBOL_NAME,
-  NgRspackCompilation,
-} from '../models';
-import { maxWorkers } from '@ng-rspack/compiler';
-import {
-  buildAndAnalyzeWithParallelCompilation,
-  JavaScriptTransformer,
-  setupCompilationWithParallelCompilation,
+  buildAndAnalyze,
   DiagnosticModes,
-} from '@ng-rspack/compiler';
-import { dirname, normalize, resolve } from 'path';
-import fs_1 from 'fs';
+  JavaScriptTransformer,
+  SourceFileCache,
+  maxWorkers,
+  setupCompilationWithAngularCompilation,
+  AngularCompilation,
+} from '@nx/angular-rspack-compiler';
+import { workspaceRoot } from '@nx/devkit';
+import {
+  type Compiler,
+  type RspackOptionsNormalized,
+  type RspackPluginInstance,
+  sources,
+} from '@rspack/core';
+import { dirname, join, normalize, resolve } from 'node:path';
+import {
+  type I18nOptions,
+  NG_RSPACK_SYMBOL_NAME,
+  type NgRspackCompilation,
+  type NormalizedAngularRspackPluginOptions,
+} from '../models';
+import { getLocaleBaseHref } from '../utils/get-locale-base-href';
+import { addError, addWarning } from '../utils/rspack-diagnostics';
+import { assertNever } from '../utils/misc-helpers';
+import { rspackStatsLogger } from '../utils/stats';
+import { getStatsOptions } from '../config/config-utils/get-stats-options';
 
 const PLUGIN_NAME = 'AngularRspackPlugin';
-type Awaited<T> = T extends Promise<infer U> ? U : T;
-type ResolvedJavascriptTransformer = Parameters<
-  typeof buildAndAnalyzeWithParallelCompilation
->[2];
+type ResolvedJavascriptTransformer = Parameters<typeof buildAndAnalyze>[2];
 
 export class AngularRspackPlugin implements RspackPluginInstance {
-  #_options: AngularRspackPluginOptions;
-  #typescriptFileCache: Map<string, string>;
+  #_options: NormalizedAngularRspackPluginOptions;
+  #i18n: I18nOptions | undefined;
+  #sourceFileCache: SourceFileCache;
   #javascriptTransformer: ResolvedJavascriptTransformer;
   // This will be defined in the apply method correctly
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-expect-error
-  #angularCompilation: Awaited<
-    ReturnType<typeof setupCompilationWithParallelCompilation>
-  >;
+  #angularCompilation: AngularCompilation;
 
-  constructor(options: AngularRspackPluginOptions) {
+  constructor(
+    options: NormalizedAngularRspackPluginOptions,
+    i18nOptions?: I18nOptions
+  ) {
     this.#_options = options;
-    this.#typescriptFileCache = new Map<string, string>();
+    this.#i18n = i18nOptions;
+    this.#sourceFileCache = new SourceFileCache();
     this.#javascriptTransformer = new JavaScriptTransformer(
       {
-        sourcemap: false,
-        thirdPartySourcemaps: false,
-        advancedOptimizations: true,
-        jit: this.#_options.jit,
+        /**
+         * Matches https://github.com/angular/angular-cli/blob/33ed6e875e509ebbaa0cbdb57be9e932f9915dff/packages/angular/build/src/tools/esbuild/angular/compiler-plugin.ts#L89
+         * where pluginOptions.sourcemap is set https://github.com/angular/angular-cli/blob/61d98fde122468978de9b17bd79761befdbf2fac/packages/angular/build/src/tools/esbuild/compiler-plugin-options.ts#L34
+         */
+        sourcemap: !!(
+          this.#_options.sourceMap.scripts &&
+          (this.#_options.sourceMap.hidden ? 'external' : true)
+        ),
+        thirdPartySourcemaps: this.#_options.sourceMap.vendor,
+        advancedOptimizations: this.#_options.advancedOptimizations,
+        jit: !this.#_options.aot,
       },
       maxWorkers()
     ) as unknown as ResolvedJavascriptTransformer;
   }
 
   apply(compiler: Compiler) {
+    const root = this.#_options.root;
     // Both of these are exclusive to each other - only one of them can be used at a time
     // But they will happen before the compiler is created - so we can use them to set up the parallel compilation once
     compiler.hooks.beforeRun.tapAsync(
       PLUGIN_NAME,
       async (compiler, callback) => {
-        await this.setupCompilation(compiler.options.resolve.tsConfig);
+        await this.setupCompilation(root, compiler.options.resolve.tsConfig);
 
         compiler.hooks.beforeCompile.tapAsync(
           PLUGIN_NAME,
           async (params, callback) => {
-            await buildAndAnalyzeWithParallelCompilation(
+            await buildAndAnalyze(
               this.#angularCompilation,
-              this.#typescriptFileCache,
+              this.#sourceFileCache.typeScriptFileCache,
               this.#javascriptTransformer
             );
             callback();
           }
         );
-
-        compiler.hooks.done.tap(PLUGIN_NAME, (stats) => {
-          if (stats.hasErrors() || stats.hasWarnings()) {
-            setTimeout(() => {
-              process.exit(stats.hasErrors() ? 1 : 0);
-            }, 1000);
-          }
-        });
 
         callback();
       }
@@ -97,12 +111,21 @@ export class AngularRspackPlugin implements RspackPluginInstance {
                 ?.modifiedFiles
                 ? new Set(compiler.watching.compiler.modifiedFiles)
                 : new Set<string>();
-              await this.setupCompilation(compiler.options.resolve.tsConfig);
-              await this.#angularCompilation.update(watchingModifiedFiles);
 
-              await buildAndAnalyzeWithParallelCompilation(
+              if (this.#angularCompilation) {
+                this.#sourceFileCache.invalidate(watchingModifiedFiles);
+              }
+              await this.setupCompilation(
+                root,
+                compiler.options.resolve.tsConfig,
+                watchingModifiedFiles.size > 0
+                  ? watchingModifiedFiles
+                  : undefined
+              );
+
+              await buildAndAnalyze(
                 this.#angularCompilation,
-                this.#typescriptFileCache,
+                this.#sourceFileCache.typeScriptFileCache,
                 this.#javascriptTransformer
               );
               compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
@@ -119,6 +142,51 @@ export class AngularRspackPlugin implements RspackPluginInstance {
         callback();
       }
     );
+
+    compiler.hooks.thisCompilation.tap(PLUGIN_NAME, (compilation) => {
+      compilation.hooks.processAssets.tap(
+        {
+          name: PLUGIN_NAME,
+          stage: compiler.rspack.Compilation.PROCESS_ASSETS_STAGE_ADDITIONS,
+        },
+        (assets) => {
+          for (const assetName in assets) {
+            const asset = compilation.getAsset(assetName);
+            if (!asset) {
+              continue;
+            }
+            const assetHash = asset.info?.contenthash?.[0] ?? '';
+            const assetNameWithoutHash = assetName.replace(`.${assetHash}`, '');
+            if (assetNameWithoutHash !== 'main.js') {
+              continue;
+            }
+            const originalSource = asset.source;
+            let setLocaleContent = '';
+            if (this.#i18n?.shouldInline) {
+              // When inlining, a placeholder is used to allow the post-processing step to inject the $localize locale identifier.
+              setLocaleContent +=
+                '(globalThis.$localize ??= {}).locale = "___NG_LOCALE_INSERT___";\n';
+            } else if (this.#i18n?.hasDefinedSourceLocale) {
+              // If not inlining translations and source locale is defined, inject the locale specifier.
+              setLocaleContent += `(globalThis.$localize ??= {}).locale = "${
+                this.#i18n.sourceLocale
+              }";\n`;
+            }
+
+            const concatLocaleSource = new sources.ConcatSource(
+              setLocaleContent,
+              originalSource
+            );
+
+            compilation.updateAsset(
+              assetName,
+              concatLocaleSource,
+              (assetInfo) => assetInfo
+            );
+          }
+        }
+      );
+    });
 
     compiler.hooks.emit.tapAsync(PLUGIN_NAME, async (compilation, callback) => {
       if (!this.#_options.skipTypeChecking) {
@@ -145,9 +213,48 @@ export class AngularRspackPlugin implements RspackPluginInstance {
           });
         }
       }
-      await this.#angularCompilation.close();
+
       await this.#javascriptTransformer.close();
       callback();
+    });
+
+    compiler.hooks.afterEmit.tap(PLUGIN_NAME, (compilation) => {
+      // Check for budget errors and display them to the user.
+      const budgets = this.#_options.budgets;
+      let budgetFailures: BudgetCalculatorResult[] | undefined;
+
+      compiler.hooks.done.tap(PLUGIN_NAME, (statsValue) => {
+        const stats = statsValue.toJson();
+        if (budgets?.length) {
+          budgetFailures = [...checkBudgets(budgets, stats)];
+          for (const { severity, message } of budgetFailures) {
+            switch (severity) {
+              case ThresholdSeverity.Warning:
+                addWarning(compilation, {
+                  message,
+                  name: PLUGIN_NAME,
+                  hideStack: true,
+                });
+                break;
+              case ThresholdSeverity.Error:
+                addError(compilation, {
+                  message,
+                  name: PLUGIN_NAME,
+                  hideStack: true,
+                });
+                break;
+              default:
+                assertNever(severity);
+            }
+          }
+        }
+      });
+      compiler.hooks.afterDone.tap(PLUGIN_NAME, (stats) => {
+        rspackStatsLogger(stats, getStatsOptions(this.#_options.verbose));
+        if (stats.hasErrors()) {
+          process.exit(1);
+        }
+      });
     });
 
     compiler.hooks.normalModuleFactory.tap(
@@ -168,51 +275,86 @@ export class AngularRspackPlugin implements RspackPluginInstance {
       (compilation as NgRspackCompilation)[NG_RSPACK_SYMBOL_NAME] = () => ({
         javascriptTransformer: this
           .#javascriptTransformer as unknown as JavaScriptTransformer,
-        typescriptFileCache: this.#typescriptFileCache,
+        typescriptFileCache: this.#sourceFileCache.typeScriptFileCache,
+        i18n: this.#i18n,
       });
     });
 
-    compiler.hooks.compilation.tap(PLUGIN_NAME, (compilation) => {
-      const htmlRspackPluginHooks =
-        HtmlRspackPlugin.getCompilationHooks(compilation);
-      htmlRspackPluginHooks.beforeEmit.tap(PLUGIN_NAME, (data) => {
-        const ngJsDispatchEvent = `<script type="text/javascript" id="ng-event-dispatch-contract">
-                ${fs_1.readFileSync(
-                  require.resolve(
-                    '@angular/core/event-dispatch-contract.min.js'
-                  ),
-                  'utf-8'
-                )}
-                </script>`;
-        data.html = data.html.replace('</body>', `${ngJsDispatchEvent}</body>`);
-        return data;
-      });
-    });
+    if (this.#_options.serviceWorker) {
+      compiler.hooks.done.tapAsync(
+        PLUGIN_NAME,
+        async (compilation, callback) => {
+          let providedLocales = this.#_options.localize;
+          if (!providedLocales) {
+            await augmentAppWithServiceWorker(
+              this.#_options.root,
+              workspaceRoot,
+              this.#_options.outputPath.browser,
+              this.#_options.baseHref ?? '/',
+              this.#_options.ngswConfigPath
+            );
+          } else if (providedLocales && this.#i18n) {
+            if (typeof providedLocales === 'string') {
+              providedLocales = [providedLocales];
+            } else if (typeof providedLocales === 'boolean') {
+              providedLocales = Array.from(this.#i18n.inlineLocales);
+            }
+            for (const locale of providedLocales) {
+              await augmentAppWithServiceWorker(
+                this.#_options.root,
+                workspaceRoot,
+                join(
+                  this.#_options.outputPath.browser,
+                  this.#i18n.locales[locale]?.subPath ?? locale
+                ),
+                getLocaleBaseHref(
+                  this.#i18n,
+                  locale,
+                  this.#_options.baseHref
+                ) ??
+                  this.#_options.baseHref ??
+                  '/',
+                this.#_options.ngswConfigPath
+              );
+            }
+          }
+
+          callback();
+        }
+      );
+    }
   }
 
   private async setupCompilation(
-    tsConfig: RspackOptionsNormalized['resolve']['tsConfig']
+    root: string,
+    tsConfig: RspackOptionsNormalized['resolve']['tsConfig'],
+    modifiedFiles?: Set<string>
   ) {
     const tsconfigPath = tsConfig
       ? typeof tsConfig === 'string'
         ? tsConfig
         : tsConfig.configFile
-      : this.#_options.tsconfigPath;
-    this.#angularCompilation = await setupCompilationWithParallelCompilation(
+      : this.#_options.tsConfig;
+    this.#angularCompilation = await setupCompilationWithAngularCompilation(
       {
         source: {
           tsconfigPath: tsconfigPath,
         },
       },
       {
-        root: this.#_options.root,
-        jit: this.#_options.jit,
-        tsconfigPath: tsconfigPath,
-        inlineStylesExtension: this.#_options.inlineStylesExtension,
+        root,
+        aot: this.#_options.aot,
+        tsConfig: tsconfigPath,
+        inlineStyleLanguage: this.#_options.inlineStyleLanguage,
         fileReplacements: this.#_options.fileReplacements,
         useTsProjectReferences: this.#_options.useTsProjectReferences,
         hasServer: this.#_options.hasServer,
-      }
+        includePaths: this.#_options.stylePreprocessorOptions?.includePaths,
+        sass: this.#_options.stylePreprocessorOptions?.sass,
+      },
+      this.#sourceFileCache,
+      this.#angularCompilation,
+      modifiedFiles
     );
   }
 }

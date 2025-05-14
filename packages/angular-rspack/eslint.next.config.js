@@ -23,12 +23,22 @@ module.exports = [
             '{projectRoot}/vitest*.config.{js,ts,mjs,mts}',
           ],
           ignoredDependencies: [
+            'css-loader',
             'less-loader',
             'sass-loader',
             'sass-embedded',
             '@angular/core',
             'rxjs',
             '@ng-rspack/build',
+            'postcss-loader',
+            '@code-pushup/models',
+            '@code-pushup/utils',
+            'jsonc-eslint-parser',
+            'vitest',
+            // it's only a type import, so it won't be required at runtime
+            'sass',
+            // shown as unused because it's required using `createRequire`
+            'tailwindcss',
           ],
         },
       ],

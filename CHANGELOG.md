@@ -1,3 +1,176 @@
+## 21.0.1 (2025-05-14)
+
+### 🚀 Features
+
+- **angular-rspack:** add hmr support ([#78](https://github.com/nrwl/angular-rspack/pull/78))
+- **angular-rspack:** add statsJson plugin ([#79](https://github.com/nrwl/angular-rspack/pull/79))
+- **angular-rspack:** add poll option ([#80](https://github.com/nrwl/angular-rspack/pull/80))
+- **angular-rspack:** add verbose option ([#82](https://github.com/nrwl/angular-rspack/pull/82))
+- **angular-rspack:** add progress option ([#83](https://github.com/nrwl/angular-rspack/pull/83))
+- **angular-rspack:** add watch option ([#84](https://github.com/nrwl/angular-rspack/pull/84))
+- **angular-rspack:** add open option ([#85](https://github.com/nrwl/angular-rspack/pull/85))
+- **angular-rspack:** finalize devServer options ([#86](https://github.com/nrwl/angular-rspack/pull/86))
+- **angular-rspack:** add granular optimization support ([#89](https://github.com/nrwl/angular-rspack/pull/89))
+- **angular-rspack:** add budgets support ([#92](https://github.com/nrwl/angular-rspack/pull/92))
+- **angular-rspack:** add appShell option ([#93](https://github.com/nrwl/angular-rspack/pull/93))
+- **angular-rspack,angular-rspack-compiler:** reuse existing compilation if exists ([#77](https://github.com/nrwl/angular-rspack/pull/77))
+
+### 🩹 Fixes
+
+- **angular-rspack:** remove options that do not exist in Angular Webpack ([#81](https://github.com/nrwl/angular-rspack/pull/81))
+- **angular-rspack:** type warning on budgets ([565b484](https://github.com/nrwl/angular-rspack/commit/565b484))
+- **angular-rspack,angular-rspack-compiler:** surface errors from ComponentStylesheetResult ensuring sass andincludePaths are passed ([#87](https://github.com/nrwl/angular-rspack/pull/87))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+- Marvin Scharle @marvinscharle
+
+## 20.9.0 (2025-05-06)
+
+### 🚀 Features
+
+- **angular-rspack:** use development config for serve ([#61](https://github.com/nrwl/angular-rspack/pull/61))
+- **angular-rspack:** support static site generation ([#65](https://github.com/nrwl/angular-rspack/pull/65))
+- **angular-rspack:** improve styles processing and support tailwindcss v4 ([#70](https://github.com/nrwl/angular-rspack/pull/70))
+- **angular-rspack:** add support for more devServer options ([#71](https://github.com/nrwl/angular-rspack/pull/71))
+
+### 🩹 Fixes
+
+- **angular-rspack:** ensure `stylePreprocessorOptions` is correctly used ([#72](https://github.com/nrwl/angular-rspack/pull/72))
+- **angular-rspack:** update `@rspack/core` dependency ([#73](https://github.com/nrwl/angular-rspack/pull/73))
+- **angular-rspack:** ssg should not run on serve ([#75](https://github.com/nrwl/angular-rspack/pull/75))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+- Leosvel Pérez Espinosa @leosvelperez
+
+## 20.8.2 (2025-04-28)
+
+### 🩹 Fixes
+
+- **angular-rspack:** handle windows disk drive in loader #53 ([#64](https://github.com/nrwl/angular-rspack/pull/64), [#53](https://github.com/nrwl/angular-rspack/issues/53))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
+## 20.8.1 (2025-04-28)
+
+### 🩹 Fixes
+
+- **angular-rspack:** do not rely on nx workspace ([#62](https://github.com/nrwl/angular-rspack/pull/62))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
+## 20.8.0 (2025-04-25)
+
+### 🩹 Fixes
+
+- **angular-rspack:** mark @angular/localize as optional peer dep ([#60](https://github.com/nrwl/angular-rspack/pull/60))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
+## 20.8.0-beta.0 (2025-04-25)
+
+### 🚀 Features
+
+- **angular-rspack:** add service-worker support ([#55](https://github.com/nrwl/angular-rspack/pull/55))
+- **angular-rspack:** improve entry files handling and index.html generation ([#56](https://github.com/nrwl/angular-rspack/pull/56))
+- **angular-rspack,angular-rsbuild:** support web workers ([#58](https://github.com/nrwl/angular-rspack/pull/58))
+
+### 🩹 Fixes
+
+- **angular-rspack:** multiple configurations ([#54](https://github.com/nrwl/angular-rspack/pull/54))
+- **angular-rspack:** ensure ngDevMode set correctly by DefinePlugin ([#57](https://github.com/nrwl/angular-rspack/pull/57))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+- Leosvel Pérez Espinosa @leosvelperez
+
+## 20.7.0 (2025-04-15)
+
+This was a version bump only, there were no code changes.
+
+## 20.7.0-beta.0 (2025-04-15)
+
+### 🚀 Features
+
+- **angular-rspack:** add allowedHosts option ([#47](https://github.com/nrwl/angular-rspack/pull/47))
+- **angular-rspack:** add support for i18n ([#51](https://github.com/nrwl/angular-rspack/pull/51))
+- **angular-rspack,angular-rsbuild:** add define option ([#45](https://github.com/nrwl/angular-rspack/pull/45))
+- **angular-rspack,angular-rsbuild:** add preserveSymlinks option ([#48](https://github.com/nrwl/angular-rspack/pull/48))
+- **angular-rspack,angular-rsbuild:** add deleteOutputPath option ([#49](https://github.com/nrwl/angular-rspack/pull/49))
+- **angular-rspack,angular-rsbuild:** add externalDependencies option ([#50](https://github.com/nrwl/angular-rspack/pull/50))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
+## 20.6.2 (2025-03-14)
+
+This was a version bump only, there were no code changes.
+
+## 20.6.2-beta.0 (2025-03-14)
+
+### 🩹 Fixes
+
+- **angular-rspack-compiler:** depend directly on @angular/build ([82b8713](https://github.com/nrwl/angular-rspack/commit/82b8713))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
+## 20.6.1 (2025-03-14)
+
+### 🩹 Fixes
+
+- **angular-rspack:** publicPath for server should not be auto ([110cf85](https://github.com/nrwl/angular-rspack/commit/110cf85))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
+## 20.6.0 (2025-03-14)
+
+This was a version bump only, there were no code changes.
+
+## 20.6.0-beta.1 (2025-03-14)
+
+### 🩹 Fixes
+
+- **angular-rspack:** stylesheet should be attached to html ([#41](https://github.com/nrwl/angular-rspack/pull/41))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
+## 20.6.0-beta.0 (2025-03-14)
+
+### 🚀 Features
+
+- **angular-rspack:** support `host` option for the dev server ([#38](https://github.com/nrwl/angular-rspack/pull/38))
+
+### 🩹 Fixes
+
+- **angular-rspack:** fix assets normalization ([#39](https://github.com/nrwl/angular-rspack/pull/39))
+- **angular-rspack:** process styles correctly handling urls ([#40](https://github.com/nrwl/angular-rspack/pull/40))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+- Leosvel Pérez Espinosa @leosvelperez
+
+## 20.5.0-beta.3 (2025-03-12)
+
+This was a version bump only, there were no code changes.
+
 ## 19.0.0-alpha.29 (2025-03-03)
 
 ### 🚀 Features

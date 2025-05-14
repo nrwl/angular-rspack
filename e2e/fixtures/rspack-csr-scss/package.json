@@ -1,0 +1,20 @@
+{
+  "name": "rspack-csr-scss",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "@nx/angular-rspack": "workspace:*"
+  },
+  "nx": {
+    "targets": {
+      "build": {
+        "inputs": [
+          {
+            "env": "NGRS_CONFIG"
+          }
+        ]
+      }
+    }
+  }
+}

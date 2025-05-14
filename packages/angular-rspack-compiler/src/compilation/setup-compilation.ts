@@ -1,21 +1,24 @@
 import { RsbuildConfig } from '@rsbuild/core';
 import * as ts from 'typescript';
-import { compileString } from 'sass-embedded';
-import { augmentHostWithResources } from './augments';
-import { InlineStyleExtension, FileReplacement } from '../models';
+import { InlineStyleLanguage, FileReplacement, type Sass } from '../models';
 import { loadCompilerCli } from '../utils';
-import { ComponentStylesheetBundler } from '@angular/build/src/tools/esbuild/angular/component-stylesheets';
+import {
+  ComponentStylesheetBundler,
+  type ComponentStylesheetResult
+} from '@angular/build/src/tools/esbuild/angular/component-stylesheets';
 import { transformSupportedBrowsersToTargets } from '../utils/targets-from-browsers';
 import { getSupportedBrowsers } from '@angular/build/private';
 
 export interface SetupCompilationOptions {
   root: string;
-  tsconfigPath: string;
-  jit: boolean;
-  inlineStylesExtension: InlineStyleExtension;
+  tsConfig: string;
+  aot: boolean;
+  inlineStyleLanguage: InlineStyleLanguage;
   fileReplacements: Array<FileReplacement>;
   useTsProjectReferences?: boolean;
   hasServer?: boolean;
+  includePaths?: string[];
+  sass?: Sass;
 }
 
 export const DEFAULT_NG_COMPILER_OPTIONS: ts.CompilerOptions = {
@@ -38,11 +41,9 @@ export async function setupCompilation(
   config: Pick<RsbuildConfig, 'mode' | 'source'>,
   options: SetupCompilationOptions
 ) {
-  const isProd = config.mode === 'production';
-
   const { readConfiguration } = await loadCompilerCli();
   const { options: tsCompilerOptions, rootNames } = readConfiguration(
-    config.source?.tsconfigPath ?? options.tsconfigPath,
+    config.source?.tsconfigPath ?? options.tsConfig,
     {
       ...DEFAULT_NG_COMPILER_OPTIONS,
       ...(options.useTsProjectReferences
@@ -56,7 +57,6 @@ export async function setupCompilation(
   );
 
   const compilerOptions = tsCompilerOptions;
-  const host = ts.createIncrementalCompilerHost(compilerOptions);
 
   const componentStylesheetBundler = new ComponentStylesheetBundler(
     {
@@ -76,22 +76,16 @@ export async function setupCompilation(
           warn: (message) => console.warn(message),
         })
       ),
+      includePaths: options.includePaths,
+      sass: options.sass,
     },
-    options.inlineStylesExtension,
+    options.inlineStyleLanguage,
     false
   );
-
-  if (!options.jit) {
-    augmentHostWithResources(host, (code) => compileString(code).css, {
-      inlineStylesExtension: options.inlineStylesExtension,
-      isProd,
-    });
-  }
 
   return {
     rootNames,
     compilerOptions,
-    host,
     componentStylesheetBundler,
   };
 }
@@ -105,7 +99,7 @@ export function styleTransform(
     stylesheetFile?: string
   ) => {
     try {
-      let stylesheetResult;
+      let stylesheetResult: ComponentStylesheetResult;
       if (stylesheetFile) {
         stylesheetResult = await componentStylesheetBundler.bundleFile(
           stylesheetFile
@@ -116,6 +110,14 @@ export function styleTransform(
           containingFile,
           containingFile.endsWith('.html') ? 'css' : undefined
         );
+      }
+      if (stylesheetResult.errors && stylesheetResult.errors.length > 0) {
+        for (const error of stylesheetResult.errors) {
+          console.error(
+            'Failed to compile styles. Continuing execution ignoring failing stylesheet...',
+            error.text
+          );
+        }
       }
       return stylesheetResult.contents;
     } catch (e) {

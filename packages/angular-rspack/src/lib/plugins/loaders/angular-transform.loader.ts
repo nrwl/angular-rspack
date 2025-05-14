@@ -1,12 +1,26 @@
 import type { LoaderContext } from '@rspack/core';
 import { normalize } from 'path';
 import { NG_RSPACK_SYMBOL_NAME, NgRspackCompilation } from '../../models';
-import { StyleUrlsResolver, TemplateUrlsResolver } from '@ng-rspack/compiler';
+import {
+  StyleUrlsResolver,
+  TemplateUrlsResolver,
+} from '@nx/angular-rspack-compiler';
 
-const styleUrlsResolver = new StyleUrlsResolver();
-const templateUrlsResolver = new TemplateUrlsResolver();
+const _styleUrlsResolver = new StyleUrlsResolver();
+const _templateUrlsResolver = new TemplateUrlsResolver();
 
-export default function loader(this: LoaderContext<unknown>, content: string) {
+export default function loader(
+  this: LoaderContext<unknown>,
+  content: string,
+  opt?: {
+    styleUrlsResolver: StyleUrlsResolver;
+    templateUrlsResolver: TemplateUrlsResolver;
+  }
+) {
+  const {
+    styleUrlsResolver = _styleUrlsResolver,
+    templateUrlsResolver = _templateUrlsResolver,
+  } = opt ?? {};
   const callback = this.async();
   if (
     (this._compilation as NgRspackCompilation)[NG_RSPACK_SYMBOL_NAME] ===
@@ -18,7 +32,7 @@ export default function loader(this: LoaderContext<unknown>, content: string) {
       NG_RSPACK_SYMBOL_NAME
     ]();
 
-    const request = this.resourcePath;
+    const request = this.resourcePath.replace(/^[A-Z]:/, '');
     const normalizedRequest = normalize(request);
 
     const templateUrls = templateUrlsResolver.resolve(

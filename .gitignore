@@ -2,6 +2,7 @@
 
 # compiled output
 dist
+e2e/fixtures/**/build
 tmp
 /out-tsc
 out-tsc
