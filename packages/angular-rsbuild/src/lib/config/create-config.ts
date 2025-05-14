@@ -1,19 +1,17 @@
 import {
   defineConfig,
-  type RsbuildConfig,
   mergeRsbuildConfig,
+  type RsbuildConfig,
   RsbuildPlugin,
 } from '@rsbuild/core';
 import { dirname, resolve } from 'path';
-import { OutputPath, PluginAngularOptions } from '../models/plugin-options';
+import { PluginAngularOptions } from '../models/plugin-options';
 import { normalizeOptions } from '../models/normalize-options';
 import { pluginAngular } from '../plugin/plugin-angular';
 import { pluginHoistedJsTransformer } from '../plugin/plugin-hoisted-js-transformer';
-import { pluginSass } from '@rsbuild/plugin-sass';
-import { pluginLess } from '@rsbuild/plugin-less';
 import { getOutputHashFormat } from './helpers';
 import { getProxyConfig } from './dev-server-config-utils';
-import { join } from 'node:path';
+import { getStylePlugins } from './styles-utils';
 
 export async function _createConfig(
   pluginOptions: Partial<PluginAngularOptions>,
@@ -31,63 +29,7 @@ export async function _createConfig(
   const isRunningDevServer = process.argv.at(2) === 'dev';
   const isProd = process.env.NODE_ENV === 'production';
 
-  const stylePlugins: RsbuildPlugin[] = [];
-
-  if (
-    normalizedOptions.inlineStyleLanguage === 'scss' ||
-    normalizedOptions.inlineStyleLanguage === 'sass'
-  ) {
-    if (
-      normalizedOptions.stylePreprocessorOptions?.includePaths ||
-      normalizedOptions.stylePreprocessorOptions?.sass
-    ) {
-      stylePlugins.push(
-        pluginSass({
-          sassLoaderOptions: {
-            sourceMap: normalizedOptions.sourceMap.styles,
-            sassOptions: {
-              includePaths:
-                normalizedOptions.stylePreprocessorOptions?.includePaths,
-              ...(normalizedOptions.stylePreprocessorOptions?.sass ?? {}),
-            },
-          },
-        })
-      );
-    } else {
-      stylePlugins.push(
-        pluginSass({
-          sassLoaderOptions: {
-            sourceMap: normalizedOptions.sourceMap.styles,
-          },
-        })
-      );
-    }
-  } else if (normalizedOptions.inlineStyleLanguage === 'less') {
-    if (normalizedOptions.stylePreprocessorOptions?.includePaths) {
-      stylePlugins.push(
-        pluginLess({
-          lessLoaderOptions: {
-            sourceMap: normalizedOptions.sourceMap.styles,
-            lessOptions: {
-              javascriptEnabled: true,
-              paths: normalizedOptions.stylePreprocessorOptions?.includePaths,
-            },
-          },
-        })
-      );
-    } else {
-      stylePlugins.push(
-        pluginLess({
-          lessLoaderOptions: {
-            sourceMap: normalizedOptions.sourceMap.styles,
-            lessOptions: {
-              javascriptEnabled: true,
-            },
-          },
-        })
-      );
-    }
-  }
+  const stylePlugins: RsbuildPlugin[] = getStylePlugins(normalizedOptions);
 
   const { root } = normalizedOptions;
   const rsbuildPluginAngularConfig = defineConfig({
@@ -108,7 +50,7 @@ export async function _createConfig(
         ? {
             writeToDisk: (file) => !file.includes('.hot-update.'),
             client: {
-              port: normalizedOptions.devServer?.port ?? 4200,
+              port: normalizedOptions.devServer.port,
               host: 'localhost',
             },
             hmr: false,
@@ -118,7 +60,7 @@ export async function _createConfig(
     },
     server: {
       host: 'localhost',
-      port: normalizedOptions.devServer?.port ?? 4200,
+      port: normalizedOptions.devServer.port,
       htmlFallback: false,
       historyApiFallback: {
         index: '/index.html',
@@ -234,12 +176,12 @@ export async function createConfig(
   const configurationMode = process.env[configEnvVar] ?? 'production';
   const isDefault = configurationMode === 'default';
   const isModeConfigured = configurationMode in configurations;
+  const modeOverrides = (!isDefault && isModeConfigured && configurations[configurationMode]?.options)
+    || {};
 
   const mergedBuildOptionsOptions = {
     ...defaultOptions.options,
-    ...((!isDefault && isModeConfigured
-      ? configurations[configurationMode]?.options
-      : {}) ?? {}),
+    ...modeOverrides,
   };
 
   let mergedRsbuildConfigOverrides =
