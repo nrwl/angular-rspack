@@ -1,7 +1,7 @@
 import {
   defineConfig,
-  mergeRsbuildConfig,
   type RsbuildConfig,
+  mergeRsbuildConfig,
   RsbuildPlugin,
 } from '@rsbuild/core';
 import { dirname, resolve } from 'path';
@@ -50,7 +50,7 @@ export async function _createConfig(
         ? {
             writeToDisk: (file) => !file.includes('.hot-update.'),
             client: {
-              port: normalizedOptions.devServer.port,
+              port: normalizedOptions.devServer?.port ?? 4200,
               host: 'localhost',
             },
             hmr: false,
@@ -60,7 +60,7 @@ export async function _createConfig(
     },
     server: {
       host: 'localhost',
-      port: normalizedOptions.devServer.port,
+      port: normalizedOptions.devServer?.port ?? 4200,
       htmlFallback: false,
       historyApiFallback: {
         index: '/index.html',
@@ -176,8 +176,11 @@ export async function createConfig(
   const configurationMode = process.env[configEnvVar] ?? 'production';
   const isDefault = configurationMode === 'default';
   const isModeConfigured = configurationMode in configurations;
-  const modeOverrides = (!isDefault && isModeConfigured && configurations[configurationMode]?.options)
-    || {};
+  const modeOverrides =
+    (!isDefault &&
+      isModeConfigured &&
+      configurations[configurationMode]?.options) ||
+    {};
 
   const mergedBuildOptionsOptions = {
     ...defaultOptions.options,
