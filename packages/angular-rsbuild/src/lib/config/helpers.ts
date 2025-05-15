@@ -25,9 +25,7 @@ export async function deleteOutputDir(
 
   const directoriesToEmpty = preserveDirs
     ? new Set(
-        preserveDirs.map((directory) =>
-          join(resolvedOutputPath, directory)
-        )
+        preserveDirs.map((directory) => join(resolvedOutputPath, directory))
       )
     : undefined;
 
