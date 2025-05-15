@@ -90,7 +90,8 @@ export interface PluginAngularOptions {
 
 export interface NormalizedPluginAngularOptions extends PluginAngularOptions {
   advancedOptimizations: boolean;
-  devServer: DevServerOptions & { port: number };
+  devServer: Omit<DevServerOptions, 'port'> &
+    Required<Pick<DevServerOptions, 'port'>>;
   externalDependencies: string[];
   optimization: boolean | OptimizationOptions;
   outputHashing: OutputHashing;
