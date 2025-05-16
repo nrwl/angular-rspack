@@ -1,3 +1,13 @@
+## 21.0.2 (2025-05-16)
+
+### 🩹 Fixes
+
+- **angular-rspack:** ensure cjs for serve ([#98](https://github.com/nrwl/angular-rspack/pull/98))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 21.0.1 (2025-05-14)
 
 ### 🚀 Features
