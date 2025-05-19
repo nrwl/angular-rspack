@@ -16,7 +16,6 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['src/**/*.integration.test.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    setupFiles: ['../../testing/vitest-setup/src/lib/fs-memfs.setup-file.ts'],
     passWithNoTests: true,
     reporters: ['default'],
     coverage: {
