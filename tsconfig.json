@@ -4,15 +4,6 @@
   "files": [],
   "references": [
     {
-      "path": "./packages/build"
-    },
-    {
-      "path": "./packages/rsbuild-plugin-angular"
-    },
-    {
-      "path": "./packages/compiler"
-    },
-    {
       "path": "./tools/eslint-rules"
     },
     {

@@ -7,7 +7,8 @@
     "eslint-next/nx": "pnpx tsx --tsconfig tools/tsconfig.tools.json tools/scripts/eslint-next/bin.ts --report",
     "check-format": "pnpx nx format:check",
     "check-commit": "pnpm exec commitlint --from HEAD~1 --to HEAD",
-    "release": "tsx tools/scripts/release.ts"
+    "release": "tsx tools/scripts/release.ts",
+    "dbg": "NX_TUI=false pnpm nx run rspack-ssg-css:build"
   },
   "private": true,
   "devDependencies": {
@@ -134,7 +135,7 @@
     "highlight.js": "^11.11.1",
     "memfs": "^4.17.0",
     "minimatch": "^10.0.1",
-    "piscina": "4.9.2",
+    "piscina": "5.0.0",
     "rxjs": "~7.8.0",
     "serverless-http": "^3.2.0",
     "tslib": "^2.3.0",
