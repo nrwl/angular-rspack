@@ -1,3 +1,13 @@
+## 21.0.3 (2025-05-21)
+
+### 🩹 Fixes
+
+- **angular-rspack:** do not generate sourceMaps when disabled ([0ddc1ad](https://github.com/nrwl/angular-rspack/commit/0ddc1ad))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 21.0.2 (2025-05-16)
 
 ### 🩹 Fixes
