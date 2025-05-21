@@ -1,3 +1,13 @@
+## 21.0.4 (2025-05-21)
+
+### 🩹 Fixes
+
+- **angular-rspack:** ensure mode is set based on optimization settings ([ee5e76b](https://github.com/nrwl/angular-rspack/commit/ee5e76b))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 21.0.3 (2025-05-21)
 
 ### 🩹 Fixes
