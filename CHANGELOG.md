@@ -1,3 +1,13 @@
+## 21.1.0 (2025-05-30)
+
+### 🚀 Features
+
+- **angular-rspack,angular-rspack-compiler:** support angular 20 ([#99](https://github.com/nrwl/angular-rspack/pull/99))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+
 ## 21.0.4 (2025-05-21)
 
 ### 🩹 Fixes
