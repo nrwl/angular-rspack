@@ -5,33 +5,32 @@
  * Use of this source code is governed by an MIT-style license that can be
  * found in the LICENSE file at https://angular.dev/license
  */
-import { OutputHashing, HashFormat } from '../models/plugin-options';
+import { HashFormat, OutputHashing } from '../models/plugin-options';
 import { readdir, rm } from 'node:fs/promises';
-import { join, resolve } from 'node:path';
+import { join, resolve, relative } from 'node:path';
 
 /**
- * Delete an output directory, but error out if it's the root of the project.
+ * Delete an output directory, but error out if it's the root of the project because
+ * that would remove the entire project and could be dangerous.
  */
 export async function deleteOutputDir(
   root: string,
   outputPath: string,
-  emptyOnlyDirectories?: string[]
+  preserveDirs?: string[]
 ): Promise<void> {
   const resolvedOutputPath = resolve(root, outputPath);
   if (resolvedOutputPath === root) {
     throw new Error('Output path MUST not be project root directory!');
   }
 
-  const directoriesToEmpty = emptyOnlyDirectories
+  const directoriesToEmpty = preserveDirs
     ? new Set(
-        emptyOnlyDirectories.map((directory) =>
-          join(resolvedOutputPath, directory)
-        )
+        preserveDirs.map((directory) => join(resolvedOutputPath, directory))
       )
     : undefined;
 
   // Avoid removing the actual directory to avoid errors in cases where the output
-  // directory is mounted or symlinked. Instead the contents are removed.
+  // directory is mounted or symlinked. Instead, the contents are removed.
   let entries;
   try {
     entries = await readdir(resolvedOutputPath);
@@ -47,7 +46,9 @@ export async function deleteOutputDir(
 
     // Leave requested directories. This allows symlinks to continue to function.
     if (directoriesToEmpty?.has(fullEntry)) {
-      await deleteOutputDir(resolvedOutputPath, fullEntry);
+      // compute its path relative to `root`, then recurse as in deleteOutputDir resolve is called on root
+      const rel = relative(root, fullEntry);
+      await deleteOutputDir(root, rel, preserveDirs);
       continue;
     }
 
