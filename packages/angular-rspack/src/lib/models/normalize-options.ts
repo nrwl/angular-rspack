@@ -265,6 +265,7 @@ export async function normalizeOptions(
     vendorChunk: options.vendorChunk ?? false,
     verbose: options.verbose ?? false,
     watch: options.watch ?? false,
+    zoneless: options.zoneless ?? false,
   };
 }
 

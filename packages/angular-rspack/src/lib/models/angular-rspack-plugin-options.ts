@@ -341,6 +341,10 @@ export interface AngularRspackPluginOptions {
    * The tsconfig file for web workers.
    */
   webWorkerTsConfig?: string;
+  /**
+   * Enables zoneless mode; relevant for SSR prerendering.
+   */
+  zoneless?: boolean;
 }
 
 export interface NormalizedAngularRspackPluginOptions
@@ -379,4 +383,5 @@ export interface NormalizedAngularRspackPluginOptions
   tsConfig: string;
   vendorChunk: boolean;
   watch: boolean;
+  zoneless: boolean;
 }
