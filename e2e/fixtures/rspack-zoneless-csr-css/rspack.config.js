@@ -4,7 +4,6 @@ module.exports = () => {
     return createConfig(
       {
         options: {
-          zoneless: true,
           root: __dirname,
           index: './src/index.html',
           assets: [
