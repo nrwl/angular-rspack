@@ -1,10 +1,10 @@
 {
   "private": true,
   "dependencies": {
-    "@angular/common": "20.0.0",
-    "@angular/core": "20.0.0",
-    "@angular/platform-browser": "20.0.0",
-    "@angular/router": "20.0.0",
+    "@angular/common": "20.1.0",
+    "@angular/core": "20.1.0",
+    "@angular/platform-browser": "20.1.0",
+    "@angular/router": "20.1.0",
     "@nx/angular-rsbuild": "workspace:*"
   },
   "devDependencies": {
