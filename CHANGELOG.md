@@ -1,3 +1,27 @@
+## 21.2.0 (2025-07-16)
+
+### 🚀 Features
+
+- **angular-rspack:** support index transformer ([#118](https://github.com/nrwl/angular-rspack/pull/118))
+- **angular-rspack:** include js-based postcss config ([#120](https://github.com/nrwl/angular-rspack/pull/120))
+- **angular-rspack:** support pkg scheme importer ([#124](https://github.com/nrwl/angular-rspack/pull/124))
+- **angular-rspack,angular-rspack-compiler:** update to angular 20.1.0 ([12d221f](https://github.com/nrwl/angular-rspack/commit/12d221f))
+
+### 🩹 Fixes
+
+- **angular-rspack:** exclude assets from being copied into server build ([#117](https://github.com/nrwl/angular-rspack/pull/117))
+- **angular-rspack:** apply SASS deprecation for global stylesheets ([#119](https://github.com/nrwl/angular-rspack/pull/119))
+- **angular-rspack:** fix ignore glob for .gitkeep ([#121](https://github.com/nrwl/angular-rspack/pull/121))
+- **angular-rspack:** add node_modules to includePaths if populated ([#126](https://github.com/nrwl/angular-rspack/pull/126))
+- **angular-rspack:** delete build outputPath only once ([#127](https://github.com/nrwl/angular-rspack/pull/127))
+- **angular-rspack:** remove failing node importer ([2870822](https://github.com/nrwl/angular-rspack/commit/2870822))
+
+### ❤️ Thank You
+
+- Colum Ferry @Coly010
+- Tobias Lampert @vz-tl
+- Zack Yang @zack9433
+
 ## 21.1.0 (2025-05-30)
 
 ### 🚀 Features
