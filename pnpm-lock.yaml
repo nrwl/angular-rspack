@@ -514,6 +514,30 @@ importers:
         specifier: workspace:*
         version: link:../../../packages/angular-rspack
 
+  e2e/fixtures/rspack-zoneless-csr-css:
+    dependencies:
+      '@nx/angular-rspack':
+        specifier: workspace:*
+        version: link:../../../packages/angular-rspack
+
+  e2e/fixtures/rspack-zoneless-csr-i18n:
+    dependencies:
+      '@nx/angular-rspack':
+        specifier: workspace:*
+        version: link:../../../packages/angular-rspack
+
+  e2e/fixtures/rspack-zoneless-ssg-css:
+    dependencies:
+      '@nx/angular-rspack':
+        specifier: workspace:*
+        version: link:../../../packages/angular-rspack
+
+  e2e/fixtures/rspack-zoneless-ssr-css:
+    dependencies:
+      '@nx/angular-rspack':
+        specifier: workspace:*
+        version: link:../../../packages/angular-rspack
+
   packages/angular-rsbuild:
     dependencies:
       '@angular/common':
