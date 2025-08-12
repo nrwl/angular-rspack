@@ -35,7 +35,7 @@
     }
   },
   "dependencies": {
-    "@nx/angular-rspack-compiler": "workspace:*",
+    "@nx/angular-rspack-compiler": "21.4.0-beta.10",
     "@rsbuild/plugin-less": "^1.1.1",
     "@rsbuild/plugin-sass": "^1.1.2",
     "express": "4.21.1",

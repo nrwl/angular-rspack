@@ -16,9 +16,6 @@
       "path": "./e2e/rsbuild-ssr-css-e2e"
     },
     {
-      "path": "./apps/docs"
-    },
-    {
       "path": "./e2e/rsbuild-csr-less-e2e"
     },
     {
@@ -29,12 +26,6 @@
     },
     {
       "path": "./testing/utils"
-    },
-    {
-      "path": "./packages/angular-rspack"
-    },
-    {
-      "path": "./packages/angular-rspack-compiler"
     },
     {
       "path": "./packages/angular-rsbuild"

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {},
   "dependencies": {
-    "@nx/angular-rspack": "workspace:*"
+    "@nx/angular-rspack": "21.4.0-beta.10"
   },
   "nx": {
     "targets": {

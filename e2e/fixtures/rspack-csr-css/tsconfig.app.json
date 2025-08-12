@@ -21,9 +21,5 @@
     "src/**/*.test.jsx",
     "src/**/*.spec.jsx"
   ],
-  "references": [
-    {
-      "path": "../../../packages/angular-rspack/tsconfig.lib.json"
-    }
-  ]
+  "references": []
 }
