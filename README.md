@@ -1,16 +1,14 @@
-<div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
-  <h2 style="margin: 0 0 10px 0; font-size: 1.5em;">📢 Angular Rspack has moved!</h2>
-  <p style="margin: 0 0 15px 0; font-size: 1.1em;">
-    This repository is <strong>no longer actively maintained</strong>.
-  </p>
-  <p style="margin: 0 0 15px 0;">
-    Angular Rspack is now part of the official <strong>Nx monorepo</strong> at 
-    <a href="https://github.com/nrwl/nx" style="color: #ffd700; text-decoration: underline; font-weight: bold;">github.com/nrwl/nx</a>
-  </p>
-  <p style="margin: 0; font-size: 0.95em;">
-    Please file new issues and contribute at the <a href="https://github.com/nrwl/nx/issues" style="color: #ffd700; text-decoration: underline;">Nx repository</a>
-  </p>
-</div>
+## 📢 Angular Rspack has moved!
+
+This repository is **no longer actively maintained**.
+
+Angular Rspack is now part of the official **Nx monorepo** at [github.com/nrwl/nx](https://github.com/nrwl/nx)
+
+Please file new issues and contribute at the [Nx repository](https://github.com/nrwl/nx/issues)
+
+<hr>
+<hr>
+<hr>
 
 <div style="text-align: center; margin: 0 auto;">
 
